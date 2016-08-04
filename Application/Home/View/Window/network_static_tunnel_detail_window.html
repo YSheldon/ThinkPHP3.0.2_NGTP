@@ -1,0 +1,116 @@
+<div class="ngtos_window_only" style="padding: 10px 10px 10px 10px;">
+    <table class="ngtos_form_table">
+        <tr>
+            <td style="width: 100px; ">{$Thinl.lang.TUNNEL_NAME}</td>
+            <td id="show_name"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 100px; ">{$Thinl.lang.TUNNEL_DESC}</td>
+            <td id="show_description"> </td>
+        </tr>
+        <tr>
+            <td style="width: 100px; ">{$Thinl.lang.STATE_SECRET_PROTOCOL}</td>
+            <td id="show_gmneg"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 100px; ">{$Thinl.lang.LOCAL_CA_POSITION}</td>
+            <td id="show_localcert_id"> </td>
+        </tr>
+        <tr>
+            <td style="width: 100px; ">{$Thinl.lang.AUTH_MODE}</td>
+            <td id="show_authmode"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 100px; ">{$Thinl.lang.IKE_NEGO_MODE}</td>
+            <td id="show_negomode"> </td>
+        </tr>
+        <tr>
+            <td style="width: 100px; ">{$Thinl.lang.LOCAL_FLAG}</td>
+            <td id="show_localid"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 125px; ">{$Thinl.lang.PEER_FLAG}</td>
+            <td id="show_peerid" style="width: 125px;"> </td>
+
+        </tr>
+        <tr>
+            <td style="width: 100px; ">{$Thinl.lang.LOCALHOST}</td>
+            <td id="show_localhost"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 100px; ">{$Thinl.lang.LOCAL_SUBNET}</td>
+            <td id="show_localsubnet"> </td>
+        </tr>
+        <tr>
+            <td style="width: 125px; ">{$Thinl.lang.PEER_ADDRESS}</td>
+            <td id="show_peerhost"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 100px; ">{$Thinl.lang.PEER_SUBNET}</td>
+            <td id="show_peersubnet"> </td>
+        </tr>
+        <tr>
+            <td style="width: 100px; ">ISAKMP-{$Thinl.lang.SA_LIFE}</td>
+            <td id="show_ike_life_seconds"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 100px; ">IPSEC-{$Thinl.lang.SA_LIFE}</td>
+            <td id="show_ipsec_life_seconds"> </td>
+        </tr>
+        <tr>
+            <td style="width: 100px; ">{$Thinl.lang.SA_KEYING_RETRY_TIME}</td>
+            <td id="show_sa_keying_tries"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 100px; ">ESP{$Thinl.lang.NEGO_ALG_LIST}</td>
+            <td id="show_alg_esp"> </td>
+        </tr>
+        <tr>
+            <td style="width: 100px; ">ISAKMP-{$Thinl.lang.SA_SECURITY_POLICY_ATTRIBUTES}</td>
+            <td id="show_ike_policy"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 100px; ">IPSEC-{$Thinl.lang.SA_SECURITY_POLICY_ATTRIBUTES}</td>
+            <td id="show_ipsecpolicy"> </td>
+        </tr>
+        <tr>
+            <td style="width: 100px; ">{$Thinl.lang.START_TUNNEL_NEGO}</td>
+            <td id="show_auto_negotiate"> </td>
+            <td style="width: 5px; border-bottom: none; "></td>
+            <td style="width: 100px; "></td>
+            <td> </td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(function() {
+        $('#show_name').html(param[0]);
+        $('#show_description').html(param[1]);
+        $('#show_gmneg').html(param[2]);
+        $('#show_localcert_id').html(param[3]);
+        $('#show_authmode').html(param[4]);
+        $('#show_negomode').html(param[5]);
+        $('#show_line-type').html(param[6]);
+        $('#show_localid').html(param[7]);
+        $('#show_localhost').html(param[8]);
+        $('#show_localsubnet').html(param[9]);
+        $('#show_peerid').html(param[10]);
+        $('#show_peerhost').html(param[11]);
+        $('#show_peersubnet').html(param[12]);
+        $('#show_presharekey').html(param[13]);
+        $('#show_ike_life_seconds').html(param[14]);
+        $('#show_ipsec_life_seconds').html(param[15]);
+        $('#show_sa_rekey_margin').html(param[16]);
+        $('#show_sa_rekey_fuzz').html(param[17]);
+        $('#show_sa_keying_tries').html(param[18]);
+        $('#show_alg_esp').html(param[19]);
+        $('#show_ike_policy').html(param[20]);
+        $('#show_keep_alive').html(param[21]);
+        $('#show_dpd_switch').html(param[22]);
+        $('#show_dpd_delay').html(param[23]);
+        $('#show_dpd_timeout').html(param[24]);
+        $('#show_dpd_action').html(param[25]);
+        $('#show_ipsecpolicy').html(param[26]);
+        $('#show_auto_negotiate').html(param[27]);
+        $('#show_enable').html(param[28]);
+        $('#show_use-xauth').html(param[29]);
+        $('#show_as-xs-xc').html(param[30]);
+        $('#show_xc-username').html(param[31]);
+        $('#show_xc-password').html(param[32]);
+        $('#show_use-modecfg').html(param[33]);
+        $('#show_as-ms-mc').html(param[34]);
+        $('#show_use-modecfg-pull').html(param[35]);
+        $('#show_keeplive-flag').html(param[36]);
+    })
+</script>

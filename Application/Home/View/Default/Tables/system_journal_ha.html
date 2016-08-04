@@ -1,0 +1,84 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/system/journal.js" type="text/javascript"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=System/Journal&a=system_log_show">
+        <li>
+            {$Think.lang.SYSTEM}
+        </li>
+    </a>
+    <a href="?c=System/Journal&a=system_log_show&tab=1">
+        <li id="ipv_4">
+            {$Think.lang.HA}
+        </li>
+    </a>
+    <a href="?c=System/Journal&a=system_log_show&tab=2">
+        <li>
+            {$Think.lang.PF}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table>
+<!-- 菜单栏-->
+<div id="tb" style="height: auto">
+    <div>
+        <input type="hidden" name="hid" id ="hid" value ="ha">
+        <input type="hidden" name="tid" id ="tid" value ="ha_table">
+        <a href="###" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onClick="deleteall();">{$Think.lang.CLEAR}</a>
+        <a href="###" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="superQuery()">{$Think.lang.QUERY}</a>
+        <a href="###" class="easyui-linkbutton" iconCls="icon-export" plain="true" onClick="logExport()">{$Think.lang.EXPORT}</a>
+    </div>
+</div>
+<div id="log_search" style="width: 400px; display: none"></div>
+<script>
+ var log_type = $("#hid").val();
+    $(function() {
+        $('#tt').datagrid({
+            nowrap: false,
+            fitColumns:true,
+            striped: true,
+            showFooter:false,
+            collapsible:true,
+            url:'?c=System/Journal&a=JournalJsondata&table=ha_table',
+            fit:true,         							//设置为true时，面版的大小将铺满它所在的容器（浏览器）。面板属性。
+            border:false,								//定义是否显示控制面板边框。面板属性。
+            remoteSort: false,							//定义是否通过远程服务器对数据排序。
+            columns:[[
+                  {field:'id',title:$LANG.ID,align:'left',resizable:true,width:20},
+				{field:'version',title:$LANG.VERSION_NUM,align:'left'},
+				{field:'time',title:$LANG.TIME,align:'left',width:50},
+				{field:'dev',title:$LANG.DEVICE,align:'left',width:30},
+				{field:'pri',title:$LANG.PRIORITY,align:'left',resizable:true},
+				{field:'type',title:$LANG.TYPE,align:'left',width:20},
+				{field:'recorder',title:$LANG.TEMPLATE_NAME,align:'left',width:20},
+				{field:'vsid',title:$LANG.VIRTUAL_SYSTEM_NUMBER,align:'left'},
+				{field:'format_msg',title:$LANG.INFORMATION,align:'left',width:200},
+				{field:'serial_num',hidden:true},
+				{field:'opt',title:$LANG.OPERATION,
+					formatter: function(rowIndex, rowData) {
+					return '<a href="###" onclick="del_row4(' +rowData.serial_num + ')"><img src="'+NG_PATH+'Public/images/icon/icon_delete.png" title="<?php echo L('DELETE')?>" style="vertical-align:middle"></a>';
+                     //  return rowData.serial_num;
+					   
+					}
+				},
+            ]],
+            pagination:true,							//设置true将在数据表格底部显示分页工具栏。
+            rownumbers:true,							//设置为true将显示行数。
+            pageSize:20,								//当设置分页属性时，初始化每页记录数。
+            pageList: [20, 50, 100],							//当设置分页属性时，初始化每页记录数列表。
+            loadMsg:$LANG.WAITING,			//当从远程站点载入数据时，显示的一条快捷信息。
+            toolbar:'#tb',
+            checkOnSelect:true,		//如果为true，该复选框被选中/取消选中，当用户点击某一行上。
+            selectOnCheck:true,		//如果设置为true，单击一个复选框，将始终选择行。如果为false，不会选择行选中该复选框。
+            onLoadSuccess: function() {
+                $('#tt').datagrid('fixRownumber');
+            }
+        });
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

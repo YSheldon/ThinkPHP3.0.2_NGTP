@@ -1,0 +1,165 @@
+<div>
+    <table class="ngtos_form_table">
+        <tr id='name1' style="display:none"><td class="tdlabel_net">{$Think.lang.ALARM_NAME}</td>
+            <td><input type="text" id="alarm_name" class="easyui-textbox input_length"  data-options="required:true,validType:'unnormal'"></td>
+        </tr>
+        <tr><td class="tdlabel_net">{$Think.lang.ALARM_TYPE}</td>
+            <td>
+                <input type="radio" name="alarm_type" id="alarm_type1" onClick="change_type(1)" value="1" checked><label for="alarm_type1">{$Think.lang.MAIL}</label>
+                <input type="radio" name="alarm_type" id="alarm_type2" value="2" onClick="change_type(2)"><label for="alarm_type2">{$Think.lang.VOICE}</label>
+                <input type="radio" name="alarm_type" id="alarm_type3" value="3" onClick="change_type(3)"><label for="alarm_type3">{$Think.lang.NETBIOS}</label>
+                <input type="radio" name="alarm_type" id="alarm_type4" value="4" onClick="change_type(4)"><label for="alarm_type4">{$Think.lang.CONSOLE}</label>
+                <span id="snmp_alarm" style="display: none">
+                <input type="radio" name="alarm_type" id="alarm_type5" value="5" onClick="change_type(5)"><label for="alarm_type5">SNMP</label></span>
+                <input type="radio" name="alarm_type" id="alarm_type6" value="6" onClick="change_type(6)"><label for="alarm_type5">{$Think.lang.MESSAGEVALID}</label></span>
+            </td>
+        </tr>
+        <tr id="email1" style="display:none"><td class="tdlabel_net">{$Think.lang.SERVER_ADDR}</td><td width="430px"><input type="text" id="serv_addr" class="easyui-textbox input_length"  data-options="required:true,validType:'ipFour'"></td>
+        </tr>
+        <tr id="email2" style="display:none"><td class="tdlabel_net">{$Think.lang.SERVER_PORT}</td><td width="430px"><input type="text" id="serv_port" maxlength="5" onKeyUp="this.value = this.value.replace(/\D/g, '')" class="easyui-textbox input_length"  data-options="required:true,validType:['integer','range[1,65535]']"><span class="form_comment">[1-65535]</span></td>
+        </tr>
+        <tr id="email3" style="display:none"><td valign="top" class="tdlabel_net">{$Think.lang.ADDRESSEE}</td>
+            <td width="450px">
+                <p style="padding:0;margin:0"><input type="text" id="alert_email_tex" name="alert_email_tex" maxlength="63" class="easyui-textbox input_length">
+                    <input type="button" value="{$Think.lang.ADD}" onclick="email_adtolist()">
+                </p>
+                <div style="float:left;">
+                    <select size="8" multiple name="alert_email" id="alert_email" style="width:222px">
+                    </select>
+                </div>
+                <div style="position:relative;float:left;left:4px"><input type="button" valign="top" value="{$Think.lang.DELETE}" onclick="email_delflist()"></div>
+            </td>
+        </tr>
+        <tr id="email4" style="display:none"><td class="tdlabel_net">{$Think.lang.EMAIL_SUBJECT}</td><td><input type="text" id="email_subject" class="easyui-textbox input_length" data-options="required:true"></td>
+        </tr>
+        <tr id="email5" style="display:none"><td class="tdlabel_net">{$Think.lang.EMAIL_AUTH}</td><td>
+                <img id="auth_abled" src="{$Think.config.NG_PATH}Public/images/image/stop.png" onClick="changswitch(this);" title="open" class="switch1"/>
+            </td>
+        </tr>
+        <tr id="email6" style="display:none"><td class="tdlabel_net">{$Think.lang.SENDER}</td><td><input type="text" id="email_username" disabled="disabled" class="easyui-textbox input_length" data-options="required:true"></td>
+        </tr>
+        <tr id="email7" style="display:none"><td class="tdlabel_net">{$Think.lang.EMAIL_PWD}</td><td><input type="password" id="email_pass" disabled="disabled" class="easyui-textbox input_length" data-options="required:true"></td>
+        </tr>
+        <tr id="voice1" style="display:none"><td class="tdlabel_net">{$Think.lang.VOICE_ALERT}</td><td><input type="button" value="设为默认" onclick="beep_default()"></td>
+        </tr>
+        <tr id="voice2" style="display:none"><td class="tdlabel_net">{$Think.lang.VOICE_ALERT1}</td><td><input type="text" id="voice_frequ" class="easyui-textbox input_length" data-options="required:true,validType:'range[1,1000]'"><span class="form_comment">[1-1000HZ]</span></td>
+        </tr>
+        <tr id="voice3" style="display:none"><td class="tdlabel_net">{$Think.lang.VOICE_LENGTH}</td><td><input type="text" id="voice_length" class="easyui-textbox input_length" data-options="required:true,validType:'range[1,1000]'"><span class="form_comment">[1-1000{$Think.lang.MICROSECOND}]</span></td>
+        </tr>
+        <tr id="voice4" style="display:none"><td class="tdlabel_net">{$Think.lang.REPEAT_TIME}</td><td><input type="text" id="voice_number" class="easyui-textbox input_length" data-options="required:true,validType:'range[1,10]'"><span class="form_comment">{$Think.lang.TIME_1_10}</span></td>
+        </tr>
+        <tr id="voice5" style="display:none"><td class="tdlabel_net">{$Think.lang.INTERVAL}</td><td><input type="text" id="voice_interval" class="easyui-textbox input_length" data-options="required:true,validType:'range[1,1000]'"><span class="form_comment">[1-1000{$Think.lang.MICROSECOND}]</span></td>
+        </tr>
+        <tr id="bios1" style="display:none"><td class="tdlabel_net">{$Think.lang.HOST_NAME}</td><td><input type="text" id="bios_name" class="easyui-textbox input_length" data-options="required:true,validType:'unnormals'"></td>
+        </tr>
+        <tr id="bios2" style="display:none"><td class="tdlabel_net">{$Think.lang.HOST_ADDR}</td><td><input type="text" id="bios_addr" class="easyui-textbox input_length" data-options="required:true,validType:'ipFour'"></td>
+        </tr>
+        <tr id="bios3" style="display:none"><td class="tdlabel_net">{$Think.lang.PHONENUM}</td><td><input type="text" id="phone" class="easyui-textbox input_length" data-options="required:true,validType:'phoneNum'"></td>
+        </tr>
+        </tr>
+
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addAlarm'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('alarm_div')">
+    </div>
+</div>
+<script>
+    $(function() {
+        //判断当前的状态，如果是添加状态的时候收件人地址是必须的，如果是编辑状态的时候，收件人地址不是必须的
+        if(sign == 'add'){
+            $('#alert_email_tex').textbox({
+                required:true
+            })
+        }else{
+            $('#alert_email_tex').textbox({
+                required:false
+            })
+        }
+        if (getLicense(0, 'SNMP'))
+            $('#snmp_alarm').css("display", "");
+        else
+            $('#snmp_alarm').css("display", "none");
+        if (alarm_tag == 1){
+            change_type(1);
+        }
+        else {
+            $('#alarm_name').val(param[0]);
+//            $("#alarm_name").disable = "disable";
+            if (param[1] == "mail") {
+                change_type(1);
+                $('input[name="alarm_type"]').get(0).checked = true;
+                var srvaddr = param[2].substring(8, param[2].indexOf("srvport") - 1);
+                $('#serv_addr').val(srvaddr);
+                var srvport = param[2].substring(param[2].indexOf("srvport") + 8, param[2].indexOf("mailaddr") - 1);
+                $('#serv_port').val(srvport);
+                var auth = param[2].substr(param[2].indexOf("auth") + 4, 4);
+                if (auth.indexOf("on") >= 0) {
+                    $('#auth_abled').attr("src", NG_PATH+"Public/images/image/start.png");
+                    $('#auth_abled').attr("title", "close");
+                    auto_add_tag = "on";
+                    $("#email_username").removeAttr("disabled");
+                    $("#email_pass").removeAttr("disabled");
+//                    $("#email_username").textbox('enable');	
+//                    $("#email_pass").textbox('enable');
+                    if (param[2].indexOf("subject") > -1)
+                        var username = param[2].substring(param[2].indexOf("username") + 9, param[2].indexOf("subject") - 1);
+                    else
+                        var username = param[2].substring(param[2].indexOf("username") + 9);
+                    $('#email_username').val(username);
+
+                } else {
+                    $('#auth_abled').attr("src", NG_PATH+"Public/images/image/stop.png");
+                    $('#auth_abled').attr("title", "open");
+                    auto_add_tag = "off";
+                    $("#email_username").attr("disabled", "disabled");
+                    $("#email_pass").attr("disabled", "disabled");
+                    //$("#email_username").textbox('disable');	
+                    //$("#email_pass").textbox('disable');
+                }
+                var mailaddr = param[2].substring(param[2].indexOf("mailaddr") + 9, param[2].indexOf("auth") - 1);
+                mailaddr = mailaddr.replace(/‘/g, "");
+                mailaddr = $.trim(mailaddr);
+                var mail = mailaddr.split(" ");
+                for (var i = 0; i < mail.length; i++) {
+                    var option = "<option value='" + mail[i] + "'>" + mail[i] + "</option>";
+                    $('#alert_email').prepend(option);
+                }
+
+                if (param[2].indexOf("subject") > -1)
+                    var subject = param[2].substring(param[2].indexOf("subject") + 8);
+                else
+                    var subject = "";
+                $('#email_subject').val(subject);
+            } else if (param[1] == "beep") {
+                change_type(2);
+                $('input[name="alarm_type"]').get(1).checked = true;
+                var freq = param[2].substring(5, param[2].indexOf("length") - 1);
+                $('#voice_frequ').val(freq);
+                var length = param[2].substring(param[2].indexOf("length") + 7, param[2].indexOf("reps") - 1);
+                $('#voice_length').val(length);
+                var reps = param[2].substring(param[2].indexOf("reps") + 5, param[2].indexOf("delay") - 1);
+                $('#voice_number').val(reps);
+                var delay = param[2].substring(param[2].indexOf("delay") + 6);
+                $('#voice_interval').val(delay);
+            } else if (param[1] == "netbios") {
+                change_type(3);
+                $('input[name="alarm_type"]').get(2).checked = true;
+                var hostname = param[2].substring(9, param[2].indexOf("ipaddr") - 1);
+                $('#bios_name').val(hostname);
+                var ipaddr = param[2].substring(param[2].indexOf("ipaddr") + 7);
+                $('#bios_addr').val(ipaddr);
+            }else if(param[1] == 'sms'){
+                change_type(6);
+                $('input[name="alarm_type"]').get(5).checked = true;
+                var phone = param[2].substring(param[2].indexOf(':') + 1);
+                $('#phone').val(phone);
+            }
+            $("#alarm_name").attr('disabled', 'disabled');
+            $("input:radio").attr('disabled', 'disabled');
+        }
+        $('#addAlarm').click(function() {
+            add_alarm_conf(alarm_tag);
+        });
+    });
+</script>

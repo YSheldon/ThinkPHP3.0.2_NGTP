@@ -1,0 +1,160 @@
+<style type="text/css">
+.input_margin{margin-left:4px;float:left;}
+.select_margin{margin-left:4px;float:left;}
+.select{padding:10px 0 0 2px;font-family:verdana;height:22px;width:150px;border:solid #ccc 1px;}
+.middle2{width:150px;}
+.height12{height:220px;}
+.select_div{position: relative;top:0;left:0;height:240px;width:370px;}
+.select_ldiv{position: absolute;top:0;left:0px;width:150px}
+.select_ldiv_bottom{width:148px;height:26px;margin:0;border:solid #ccc 1px;text-align:center;}
+.select_cdiv{position:absolute;top:80px;margin-left:162px;width:10px}
+.select_rdiv{position: absolute;top:0;margin-left:214px;width:150px}
+.border_top0{border-top: 0}
+.border_bottom0{border-bottom: 0}
+.width40{width:40px;}
+.width100{width:100px;}
+.width70{width:70px;}
+.width60{width:60px;}
+.height190{height:190px}
+.height216{height:216.5px}
+.lineHeight26{line-height: 26px;}
+.cursorPoint{cursor:pointer;}
+.left70{left:70px;}
+.left80{left:80px;}
+.tab_tag_table{
+    background-color: #f7f2ed;
+    border:1px solid #ccc;
+    border-bottom: 0px;
+    border-bottom-color: #fff;
+}
+</style>
+<div>
+<form id="vsys_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel">{$Think.lang.NAME}</td>
+            <td><input type="text" name="vsys_name" id="vsys_name" class='easyui-textbox input_length'  data-options="required:true"><span class="form_comment">[{$Think.lang.NAME_LEBGTH_CAN_NOT_EXCEED}]</span></td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.MODE}</td>
+            <td>
+              <if condition= " $oper neq '1' ">
+                <select name="vsys_pattern" id="vsys_pattern" class="easyui-combobox" style="width:226px" data-options="panelHeight:'auto',panelMaxHeight:198">
+                    <option value="route">{$Think.lang.ROUTE_MODE}</option>
+                    <option value="non-route">{$Think.lang.NON_ROUTE_MODE}</option>
+                </select>
+              <else />
+                 <select name="vsys_enable" id="vsys_enable" class="easyui-combobox" style="width:226px" data-options="panelHeight:'auto',panelMaxHeight:'198'">
+                    <option value="enable">{$Think.lang.ENABLE_ENERGY}</option>
+                    <option value="disable">{$Think.lang.GO_ENABLE_ENERGY}</option>
+                 </select>
+              </if>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.QUOTA}</td>
+            <td>
+                <input type="text" name="vsys_quota" id="vsys_quota" class='easyui-textbox input_length'  data-options="required:true,validType:'range[1024,{$bag_license}]'">
+                <span class="form_comment">[1024-{$bag_license}]</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.SPEED}</td>
+            <td>
+                <input type="text" name="vsys_rate" id="vsys_rate" class='easyui-textbox input_length'  data-options="required:true">
+                <span class="form_comment">[{$Think.lang.MIN_IMUM_MAXIMUM_USER_QUOTA}]</span>
+            </td>
+        </tr>
+        <if condition=" $oper eq 1">
+            <tr>
+                <td class="tdlabel">{$Think.lang.All_INTERFACE}</td>
+                <td>
+                    <div class="select_div">
+                        <div class="select_ldiv">
+                            <input type="hidden" id="ord_interface"/>
+                            <div class="select_ldiv_bottom border_bottom0">
+                                <span class="lineHeight26">{$Think.lang.SELECT}{$Think.lang.INTERFACE}</span>
+                            </div>
+                            <select class="select middle2 height216"  id="service_item_cid" multiple ondblclick="move_options('service_item_cid','d_service_item_cid','1');">
+                            </select>
+                        </div>
+
+                        <div class="select_cdiv">
+                            <input type="button"  class="width40" onClick="move_options('service_item_cid','d_service_item_cid','1');" value=" > "><br>
+                            <input type="button" class="width40"  onClick="move_options('d_service_item_cid','service_item_cid','0');" value=" < ">
+                        </div>
+
+                        <div class="select_rdiv">
+                            <div id="sel_user_num"  class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">已选接口</div>
+                            <select class="select middle2 height12 height190" id="d_service_item_cid" name="service_item[]" multiple ondblclick="move_options('d_service_item_cid','service_item_cid','0');">
+                            </select>
+                            <div class="select_ldiv_bottom border_top0">
+                                <a class="lineHeight26 cursorPoint" onclick="clearAllOption('service_item_cid','d_service_item_cid');">{$Think.lang.CLEAR_ALL}</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </td>
+            </tr>
+            </if>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="确定" onclick="addVsysSubmit();">
+        <input type="button"  class="ngtos_button_middle" value="取消" onClick="closeWindow('add_vsys_window');">
+    </div>
+</form>
+</div>
+<script>
+var bag_license = "{$bag_license}";
+$(function() {
+    if(oper==1) {
+        $("#vsys_name").val(vsys_nam);
+        $("#vsys_enable").val(vsys_enable);
+        $("#vsys_quota").val(vsys_quota);
+        $("#vsys_rate").val(vsys_rate);
+        $("#ord_interface").val(interface);
+        if (vsys_nam) {
+        $("#vsys_name").attr('disabled', 'disabled');
+        $('#vsys_action').html('修改VSYS');
+        }
+        $.getJSON(
+            "?c=System/Virtual&a=showInterfaceLeft",
+            function(data) {
+            var optionsdsr="";
+            var optionsscr='';
+                if(data) {
+                    $(data.rows).each(function(key,value) {
+                        if( value.dev !="" && value.dev !=null) {
+                            var msg_interface = value.dev;
+                            var msg_arr = new Array();
+                            var msg_arr = msg_interface.split(" ");
+                            if(interface.split !="" && interface.split !=null) {
+                                var msg_inter = interface.split(" ");
+                            }
+
+                            for(i=0;i<msg_arr.length;i++) {
+                                if($.inArray(msg_arr[i],msg_inter)>-1) {
+                                    //如果当前接口的can_set值为1可以选中，否则不可以选中
+                                    if(value.can_set == 1)
+                                        optionsscr += "<option value='" + msg_arr[i] + "' title='" + msg_arr[i] + "'>" + msg_arr[i] +"</option>";
+                                    else
+                                        optionsscr += "<option value='" + msg_arr[i] + "' title='" + msg_arr[i] + "'disabled = 'disabled'>" + msg_arr[i] +"</option>";
+                                } else {
+                                    if(value.can_set == 1)
+                                        optionsdsr += "<option value='" + msg_arr[i] + "' title='" + msg_arr[i] + "'>" + msg_arr[i]+":["+value.vsys_name+"]" +"</option>";
+                                    else
+                                        optionsdsr += "<option value='" + msg_arr[i] + "' title='" + msg_arr[i] + "' disabled = 'disabled'>" + msg_arr[i]+":["+value.vsys_name+"]" +"</option>";
+                                }
+                            }
+                            $('#d_service_item_cid').html(optionsscr);
+                            $('#service_item_cid').html(optionsdsr);
+                        }
+                    })
+                }
+        });
+    } else {
+        $("#vsys_quota").val(bag_license);
+        $("#vsys_rate").val("0");
+    }
+});
+</script>

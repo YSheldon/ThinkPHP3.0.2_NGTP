@@ -1,0 +1,298 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/network/dhcpserver.css"
+      type="text/css"/>
+<style>
+    .datagrid{padding-top:0;}
+    .datagrid-toolbar a{margin:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/dhcpv6.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/physics.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/vlan.js"></script>
+    <ul id="ipv" class="resp-tabs-list hor_1"> 
+        <a href="?c=Network/Dhcpv6Server&a=serverinfov6">
+            <li id="ipv_4">
+                DHCPV6{$Think.lang.SERVER_SIDE}
+            </li>
+        </a>
+        <a href="?c=Network/Dhcpv6Server&a=serverinfov6&tab=4">
+            <li>
+                DHCPV6{$Think.lang.CLIENT}
+            </li>
+        </a>
+        <a href="?c=Network/Dhcpv6Server&a=serverinfov6&tab=5">
+            <li>
+                DHCPV6{$Think.lang.RELAY}
+            </li>
+        </a>
+    </ul>
+    <div style="margin: 10px;float: left;">
+        <fieldset style="padding: 15px;width: 365px;height: 225px;">
+            <legend>&nbsp;&nbsp;{$Think.lang.IF_CONFIG}&nbsp;&nbsp;</legend>
+            <div class="select_div">
+                <div class="select_ldiv">
+                    <div class="select_ldiv_bottom border_bottom0">
+                        <span class="lineHeight26">{$Think.lang.SELECT_A_INTERFACE}</span>
+                    </div>
+                    <select class="select middle2 height12" id="service_item_cid" multiple ondblclick="move_options('service_item_cid', 'd_service_item_cid', '1');" style="height: 150px;"></select>
+                    <div class="select_ldiv_bottom border_top0">
+                        <a class="lineHeight26 cursorPoint" onclick="editDhcpv6Interface('service_item_cid');">{$Think.lang.EDIT_INTERFACE}</a>
+                    </div>
+                </div>
+                <div class="select_cdiv">
+                    <input type="button" onClick="move_options('service_item_cid', 'd_service_item_cid', '1');" value=" > "><br>
+                    <input type="button" onClick="move_options('d_service_item_cid', 'service_item_cid', '0');" value=" < ">
+                </div>
+                <div class="select_rdiv">
+                    <div class="select_ldiv_bottom border_bottom0">
+                        <span class="lineHeight26">{$Think.lang.SELECTED_IF}</span>
+                    </div>
+                    <select class="select middle2 height12" id="d_service_item_cid" name="service_item[]" multiple ondblclick="move_options('d_service_item_cid', 'service_item_cid', '0');" style="height: 150px;"></select>
+                    <input type="hidden" name="service-item" />
+                    <div class="select_ldiv_bottom border_top0">
+                        <a class="lineHeight26 cursorPoint" onclick="clearAllDhcpv6Option('service_item_cid', 'd_service_item_cid');">{$Think.lang.CLEAR_ALL}</a>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div style="float: left;margin-top: 15px;">
+        <input type="button" class="ngtos_button_small" data-options="plain:true" onClick="dhcpStart()" id="btn_start" value="{$Think.lang.START}"/>
+        <br/>
+        <input type="button" class="ngtos_button_small" data-options="plain:true" onClick="dhcpStop()" id="btn_stop" value="{$Think.lang.STOP}" />
+    </div>
+    <table  width=100% class="tab_tag_table">
+        <tr>
+            <td>
+                <ul id="ipv2" class="resp-tabs-list hor_1"> 
+                    <a href="?c=Network/Dhcpv6Server&a=serverinfov6">
+                        <li id="ipv_4">
+                            {$Think.lang.ADDR_POOL}
+                        </li>
+                    </a>
+                    <a href="?c=Network/Dhcpv6Server&a=serverinfov6&tab=2">
+                        <li>
+                            {$Think.lang.ADDR_BIND}
+                        </li>
+                    </a>
+                    <a href="?c=Network/Dhcpv6Server&a=serverinfov6&tab=3">
+                        <li>
+                            {$Think.lang.DIST_ADDR}
+                        </li>
+                    </a>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <table id='tt' style="height:350px;"></table>
+<div id='add_addrPool' style="width:630px; display:none;"></div>
+<div id='edit_page' style="width:630px; display:none;"></div>
+<script>
+    var param = [];
+    var dhcpPool_tag;
+    var language;
+    $(function() {
+        $('#tt').datagrid({
+            toolbar: [{
+                id: 'icon-add',
+                text: $LANG.ADD,
+                iconCls: 'icon-add',
+                handler: addAddrDhcpv6Pool
+            }, {
+                id: 'icon-edit',
+                text: $LANG.EDIT,
+                iconCls: 'icon-edit',
+                handler: editaddrDhcpv6Pool
+            }, {
+                id: 'icon-delete',
+                text: $LANG.DELETE,
+                iconCls: 'icon-delete',
+                handler: delDhcpv6Pool
+            }, {
+                id: 'icon-clear',
+                text: $LANG.CLEAR,
+                iconCls: 'icon-clear',
+                handler: clearDhcpv6Pool
+            }],
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            url: '?c=Network/Dhcpv6Server&mod=dhcpv6_subnet',
+/*            queryParams:{
+                mod:'network dhcpv6 dhcpdv6_subnet'
+            },*/
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'sub_name', title: $LANG.NAME, width: 80},
+                    {field: 'prefix', title: $LANG.EFFECT_AREA, width: 80},
+                    {field: 'addr', title: $LANG.ADDR_RANG, width: 80,
+                        formatter: function(value, rowData) {
+                            var str = '';
+                            if (rowData != "" && rowData != null) {
+                                str += rowData.sub_start + "-" + rowData.sub_end;
+                                return str;
+                            }
+                        }
+                    },
+                    {field: 'lease', title: $LANG.DEFAULT_LEASE_TIME, width: 80
+                        ,
+                        formatter: function(value, rowData) {
+                            var str = '';
+                            if (rowData != "" && rowData != null) {
+                                str += rowData.lease_day + "天-" + rowData.lease_hour + "小时-" + rowData.lease_min + "分";
+                            }
+                            return str;
+                        }
+                    },
+                    {field: 'type', title: $LANG.OPTION, width: 100,
+                        formatter: function(value, rowData) {
+                            var str = '';
+                            if (rowData.pri_dns != "") {
+                                str += $LANG.MASTER_DNS + ":" + rowData.pri_dns + "<br>";
+                            }
+                            if (rowData.sec_dns != "") {
+                                str += $LANG.MASTER_DNS + ":" + rowData.sec_dns + "<br>";
+                            }
+                            if (rowData.rsv_start != "") {
+                                str += $LANG.PRIVATE_START_ADDR + ":" + rowData.rsv_start + "<br>";
+                            }
+                            if (rowData.rsv_end != "") {
+                                str += $LANG.PRIVATE_END_ADDR + ":" + rowData.rsv_end + "<br>";
+                            }
+                            if (rowData.domain != "") {
+                                str += $LANG.DOMAIN_NAME + ":" + rowData.domain + "<br>";
+                            }
+                            return str;
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onCheck: dhcppool_toolbar,
+            onUncheck: dhcppool_toolbar,
+            onCheckAll: dhcppool_toolbar,
+            onUncheckAll: dhcppool_toolbar,
+            onLoadSuccess: dhcppool_toolbar,
+            onDblClickRow: function(index, row) {
+                editPool(row['prefix'], row['sub_start'], row['sub_end'], row['lease_day'], row['lease_hour'], row['lease_min'], row['sub_name'], row['pri_dns'], row['sec_dns'], row['domain'], row['rsv_start'], row['rsv_end']);
+            },
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+        //显示服务端左侧接口
+        parent.sourOptions = [];
+        parent.selOptions = [];
+        $("#d_service_item_cid").html("");
+        $.getJSON(
+            "?c=Network/Dhcpv6Server&a=callFun&fun=dataShow&mod=dhcpv6_server_wait",
+            function(data) {
+                var options = "";
+                if (data) {
+                    $(data.rows).each(function(key, value) {
+                        if (value.interface != "" && value.interface != null) {
+                            var msg_interface = value.interface;
+                            var msg_arr = new Array();
+                            msg_arr = msg_interface.split(" ");
+                            for (i = 0; i < msg_arr.length; i++) {
+                                if (msg_interface.length != 0) {
+                                    options += "<option value='" + msg_interface + "' title='" + msg_interface + "'>" + msg_interface + "</option>";
+                                }
+                            }
+                        }
+                        $('#service_item_cid').html(options);
+                    })
+                }
+            });
+        //显示服务端右侧接口
+        $.getJSON(
+            "?c=Network/Dhcpv6Server&a=callFun&fun=dataShow&mod=dhcpv6_server_start",
+            function(data) {
+                var options1 = "";
+                if (data) {
+                    $(data.rows).each(function(key, value) {
+                        if (value.interface != "" && value.interface != null) {
+                            var msg_interface1 = value.interface;
+                            var msg_arr1 = new Array();
+                            msg_arr1 = msg_interface1.split(" ");
+                            for (j = 0; j < msg_arr1.length; j++) {
+                                if (msg_interface1.length != 0) {
+                                    options1 += "<option value='" + msg_interface1 + "' title='" + msg_interface1 + "'>" + msg_interface1 + "</option>";
+                                }
+                            }
+                        }
+                        $('#d_service_item_cid').html(options1);
+                    })
+                    // 处理开始 停止的按钮可用不可用
+                    $("#btn_start").attr("disabled", "true");
+                    $("#btn_stop").removeAttr("disabled");
+                    var btn_sel = $("#d_service_item_cid").text();
+                    if (btn_sel.length == 0) {
+                        $("#btn_stop").attr("disabled", "true");
+                        $("#btn_start").removeAttr("disabled");
+                    }
+                }
+            });
+        });
+    //服务端开始接口
+    function dhcpStart() {
+        var msg = get_select_value('d_service_item_cid');
+        if (msg == '') {
+            ngtosPopMessager('error',$LANG.PLEASE_SELECT_INTERFACE);
+//            alert($LANG.PLEASE_SELECT_INTERFACE);
+            return false;
+        }
+        $.ajax({
+            url: "?c=Network/Dhcpv6Server&a=Dhcpv6Start",
+            type: 'POST',
+            datatype: 'text',
+            data: {
+                msg: msg
+            },
+            success: function(data) {
+                    if (data == "0") {
+                    //处理开始 停止的按钮可用不可用
+                    $("#btn_start").attr("disabled", "true");
+                    $("#btn_stop").removeAttr("disabled");
+                    window.location.reload();
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+
+    }
+    //服务端停止接口
+    function dhcpStop() {
+        $.ajax({
+            url: "?c=Network/Dhcpv6Server&a=callFun",
+            data:{
+                mod:'network dhcpv6 server',
+                act:'stop',
+                fun:'simpleHandle'
+            },
+            type: 'POST',
+            datatype: 'text',
+            success: function(data) {
+                    if (data == 0) {
+                    //处理开始 停止的按钮可用不可用
+                    $("#btn_start").attr("disabled", "true");
+                    $("#btn_stop").removeAttr("disabled");
+                    window.location.reload();
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

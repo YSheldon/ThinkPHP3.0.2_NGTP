@@ -1,0 +1,57 @@
+<div>
+<form id="nat_move_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td  width="60%" style="padding-left:50px"><span id='moveid'></span>&nbsp;&nbsp;<select id='selectedid' class="easyui-combobox combobox_len" data-options="panelHeight: 'auto',panelMaxHeight: 198,required:true"></select>&nbsp;&nbsp;
+                <select id='position' class="easyui-combobox" data-options="panelHeight:'auto',editable:false">
+                    <option value="before">{$Think.lang.BEFORE}</option>
+                    <option value="after">{$Think.lang.AFTER}</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="natMove()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('nat_move')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        $('#nat_move').find('#moveid')[0].innerHTML=$LANG.MOVE+' &nbsp;&nbsp;'+natMoveVal+'&nbsp;&nbsp;'+$LANG.TO+'&nbsp;';
+        $.each(natMoveData,function(){
+            if(this.nat_id!=natMoveVal) {
+                $('#nat_move').find('#selectedid')[0].add(new Option(this.nat_id,this.nat_id));
+            }
+        });
+    });
+
+    function natMove() {
+        var isValid = $("#nat_move_form").form('validate');
+        if(!isValid) {
+            return false;
+        }
+        $.ajax({
+            url: "?c=Policy/Nat&a=natMove",
+            type: 'POST',
+            dataType: 'text',
+            async: false,
+            data: {
+                name:natMoveVal,
+                position:$("#position").combobox('getValue'),
+                selected:$("#selectedid").combobox('getValue')
+            },
+            success: function(data) {
+                if(data == '0') {
+                    natMoveVal = '';
+                    natMoveData = {};
+                    $('#nat_move').window('close');
+                    $('#tt').datagrid('reload');
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+</script>

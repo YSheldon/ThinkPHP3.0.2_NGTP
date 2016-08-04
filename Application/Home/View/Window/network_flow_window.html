@@ -1,0 +1,42 @@
+<div class="ngtos_form_main">
+    <table class="ngtos_form_table">
+        <tr>
+            <td style="width: 100px;">{$Think.lang.STATISTIC_CONTENT}</td>
+            <td>{$Think.lang.STATISTIC_VALUE}</td>
+        </tr>
+        <tr>
+            <td>{$Think.lang.RECV_PACKET}</td>
+            <td><span id='recv_all_pkts_show' style="width: 150px;"></span></td>
+        </tr>
+        <tr>
+            <td>{$Think.lang.RECV_BYTE}</td>
+            <td><span id='recv_all_bytes_show' style="width: 150px;"></span></td>
+        </tr>
+        <tr>
+            <td>{$Think.lang.SEND_PACKET}</td>
+            <td><span id='xmit_all_pkts_show' style="width: 150px;"></span></td>
+        </tr>
+        <tr>
+            <td>{$Think.lang.SEND_BYTE}</td>
+            <td><span id='xmit_all_bytes_show' style="width: 150px;"></span></td>
+        </tr>
+        <tr>
+            <td>{$Think.lang.DROP_PACKET}</td>
+            <td><span id='discard_pkts_show' style="width: 150px;"></span></td>
+        </tr>
+        <tr>
+            <td>{$Think.lang.RECV_SPEED}</td>
+            <td><span id='rx_speed_show' style="width: 150px;"></span></td>
+        </tr>
+        <tr>
+            <td>{$Think.lang.SEND_SPEED}</td>
+            <td><span id='tx_speed_show' style="width: 150px;"></span></td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(function() {
+        //给表格赋值
+        showFlowInit(param[0]);
+    });
+</script>

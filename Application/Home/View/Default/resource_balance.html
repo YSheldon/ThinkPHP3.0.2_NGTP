@@ -1,0 +1,101 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/balance.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="toolbar" style="padding:2px 0">
+    <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true"
+       onClick="add_item('{$Think.lang.BALANCE}')">{$Think.lang.ADD}</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true"
+       onClick="edit_item(0, '', '', '', '', '{$Think.lang.EDIT}')" id='icon_edit'>{$Think.lang.EDIT}</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true"
+       onClick="deleteBlanceItem()" id='icon_delete'>{$Think.lang.DELETE}</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-clear',plain:true"
+       onClick="clearBlanceItem()" id='icon_clear' style="border:none;">{$Think.lang.CLEAR}</a>
+</div>
+<script>
+    var tag;
+    var param = [];
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'name',
+            sortOrder: 'asc',
+            url: '?s=Home/Resource/Balance&mod=balance',
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'id', title: $LANG.ID, width: 80, sortable: true,hidden:true},
+                    {field: 'name', title: $LANG.NAME, width: 100, sortable: true},
+                    {field: 'server', title: $LANG.MEMBER, width: 200},
+                    {field: 'balance', title: $LANG.LOAD_WAY, width: 100,
+                        formatter: function(index, rows) {
+                            if (rows.balance == 'rr') {
+                                return $LANG.TAKE_TURNS;
+                            } else if (rows.balance == 'wrr') {
+                                return $LANG.WEIGHT_TAKE_TURNS;
+                            } else if (rows.balance == 'lc') {
+                                return $LANG.LEAST_CONNECT;
+                            } else if (rows.balance == 'wlc') {
+                                return $LANG.WEIGHTED_LC;
+                            } else if (rows.balance == 'sh') {
+                                return $LANG.SRC_DO_HASH_SEEK;
+                            } else if (rows.balance == 'dh') {
+                                return $LANG.DST_DO_HASH_SEEK;
+                            }
+                        }
+                    },
+                    {field: 'static', title: $LANG.STATE, width: 80,
+                        formatter: function(value, row) {
+                            var str = "";
+                            if (row.enable == "yes") {
+                                str += $LANG.AVAILABLE;
+                            } else {
+                                str += $LANG.DOWN;
+                            }
+                            return str;
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: "#toolbar",
+            onClickRow: set_toolbar,
+            onCheck: set_toolbar,
+            onUncheck: set_toolbar,
+            onCheckAll: set_toolbar,
+            onUncheckAll: set_toolbar,
+            onSelect: set_toolbar,
+            onUnselect: set_toolbar,
+            onDblClickRow: function(index, row) {
+                $("#tt").datagrid('unselectAll');
+                $("#tt").datagrid('selectRow', index);
+                edit_item(1, row.name, row.enable, row.balance, row.server, $LANG.EDIT);
+            },
+            onLoadSuccess: function() {
+                set_toolbar();  //监听数据变化
+                $('#tt').datagrid('fixRownumber');
+            }
+        });
+        if (getPrivilege("nat") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+        }
+    });
+</script>
+</div>
+</div> 
+</body>
+</html>

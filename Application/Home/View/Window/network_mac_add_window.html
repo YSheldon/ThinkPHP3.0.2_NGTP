@@ -1,0 +1,65 @@
+<form id="mac_add">
+    <option value="">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel">{$Think.lang.VLAN}</td>
+            <td>
+                <select name="vlan_cid_pop" id="vlan_cid_pop"></select>
+            </td>
+        </tr>
+        <tr>	
+            <td class="tdlabel">{$Think.lang.INTERFACE}</td>
+            <td>
+                <input name="interface_pop" id="interface_cid_pop" class="input_length" data-options="required:true">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.PHYSICS_ADDR}</td>
+            <td>
+                <input type="text" name="address_pop" id="address_cid_pop" class="easyui-textbox input_length" data-options="required:true,validType:'mac'" ><span class="form_comment">{$Think.lang.MAC_FORMAT}</span>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"
+               value="{$Think.lang.CONFIRM}" onClick="addMacSubmit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}"
+               onClick="closeWindow('add_page')">
+    </div>
+</form>
+<script>
+    $(function() {
+        //获取所有接口
+         $("#vlan_cid_pop").combobox({
+            url: "?c=Network/Mac&a=allVlanJsondata",
+            valueField: 'text',
+            textField: 'text',
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple: false,
+            editable: false
+        });
+        $("#interface_cid_pop").combobox({
+            url: "?c=Network/Physics&a=allPhysicsJsondataTwo",
+            valueField: 'text',
+            textField: 'text',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple: false,
+            editable: false
+        });
+//        $("#interface_cid_pop").combobox({
+//            url: "?c=network/Mac&a=allBondJsondata",
+//            valueField: 'text',
+//            textField: 'text',
+//            panelHeight: 'auto',
+//            panelMaxHeight: 198,
+//            multiple: false,
+//            editable: false
+//        });
+//        getVlanInterface("vlan_cid_pop");
+//        getPhysicsInterface("interface_cid_pop");
+//        getBondInterface("interface_cid_pop");
+    });
+</script>

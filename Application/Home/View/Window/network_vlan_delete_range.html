@@ -1,0 +1,29 @@
+<form id="vlan_range_delete">
+    <table class="ngtos_form_table">
+        <tr>    
+            <td class="tdlabel">
+                {$Think.lang.DELETE_VLAN_RANGE}
+            </td>
+            <td>
+                <input type="text" name="range_start" id="range_start_vlan" class="easyui-textbox" style="width:107.5px;">&nbsp;-
+                <input type="text" name="range_end" id="range_end_vlan" class="easyui-textbox" style="width:107.5px;">
+            </td>
+        </tr>               
+    </table>       
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="deleteVlanSubmit();">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('delete_Rvlan')">
+    </div>          
+</form>
+<script>
+    $(function() {
+        $('#range_start_vlan').textbox({
+            required: true,
+            validType: ['range[1,4094]', 'lessEquals[$(\'#range_end_cid\').val()]']
+        });
+        $('#range_end_vlan').textbox({
+            required: true,
+            validType: ['range[1,4094]', 'greaterEquals[$(\'#range_start_cid\').val()]']
+        });
+    });
+</script>

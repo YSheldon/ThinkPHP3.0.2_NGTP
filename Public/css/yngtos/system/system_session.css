@@ -1,0 +1,84 @@
+#ipv_4{background-color:#f5f5f5;}
+#ipv{
+    border-bottom: 1px solid black;
+    height: 45px;
+    width: 97%;
+    margin-left: 15px;
+}
+#ipv_none{background-color:none;}
+#dlg-toolbar{
+    border: 0 none;
+    margin: 20px 10px 10px 0;
+    padding: 0;
+}
+.datagrid-view{
+    height: 230px;
+    width: 98%;
+	position: relative;
+}
+.datagrid-view2 >.datagrid-header{
+    width: 98.4%;
+}
+#left_div{
+    float: left;
+    left: 0;
+    overflow: hidden;
+    position: relative;
+    top: 0;
+    width: 230px;
+}
+
+.datagrid-view{
+    height: 230px;
+    width: 98%;
+    margin-top:5px;
+}
+#searchs{
+    position:relative;
+    border-right:0px;
+    float:right;
+    color:#000000;
+}
+#searchs_1{
+    position: absolute;
+    right: 145px;
+    top: 5px;
+    width: 100px;
+}
+.tools-lft{
+    width:100%;
+}
+.datagrid .datagrid-pager
+{
+    width: 85%;
+}
+.tableDiv{
+    margin-top:0px;
+}
+#main-content{
+    /* position:relative; */
+    margin:20px 0 0 57px;
+}
+ul.resp-tabs-list, p {
+    padding: 0;
+}
+.datagrid-toolbar{
+    height: 55px;
+}
+.btn-left-text{
+    padding:0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

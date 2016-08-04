@@ -1,0 +1,161 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/network/Physics_show.css" 
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/physics.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<div id="toolbar" style = >
+    <a href="###" class="easyui-linkbutton" iconCls="icon-new" plain="true" onClick="edit()" id='icon_edit'>    {$Think.lang.EDIT}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-enable-new" plain="true" 
+       onClick="NetworkSelectrowEnable();" id='icon_enable'>{$Think.lang.ENABLE}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-disable-new" plain="true" style="border:none;" 
+       onClick="NetworkSelectrowDisable();" id='icon_disable'>
+       {$Think.lang.DISABLE}
+    </a>
+</div>
+<!--<div style = 'width:100%;height:20px;'></div>-->
+<div style = 'width:98%;height:97%;margin-left:20px;margin-top:20px;'>
+<table id="tt"></table>
+</div>
+<script>
+    var param = [];
+    var vsys_name = "{$vsys_name}";//判断当前是不是虚系统用户
+    var vsys_start ="{$vsys_start}";//判断当前是不是已经开启虚系统
+    var rowIndex;//判断单击之后的值是否存在
+    $(function() {
+        $("#pcenter > div").css("margin-left","10px");
+        $("#toolbar").css("margin-left","0px");
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            remoteSort: false,
+            sortName: 'interface_name',
+            rownumbers: true,
+//            url: '?c=Network/Physics&a=datagridShow',
+            url: '?c=Network/Physics&mod=physics',
+//            queryParams:{
+//                mod:'network physicalinterface'
+//            },
+            columns: [[
+                    {field: 'interface_name', title: $LANG.NAME, width: 60, sortable: true,
+                        formatter: function(value) {
+                            return "<a style='cursor:pointer;' onclick='show_flow(&quot;" + value + "&quot;)'> " + value + " </a>";
+                        }
+                    },
+                    {field: 'description', title: $LANG.DESCRIPTION, width: 80},
+                    {field: 'comm_type', title: $LANG.IF_MODE, width: 60, sortable: true,
+                        formatter: function(value) {
+                            if (value == "routing") {
+                                return $LANG.ROUTE;
+                            } else if (value == 'virtualline') {
+                                return $LANG.VLINE;
+                            } else if (value == 'switching') {
+                                return $LANG.NETWORK_SWITCH;
+                            } else if (value == 'slave') {
+                                return 'SLAVE';
+                            } else {
+                                return value;
+                            }
+                        }
+                    },
+                    {field: 'ip', title: $LANG.ADDRESS + "/" + $LANG.MASK, width: 250,
+                        formatter: function(value, row) {
+                            return format_ip(row.ip4, row.ip6);
+                        }
+                    },
+                    {field: 'mtu', title: 'MTU', width: 60},
+                    {field: 'shutdown', title: $LANG.STATE, width: 60, sortable: true,
+                        formatter: function(value) {
+                            if (value == "enable") {
+                                return $LANG.ENABLE;
+                            } else {
+                                return $LANG.STOP;
+                            }
+                        }
+                    },
+                    {field: 'link_status', title: $LANG.LINK_STATE, width: 60, align: 'center',
+                        formatter: function(value) {
+                            if (value == "up") {
+                                //奇怪，无法使用{$Think.lang.CONNECT}格式，不解析
+                                return '<img src="{$Think.config.NG_PATH}Public/images/icon/interface_normal.png" title="' + $LANG.CONNECT + '" style="vertical-align:middle"/>';
+                            } else {
+                                return '<img src="{$Think.config.NG_PATH}Public/images/icon/interface_abnormal.png" title="' + $LANG.UNCONNECT + '" style="vertical-align:middle"/>';
+                            }
+                        }
+                    },
+                    {field: 'duplex', title: $LANG.DUPLEX, width: 60,
+                        formatter: function(value, row) {
+                            if (row.link_status == "up") {
+                               if (value == "Full-duplex") {
+                                        return $LANG.FULL;
+                                    } else if (value == "Half-duplex") {
+                                        return $LANG.HALF;
+                                    } else {
+                                        return $LANG.ADAPT;
+                                    }
+                                } else {
+                                    return "-";
+                                }
+                        }
+                    },
+                    {field: 'speed', title: $LANG.SPEED, width: 80,
+                        formatter: function(value, row) {
+                            if (row.link_status == "up") {
+                                return value;
+                            } else {
+                                return "-";
+                            }
+                        }
+                    },
+                    {field: 'opt', title: $LANG.OPERATION, width: 60, align: 'center',
+                        formatter: function(value, row) {
+                            return "<a href='###' onclick='edit_physics_row(&quot;" + row.interface_name + "&quot;);'><img src='"+NG_PATH+"Public/images/icon/icon_edit.png' title='编辑'></a>";
+
+                        }
+                    }
+                ]],
+            selectOnCheck: false,
+            checkOnSelect: false,
+            singleSelect: true,
+            toolbar: '#toolbar',
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onDblClickRow: function(index, row) {
+                if (getPrivilege("network") != false) {
+                    edit_physics_row(row.interface_name);
+                }
+            },
+            onClickRow:function(rowIndex){
+                if(rowIndex != null){
+                $('#icon_edit').linkbutton('enable');
+                $('#icon_enable').linkbutton('enable');
+                $('#icon_disable').linkbutton('enable');
+                }
+            },
+            onLoadError: function(data) {
+                ngtosPopMessager('error',data['responseText']);
+            },
+            onLoadSuccess: function() {
+                if($('.tagvif_tip').length > 0) {
+                    $('.tagvif_tip').tooltip({ position: 'bottom'});
+                    $('.tagvif_tip').mouseover(function(){$(this).tooltip('show');});
+                }
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_enable').linkbutton('disable');
+                $('#icon_disable').linkbutton('disable');
+
+            }
+        });
+        if (getPrivilege("network") != false) {
+            $('#tt').datagrid("hideColumn", "opt");
+        }
+        setInterval("update_link_state()", 10000);
+    });
+</script>
+
+</body>
+</html>

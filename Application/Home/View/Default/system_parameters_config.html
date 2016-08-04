@@ -1,0 +1,133 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css" type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/plugins/simpletooltip/ajaxfileupload.js">
+</script>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/modules/system/config.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/system/uploadFile.js"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false, tabWidth:120">
+    <table id="dg"></table>
+</div>
+<div id='import_div' style="width:500px; display:none;"></div>
+</div>
+</div>
+<script>
+    var tag;
+    var importId;
+    var exportId;
+    var vs_id = "{$vsid}";
+    $(function() {
+        $('#dg').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            remoteSort: false,
+            url: '?c=System/Config&a=datagridShow',
+            queryParams:{
+                mod:'system config_file'
+            },
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'filename', title: $LANG.FILE_NAME, resizable: true, width: 150, editor: 'text'},
+                    {field: 'flag', title: $LANG.STATE, width: 50,
+                        formatter: function(value, row) {
+                            if (value == 1) {
+                                var s = '<a href="#"><img src="'+NG_PATH+'Public/images/icon/icon_enable.png" title="启用"/></a> ';
+                                return s;
+                            } else {
+                                var e = '<a href="#" onclick="loadconfig(&quot;' + row.filename + '&quot;)"><img src="'+NG_PATH+'Public/images/icon/icon_disable.png" title="禁用"/></a> ';
+                                return e;
+                            }
+                        }
+                    },
+                    {field: 'save_time', title: $LANG.SAVE_TIME, resizable: true, width: 200, editor: 'text'},
+                    {field: 'size', title: $LANG.SIZE_BYTE, resizable: true, width: 100, editor: 'text'},
+                    {field: 'version', title: $LANG.SOFTWARE_VERSION, resizable: true, width: 250, editor: 'text'},
+                    {field: 'admin_name', title: $LANG.USER, resizable: true, width: 150, editor: 'text'},
+                    {field: 'comment', title: $LANG.DESCRIPTION, resizable: true, width: 190, editor: 'text'}
+                ]],
+            pagination: true,
+            rownumbers: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: [
+                {
+                    id: 'btnsave',
+                    text: $LANG.SAVE,
+                    iconCls: 'icon-save',
+                    handler: save_item
+                }, {
+                    id: 'btnsave',
+                    text: $LANG.SAVE_AS,
+                    iconCls: 'icon-saveas',
+                    handler: configAs
+                }, {
+                    id: 'btnimport',
+                    text: $LANG.IMPORT_DISC,
+                    iconCls: 'icon-import',
+                    handler: import_html
+                }, {
+                    id: 'btncut',
+                    text: $LANG.EXPORT_DISC,
+                    iconCls: 'icon-export',
+                    handler: export_html
+                }, {
+                    id: 'smallbtnimport',
+                    text: $LANG.PARTIAL_IMPORT,
+                    iconCls: 'icon-import',
+                    handler: smallimport_file
+                }, {
+                    id: 'smallbtncut',
+                    text: $LANG.PARTIAL_DERIVATION,
+                    iconCls: 'icon-export',
+                    handler: smallexport_file
+                },{
+                    id: 'btdelete',
+                    text: $LANG.DELETE,
+                    iconCls: 'icon-delete',
+                    handler: deleteConfigItem
+                }, {
+                    id: 'btreset',
+                    text: $LANG.RECOVER,
+                    iconCls: 'icon-reset',
+                    handler: reset_item
+                }
+            ],
+            checkOnSelect: true,
+            selectOnCheck: true,
+            rowStyler: function(index, row) {
+                if (row.flag == 1)
+                    return 'background-color:#fcf9cd;';
+            },
+            onLoadSuccess: function(data) {
+                if(vs_id !=0)
+                    $('#btncut').linkbutton('disable');
+                $('#btdelete').linkbutton('disable');
+            },
+            onClickRow: setToolBar,
+            onCheck: setToolBar,
+            onUncheck: setToolBar,
+            onCheckAll: setToolBar,
+            onUncheckAll: setToolBar,
+            onSelect: setToolBar,
+            onUnselect: setToolBar,
+            onLoadError: function(data) {
+                ngtosPopMessager('error', data['responseText']);
+            }
+        });
+        if(vs_id !=0)
+            $('#btncut').linkbutton('disable');
+        
+        var p = $('#dg').datagrid('getPager');
+    });
+</script>
+</body>
+</html>

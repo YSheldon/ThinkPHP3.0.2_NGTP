@@ -1,0 +1,21 @@
+<div >
+    <h1 style="font-size:15px"><1>&nbsp;&nbsp;&nbsp;整机导入会清空当前设备的全部已存盘配置（包括网络、接口、虚系统等配置）</h1>
+    <h1 style="color:blue;font-size:15px;margin-top: 20px;"><2>&nbsp;&nbsp;&nbsp;导入成功后,新导入的配置（包括网络、接口、虚系统等配置）将替换当前设备的配置！！
+</h1>
+    <h1 style="color:red;font-size:15px;margin-top: 20px;"><3>&nbsp;&nbsp;&nbsp;强烈建议导入前，点击“整机导出”先备份当前设备的配置（包括网络、接口、虚系统等配置），以免造成当前设备已保存的配置（包括网络、接口、虚系统等配置）丢失。 </h1>
+    <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.ALL_DERIVATION}" onclick="openConfig('1')">
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CONYINUE_HANDLE}" onClick="openConfig('0')">
+     </div>
+</div>
+<script>
+    function openConfig(id){
+        if(id==1){
+            closeWindow('import_div');
+            export_file(1);
+        }else{
+            closeWindow('import_div');
+            importWord_file(1);
+        }
+    }
+</script>

@@ -1,0 +1,39 @@
+<div>
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.KEY_WORD}</td>
+            <td><input class="easyui-textbox" style="width: 150px" id='keyword'></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.LOG_RANK}</td>
+            <td><select id='level' class="easyui-combobox input_length" data-options=" editable: false,panelHeight: 'auto',panelMaxHeight: 198,width:150">
+                    <option value="">{$Think.lang.ALL}</option>
+                    <option value="0">{$Think.lang.EMERGENCY}</option>
+                    <option value="1">{$Think.lang.GIVE_AN_ALARM}</option>
+                    <option value="2">{$Think.lang.SERIOUS}</option>
+                    <option value="3">{$Think.lang.ERROR}</option>
+                    <option value="4">{$Think.lang.WARING}</option>
+                    <option value="5">{$Think.lang.NOTICE}</option>
+                    <option value="6">{$Think.lang.INFORMATION}</option>
+                    <option value="7">{$Think.lang.DEBUGGING}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.START_TIME}</td>
+            <td><input  name="date" id="date_begin" class="easyui-datetimebox" editable="true" data-options="width:150"></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.END_TIME}</td>
+            <td><input  name="date" id="date_stop" class="easyui-datetimebox" editable="true" data-options="width:150"></td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="hidden" id ="did" value ="{$base}">
+		<input type="hidden" id ="tid" value ="{$table}">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onclick="searchlog();">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('log_search');">
+    </div>
+</div>
+<script>
+</script>

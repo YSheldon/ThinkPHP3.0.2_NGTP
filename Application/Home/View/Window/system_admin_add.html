@@ -1,0 +1,339 @@
+ <form id="adminadd_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.USERNAME}</td>
+            <td id='username_td'><input type="text" class="easyui-textbox global_input" id='add_name'  style="width:200px" data-options="required:true,validType:'checkStr'"></td>
+        </tr>
+		<if condition=" $admin neq '0' ">
+       <!--  {if $admin!=0} -->
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+            <td><input type="text" class="easyui-textbox global_input" id='add_comment' style="width:200px"></td>
+        </tr>
+        </if>
+		<if condition=" $vr_switch eq '1' ">
+<!--         {if $vr_switch=='on'} -->
+        <tr id='admintype_tr'>
+            <td class="tdlabel_net">{$Think.lang.TYPE}</td>
+            <td><input type="radio" checked="checked" onClick="admintype1(this);" name='admintype' id='add_type1'><label for="add_type1">{$Think.lang.ROOT_SYSTEM_ADMIN}</label>
+                <input type="radio" name='admintype' onClick="admintype2(this);"  id='add_type2' style="margin-left:10px"><label for="add_type2">{$Think.lang.VIRTUAL_SYSTEM_ADMIN}</label></td>
+        </tr>
+        <tr id='vsys_tr' style="display: none">
+            <td class="tdlabel_net">{$Think.lang.VIRTUAL_SYSTEM_NAME}</td>
+            <td id='vsys_td'><select style="line-height:20px;width:200px" class="input_length" id='vsys_name_sel'></select></td>
+        </tr>
+        </if>
+		<if condition=" $admin neq '0' ">
+<!--         {if $admin!=0} -->
+        <tr id='changPwd_tr'>
+            <td class="tdlabel_net">{$Think.lang.MODIFY_PWD}</td>
+            <td>
+                <!--<img src="static/images/image/start.png" onClick="changswitch(this,1);" title="启用" class="switch2" style=" width:58; height:22; cursor:pointer"/>-->
+                <input type="checkbox" id='changePwd' onclick="changePwdFun(this)">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.INPUT_PWD}</td>
+            <td><input type="password" class="easyui-textbox input_length" id="pwd1" style="width:200px">
+                <span class="form_comment">
+                    <if condition="$complexity eq 'high'">
+                        <img src="{$Think.config.NG_PATH}Public/images/icon/icon_warm.png" title='{$Think.lang.PWD_STRENGTH_DESC_HIGH}' style="cursor: pointer;vertical-align:middle"/>
+                    </if>
+                    <if condition="$complexity eq 'medium'">
+                        <img src="{$Think.config.NG_PATH}Public/images/icon/icon_warm.png" title='{$Think.lang.PWD_STRENGTH_DESC_MEDIUM}' style="cursor: pointer;vertical-align:middle"/>
+                    </if>
+                    <if condition="$complexity eq 'low'">
+                        <img src="{$Think.config.NG_PATH}Public/images/icon/icon_warm.png" title='{$Think.lang.PWD_STRENGTH_DESC_LOW}' style="cursor: pointer;vertical-align:middle"/>
+                    </if>                                
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.NEW_PWD2}</td>
+            <td><input type="password" id="pwd2"></td>
+        </tr>
+        </if>
+		<if condition=" $pri neq '0' ">
+<!--         {if $pri!='0'} -->
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.STATE}</td>
+            <td id='stat_td'>
+                <!--<img src="static/images/image/start.png" onClick="changswitch(this);" title="启用" class="switch1"/>-->
+                <input type="radio" name='statRadio' id='statRadioT' value="1" checked><label for="statRadioT">{$Think.lang.ENABLE}</label>
+                <input type="radio" name='statRadio' id='statRadioF' value="0" style="margin-left: 20px"><label for="statRadioF">{$Think.lang.DISABLE}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.MANAGE_PERMISSION}</td>
+            <td><input class="input_length" id='map_name' style="width:200px">
+            </td>
+        </tr>
+        </if>
+
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"value="{$Think.lang.CONFIRM}"  id='addA'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('admin_add_window');">
+    </div>
+    </form>
+<script>
+var vr_switch = "{$vr_switch}";
+var pri = "{$pri}";
+var admin = "{$admin}";
+var complexity = '{$complexity}';
+    $(function() {
+        $('#pwd2').textbox({
+            required:true,
+            width:200,
+            validType:'equals[\'#pwd1\']'
+        });
+        if (pri != 0) {
+            //获取权限模板的名称
+            $("#map_name").combobox({
+                
+                url: "?c=System/Admin&a=adminLimitJsondata",
+                valueField: 'text',
+                textField: 'text',
+                panelHeight: 'auto',
+                panelMaxHeight: 198,
+                multiple: false,
+                editable: false
+            });
+        }
+
+        $("#pwd1").focus();
+        switch (complexity) {
+            case 'high':
+                msg = $LANG.PWD_STRENGTH_DESC_HIGH;
+                $('#pwd1').textbox({
+                    required: true,
+                    validType: ['pwd_complexity[\'high\']']
+                });
+                break;
+            case 'medium':
+                msg = $LANG.PWD_STRENGTH_DESC_MEDIUM;
+                $('#pwd1').textbox({
+                    required: true,
+                    validType: ['pwd_complexity[\'medium\']']
+                });
+                break;
+            case 'low':
+                msg = $LANG.PWD_STRENGTH_DESC_LOW;
+                $('#pwd1').textbox({
+                    required: true,
+                    validType: ['pwd_complexity[\'low\']']
+                });
+                break;
+            default:
+                ngtosPopMessager("error", $LANG.INVALID_PWD_STRENGTH);
+                break;
+        }
+
+        $.extend($.fn.validatebox.defaults.rules, {
+            pwd_complexity: {
+                validator: function(value, param) {
+                    if ('high' == param[0]) {
+                        var len = (value.length >= 16);
+                        var incM = /[A-Z]+/.test(value);
+                        var incL = /[a-z]+/.test(value);
+                        var incN = /[0-9]+/.test(value);
+                        var incS = /[@#$%^&*-+_=]+/.test(value);
+                        var incU = value.indexOf(name) < 0;
+                        return len && incM && incL && incN && incS && incU;
+                    } else if ('medium' == param[0]) {
+                        var len = (value.length >= 12);
+                        var incM = /[A-Z]+/.test(value);
+                        var incL = /[a-z]+/.test(value);
+                        var incN = /[0-9]+/.test(value);
+                        return len && incM && incL && incN;
+                    } else if ('low' == param[0]) {
+                        var len = (value.length >= 8);
+                        return len;
+                    }
+                },
+                message: msg
+            }
+        });
+        if (oper == 1) {
+            
+            $('#username_td').html('<input type="text" id="add_name" class="easyui-textbox global_input" style = "width:200px;" disabled value=' + editName + '>');
+            if (admin != 0) {
+                $('#add_comment').val(editCom);
+
+            }
+            $('#admintype_tr').hide();
+            if (vr_switch != '0') {
+                    $("#vsys_name_sel").combobox({
+                        valueField: 'text',
+                        textField: 'text',
+                        panelHeight: 'auto',
+                        panelMaxHeight: 198,
+                        multiple: false,
+                        editable: false
+                    });
+                }
+            if (vr_switch == '1' && $.trim(editVsys) != 'root-vsys') {
+                //判断当前所编辑的用户是超级用户还是虚拟用户
+                var val = editVsys == '' ? 'root-vsys' : editVsys;
+                $("#vsys_tr").show();
+                //$('#vsys_name_sel')[0].disabled = true;
+                $('#add_type2')[0].checked = true;
+                $('#vsys_td').html('<input type="text" id="add_name" class="easyui-textbox global_input" style = "width:200px;" disabled value=' + val + '>');
+            }
+            $('#pwd1').textbox({required:false});
+            $('#pwd2').textbox({required:false});
+            $('#pwd1').textbox("readonly");
+            $('#pwd2').textbox("readonly");
+            if (pri != 0) {
+            //获取权限模板的名称
+                if(editVsys !=""){
+                        $("#map_name").combobox({
+                            url: "?c=System/Admin&a=adminLimitJsondataTwo",
+                            valueField: 'text',
+                            textField: 'text',
+                            panelHeight: 'auto',
+                            panelMaxHeight: 198,
+                            multiple: false,
+                            editable: false
+                        })
+               }
+            }
+            if (pri != 0) {
+                $('#map_name').combobox('setValue',editLimitName);
+                if (editStatus == 'invalid')
+                    $('#statRadioF')[0].checked = true;
+                else
+                    $('#statRadioT')[0].checked = true;
+            }
+
+        } else {
+            if (pri != 0) {
+                //获取权限模板的名称
+                $("#map_name").combobox({
+
+                    url: "?c=System/Admin&a=adminLimitJsondata",
+                    valueField: 'text',
+                    textField: 'text',
+                    panelHeight: 'auto',
+                    panelMaxHeight: 198,
+                    multiple: false,
+                    editable: false
+                });
+            }
+            if (vr_switch != '0') {
+            
+                $("#vsys_name_sel").combobox({
+                    url: "?c=System/Admin&a=vsysData",
+                    valueField: 'text',
+                    textField: 'text',
+                    panelHeight: 'auto',
+                    panelMaxHeight: 198,
+                    multiple: false,
+                    editable: false
+                });
+        }
+            $('#changPwd_tr').hide();
+        }
+        $('#addA').click(function() {
+            var admindadd = $('#adminadd_form').form('validate');
+            if (admindadd) {
+                if (oper == 1) {
+                    var mode_type = '';
+                    if (admin != '0') {
+                        var ss = $("#pwd2").val();
+                        if ($('#changePwd')[0].checked) {
+                            var ss = $("#pwd1").val();
+    //                        if(!ss){
+    //                            ngtosPopMessager("error", '密码不能为空');
+    //                                return;
+    //                        }
+    //                        if ($("#pwd1").val() != $("#pwd2").val()) {
+    //                            ngtosPopMessager("error", '两次填写的密码不一致');
+    //                            return;
+    //                        }
+
+                        }else{
+
+
+                        }
+                        mode_type = '1';
+                    }
+                    if (pri != '0') {
+                        var mapname = '';
+                        var state = '';
+                        if ($('#map_name').combobox('getValue') == mapname)
+                            mapname = '';
+                        else
+                            mapname = $('#map_name').combobox('getValue');
+
+                        if ($('#statRadioT')[0].checked) {
+                            state = 'valid';
+                        } else {
+                            state = 'invalid';
+                        }
+
+                        mode_type = '2';
+                    }
+                    if (admin != '0' && pri != '0') {
+                        mode_type = '3';
+                    }
+
+                    $.ajax({
+                        url: "?c=System/Admin&a=adminEditsave",
+                        type: 'POST',
+                        dataType: 'text',
+                        async: false,
+                        data: {
+                            mode_type: mode_type,
+                            passwd: (admin != '0') ? ss : '',
+                            name: $('#add_name').val(),
+                            comment: (admin != '0') ? $('#add_comment').val() : '',
+                            status: (pri != '0') ? state : '',
+                            map_name: (pri != '0') ? mapname : ''
+                        },
+                        success: function(data, textStatus) {
+                            if (data == '0') {
+                                closeWindow('admin_add_window');
+                                ngtosPopMessager("success", $LANG.MODIFY_ADMINISTRATOR_SUCCESS);
+                                $('#tt').datagrid('reload');
+                            } else {
+                                ngtosPopMessager("error", data);
+                            }
+                        }
+                    });
+                } else {
+                    var vsysname = '';
+                    if (vr_switch == '1' && $('#add_type2')[0].checked)
+                        vsysname = $('#vsys_name_sel').combobox('getValue');
+                    var ss = $("#pwd1").val();
+//                    if ($("#pwd1").val() != $("#pwd2").val()) {
+//                        ngtosPopMessager("error", '两次填写的密码不一致');
+//                        return;
+//                    }
+                    $.ajax({
+                        url: "?c=System/Admin&a=adminAddsave",
+                        type: 'POST',
+                        datatype: 'text',
+                        async: false,
+                        data: {
+                            name: $('#add_name').val(),
+                            passwd: ss,
+                            comment: $('#add_comment').val(),
+                            vsys_name: vsysname,
+                            map_name: "pri" != '0' ? $('#map_name').combobox('getValue') : ''
+                        },
+                        success: function(data, textStatus) {
+                            if (data == '0') {
+                                closeWindow('admin_add_window');
+                                ngtosPopMessager("success", $LANG.ADD_ADMINISTRATOR_SUCCESS);
+                                $('#tt').datagrid('reload');
+                            } else {
+                                ngtosPopMessager("error", data);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,58 @@
+<form id="virtual_add">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.IF1}</td>
+            <td>
+                <input name="interface_one" id="interface_one_cid" class="input_length">
+            </td>
+        </tr>
+        <tr>	
+            <td class="tdlabel_net">{$Think.lang.IF2}</td>
+            <td>
+                <input name="interface_two" id="interface_two_cid" class="input_length">
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"
+               value="{$Think.lang.CONFIRM}" onClick="addVlineSubmit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}"
+               onClick="closeWindow('add_page')">
+    </div>
+</form>
+<script>
+    $(function() {
+        $("#interface_one_cid").combobox({
+            url: "?c=Network/Virtualline&a=comboBox",
+            queryParams:{
+                mod:'network interfaces',
+                parKey:'__NA__',
+                param:'eth-no-mnp',
+                textKey:'dev',
+                select:'true'
+            },
+            valueField: 'dev',
+            textField: 'dev',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple: false,
+            editable: false
+        });
+        $("#interface_two_cid").combobox({
+            url: "?c=Network/Virtualline&a=comboBox",
+            queryParams:{
+                mod:'network interfaces',
+                parKey:'__NA__',
+                param:'eth-no-mnp',
+                textKey:'dev',
+                select:'true'
+            },
+            valueField: 'dev',
+            textField: 'dev',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple: false,
+            editable: false
+        });
+    });
+</script>

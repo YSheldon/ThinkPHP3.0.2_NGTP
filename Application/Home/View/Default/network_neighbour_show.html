@@ -1,0 +1,63 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/neigh.js"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false">
+    <table id="tt"></table>
+</div>
+<div id="tb" style="height:auto">
+    <a href="###" class="easyui-linkbutton" iconCls="icon-add" id="icon_add" plain="true" onClick="addNeighRow()" >{$Think.lang.ADD}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-delete" id="icon_delete" plain="true" onClick="deleteNeighRow()" >{$Think.lang.DELETE}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-clear"  id="icon_clear" plain="true" onClick="clearNeighRow()" >{$Think.lang.CLEAR}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-search" id="icon_search"  plain="true" onClick="searchNeighRow();" style="border:none;">{$Think.lang.QUERY}</a>
+</div>
+</div>
+</div>
+</body>
+</html>
+<script>
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'ip',
+            url: '?c=Network/Neighbour&vr=all',
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'ip', title: $LANG.IP_ADDR, width: 100, sortable: true},
+                    {field: 'mac', title: $LANG.MAC_ADDR, width: 200},
+                    {field: 'dev', title: $LANG.INTERFACE, width: 80, sortable: true},
+                    {field: 'state', title: $LANG.STATE, width: 60, align: 'center'}
+                ]],
+            toolbar: '#tb',
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+
+            loadMsg: $LANG.WAITING,
+            onClickRow: set_neigh_toolbar,
+            onCheck: set_neigh_toolbar,
+            onUncheck: set_neigh_toolbar,
+            onCheckAll: set_neigh_toolbar,
+            onUncheckAll: set_neigh_toolbar,
+            onSelect: set_neigh_toolbar,
+            onUnselect: set_neigh_toolbar,
+            onLoadSuccess: set_neigh_toolbar,
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+        if (getPrivilege("network") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+        }
+    });
+</script>

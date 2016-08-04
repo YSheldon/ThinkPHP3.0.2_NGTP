@@ -1,0 +1,43 @@
+<div id="linkback_add">
+    <form id="linkback_form">
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel">{$Think.lang.DST_ADDR_NETWORK_PR}</td>
+                <td><input type="text" id='dst1' name="dst1" class="easyui-textbox input_length" style="width:149px;" data-options="required:true,validType:'ipFour'"/> /
+                <input type="text" id='dst2' name="dst2" class="easyui-textbox global_input" style="width:60px;" data-options="required:true,validType:'integer'"/></td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.HOST_LINK}</td>
+                <td><input type="text" id='master-id' name="master-id" class="easyui-combobox input_length" data-options="required:true"/></td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.FROM_LINK}</td>
+                <td><input type="text" id='slave-id' name="slave-id" class="easyui-combobox input_length" data-options="required:true"/></td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button' onClick="AddLink()">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('linkback_add');">
+    </div>
+<script>
+    $("#master-id").combobox({
+        url: "?c=System/LinkBack&a=ProbeShow",
+        valueField: 'text',
+        textField: 'text',
+        panelHeight: 'auto',
+        panelMaxHeight: 198, 
+        multiple: false, 
+        editable: false 
+    });
+    $("#slave-id").combobox({
+        url: "?c=System/LinkBack&a=ProbeShow", 
+        valueField: 'text',
+        textField: 'text',
+        panelHeight: 'auto',
+        panelMaxHeight: 198,
+        multiple: false, 
+        editable: false 
+    });
+</script>
+</div>

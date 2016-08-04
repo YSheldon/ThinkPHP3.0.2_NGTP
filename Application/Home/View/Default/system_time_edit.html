@@ -1,0 +1,170 @@
+<include file='Index:main'/>
+<script src="{$Think.config.NG_PATH}Public/modules/system/time.js" type="text/javascript"></script>
+<div class="ngtos_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net" scope="col" >{$Think.lang.DEV_DATE_TIME}</td>
+            <td class="ngtos_width_85pc" scope="col">
+                <label id='systime' style="width:150px; height:25px; background-color:#ccc;font-size: 12px">{$sys_date} {$sys_time}</label>
+            </td>
+        </tr>
+        <tr>
+            <td scope="col"  class="tdlabel_net">{$Think.lang.ZONE}</td>		
+            <td scope="col" class="ngtos_width_85pc">
+                <select name="timezone" style="width:360px;" id='sel' class="ngtos_input"></select></td>
+        </tr>
+        <tr>
+            <th colspan="2">
+                <input type="radio" name='bigRadio' id='timeSet'  onClick="check_use();" value="1" checked>{$Think.lang.MANUAL_SET}
+            </th>
+        <tr>
+            <td class="tdlabel_net"><span>{$Think.lang.DEV_DATE_TIME}</span></td>
+            <td class="ngtos_width_85pc">
+                <input  name="date" id="date_cid" class="easyui-datebox" editable="false">
+                <input type="text" id="clock_cid" onblur="timeFormatterCheck(this);" class="easyui-timespinner" size="12" maxlength="12" data-options="min:'00:00',showSeconds:true,validType:'His',required:true">
+            </td>
+        </tr>
+        <tr>
+            <th colspan="2">
+                <input type="radio" name='bigRadio' id='timeLocal'  onClick="check_use();" value="2">{$Think.lang.LOCAL_SYNC}
+            </th>
+        </tr>
+        <tr>
+            <td class="tdlabel_net"><span>{$Think.lang.LOCOL_TIME}</span></td>
+            <td class="ngtos_width_85pc">
+                <label id='localtime' style="width:150px; height:30px; background-color:#ccc;font-size: 12px;"></label>
+            </td>
+        </tr>
+        <!--{if $ntp_license==1}-->
+        <if condition="$ntp_license eq 1">
+            <tr>
+                <th colspan="2">
+                    <input type="radio" name='bigRadio' id='ntpSet'  onClick="check_use();" value="3">{$Think.lang.NTP_SET}
+                </th>
+            </tr>
+            <tr>
+                <td class="tdlabel_net"><span>{$Think.lang.SERVER_ADDR1}</span></td>
+                <td><input type="text" class="noUse3 ngtos_input" name='ip' id='ip'></td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net"><span>{$Think.lang.SERVER_ADDR2}</span></td>
+                <td><input type="text" class="noUse3 ngtos_input" name='ip2' id='ip2'></td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net"><span>{$Think.lang.SYNC_ADDR}</span></td>
+                <td>
+                    <input type="text"  class="noUse3 ngtos_input " name='addrlocal' id='iplocal'>
+                    <input type="button" name='but_first_server' value="{$Think.lang.IMMEDIATELY_SYNC}" class="ngtos_button_small" id='equalToSerAddr' style="margin-left:10px">
+                </td>
+            </tr>
+            <!--{/if}-->
+        </if>
+    </table>
+    <div class="btn_config">
+        <input type="hidden" name="submit_post" value="system_time_editsave">
+        <input type="button" value="{$Think.lang.APPLY}" id='button' class="ngtos_button_large confirmenable" onClick="form_submit();" style="margin-left:196px" />
+    </div>
+</div>
+<SCRIPT LANGUAGE="JavaScript">
+    var tick1, tick2;
+    var date1, time1, sec, date2;
+    var strs = new Array();
+    var dd;
+    var f0, f1, f2;
+    var str1 = new Array();
+    var str2 = new Array();
+    var alltime, date3, dd1, sec1;
+    var d, utc, nd, kk, kkArr;
+    var timeZonePre;
+    var vsid = "{$vsid}";
+    var ntp_php = "{$ntp_license}";
+    $(function() {
+        if ("{$ntp_license}" == 1) {
+            if ("{$ntp_status}" == "Client") {
+                if ($.trim("{$ntp_ip1}") == '127.127.1.0' && $.trim("{$ntp_ip2}") == '127.127.1.0') {
+                    $("#timeSet")[0].checked = true;
+                } else {
+                    $("#ntpSet")[0].checked = true;
+                    $('#ip')[0].value = "{$ntp_ip1}" == '127.127.1.0' ? '' : "{$ntp_ip1}";
+                    $('#ip2')[0].value = "{$ntp_ip2}" == '127.127.1.0' ? '' : "{$ntp_ip2}";
+                }
+            }
+            $('#equalToSerAddr').click(function() {
+                $.ajax({
+                    url: "?c=System/Time&a=time_server",
+                    type: 'POST',
+                    dataType: 'text',
+                    data: {
+                        addr: $('#iplocal').val()
+                    },
+                    success: function(data, textStatus) {
+                        if (data == '0') {
+                            ngtosPopMessager("success", $LANG.SYNCHRONOUS_SUCCESS, function() {
+                                location.reload();
+                            });
+                        } else {
+                            ngtosPopMessager("error", data);
+                        }
+                    }
+                });
+            });
+        }
+
+        //单选事件
+        check_use();
+
+        //时区
+        document.getElementById('sel').value = "{$sys_timezone}";
+
+        //系统日期时间
+        if ($.trim($('#systime')[0].innerHTML) != '') {
+            tick2 = setInterval("sysTick()", 1000);
+        }
+
+        window.setInterval(function(){
+            calcTime($('#sel').val());
+        },1000);
+
+        tick1 = setInterval("tick()", 1000);
+        $("#sel").combobox({
+            url: "?c=System/Time&a=selShow",
+            valueField: 'val',
+            textField: 'text',
+            required: true,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            onChange:calcTime
+        });
+        //获取当前的年份和日期
+        var Tdate = new Date();
+        var year = Tdate.getFullYear();
+        var month = Tdate.getMonth() + 1;//js从0开始取
+        var date = Tdate.getDate();
+        var hour = Tdate.getHours();
+        var minutes = Tdate.getMinutes();
+        var second = Tdate.getSeconds();
+        if (month < 10) {
+            month = "0" + month;
+        }
+        if (date < 10) {
+            date = "0" + date;
+        }
+        if (hour < 10) {
+            hour = "0" + hour;
+        }
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if (second < 10) {
+            second = "0" + second;
+        }
+        var strDate = year +'-' + month + '-' + date;
+        var strTime = hour + ':' + minutes + ':' + second;
+       $('#date_cid').datebox('setValue',strDate);
+       $('#clock_cid').textbox('setValue',strTime);
+    });
+</SCRIPT>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,615 @@
+<form action="" name="network_tunnel" method="post" id='form1'>
+    <div class="ngtos_form_main" style="background-color: #ffffff; height:430px; width:920px;margin-left:10px">
+        <div style="float: left;width: 450px;"  >
+            <fieldset style="height:410px;font-weight:bold;font-family:Arial;"><legend>&nbsp;&nbsp;{$Think.lang.FIRST_STEP}&nbsp;&nbsp;</legend>
+                <div style="font-size:12pt; font-family:Arial;font-weight:normal;">
+                    <div style="float:left; width:75px;height:32px;font-size:12px;font-weight:normal;cursor: pointer;text-align:center;background-image:url('Public/images/image/tag_black1.png');line-height:32px" onClick="setChange(this)" id="basic">{$Think.lang.BASIC_CONFIG}</div>
+                    <div style="float:left; width:75px;height:32px;font-size:12px;font-weight:normal;cursor: pointer;text-align:center;background-image:url('Public/images/image/tag_black2.png');line-height:32px;" onClick="setChange(this)" id="senior">{$Think.lang.SENIOR_CONFIG}</div>       
+                </div>
+                <div id="basicDiv" style="clear:both;display:block;">
+                    <table class="ngtos_form_table">
+                        <tr>
+                            <td style="width:130px;height:25px;">{$Think.lang.TUNNEL_NAME}</td>
+                            <td>
+                                <input type="text" name="static_name" id="static_name" style="width:150px;"/>
+                                <span style=" color:#FF0000">&nbsp;&nbsp;*&nbsp;&nbsp;</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:130px;height:25px;">{$Think.lang.PROTOCOL_TYPE}</td>
+                            <td>
+                                <input type="radio" name="gmneg" id="gmneg_gj" value="gmneg_gj" onClick="changeGmnegType(1)" checked="checked"/>{$Think.lang.INTERNATIONAL}
+                                <input type="radio" name="gmneg" id="gmneg_gm" value="gmneg_gm" onClick="changeGmnegType(2)" style="margin-left:70px;"/>{$Think.lang.STATE_SECRET}
+                            </td>
+                        </tr>	                            
+                        <tr id="gmneg_gm_zs" style="display:none;">
+                            <td style="width:130px;height:25px;">{$Think.lang.AUTH_WAY}</td>
+                            <td>
+                                <span>{$Think.lang.NUM_CERTIFICATE}</span>
+                            </td>
+                        </tr>
+                        <tr id="gmneg_authmode">
+                            <td style="width:130px;height:25px;">{$Think.lang.AUTH_WAY}</td>
+                            <td>
+                                <input type="radio" name="tunnel_authmode" id="type_presharekey" onClick="changePresharekey(1)" value="1"/>{$Think.lang.PRESHARE_KEY}
+                                <input type="radio" name="tunnel_authmode" id="type_number_key" style="margin-left:36px;" onClick="changePresharekey(2)" value="2"/>{$Think.lang.NUM_CERTIFICATE}
+                            </td>
+                        </tr>	                            
+                        <tr id="gmneg_gm_zswz" style="display:none;">
+                            <td style="width:130px;height:25px;">{$Think.lang.CERTIFICATE_POSITION}</td>
+                            <td>
+                                <select id="localcert_id">
+                                    <option id="primary" checked="checked" value="primary">{$Think.lang.MASTER_CERTIFICATE}</option>
+                                    <option id="secondary" value="secondary">{$Think.lang.FORM_CERTIFICATE}</option>
+                                </select>
+                                <input type="button" value="证书配置..." onclick="setCertificatee()" style="display:inline">
+                            </td>
+                        </tr>
+                        <tr id="gmneg_gm_dfbz" style="display:none;">
+                            <td style="width:130px;height:25px;">{$Think.lang.PEER_FLAG}</td>
+                            <td>
+                                <input type="text" value="" id="peerid" style="width:90px;" >
+                                <input type="button" value="获取标识" onclick="getCertTag()"/>
+                                <span style=" color:#FF0000">&nbsp;&nbsp;*&nbsp;&nbsp;</span>
+                            </td>
+                        </tr>
+                        <tr id="gmneg_presharekey">
+                            <td style="width:130px;height:25px;">{$Think.lang.PRESHARE_KEY}</td>
+                            <td>
+                                <input type="password" name="static_name" id="presharekey" style="width:150px;"/>
+                                <span style=" color:#FF0000">&nbsp;&nbsp;*&nbsp;&nbsp;</span>
+                            </td>
+                        </tr>
+                        <tr id="gmneg_localid">
+                            <td style="width:130px;height:25px;">{$Think.lang.LOCAL_FLAG}</td>
+                            <td>
+                                <input type="text" id="localid" name="static_name" value="必须包含@" onFocus="if (value == defaultValue) {
+                                        value = '';
+                                        this.style.color = '#000'
+                                    }" onBlur="if (!value) {
+                                                value = defaultValue;
+                                                this.style.color = '#999'
+                                            }" style="color:#999999">
+                            </td>
+                        </tr>
+                        <tr id="gmneg_peerid">
+                            <td style="width:130px;height:25px;">{$Think.lang.PEER_FLAG}</td>
+                            <td>
+                                <input type="text" id="gj_peerid" name="static_name" value="必须包含@" onFocus="if (value == defaultValue) {
+                                        value = '';
+                                        this.style.color = '#000'
+                                    }" onBlur="if (!value) {
+                                                value = defaultValue;
+                                                this.style.color = '#999'
+                                            }" style="color:#999999">
+                            </td>
+                        </tr>
+                        <tr id="local_id">
+                            <td style="width:130px;height:25px;">{$Think.lang.LOCALHOST}</td>
+                            <td>
+                                <input type="text" name="static_name" id="localnet" style="width:150px;"/>
+                                <img src="Public/images/image/help.png" title="支持IPv4和IPv6,IPv6格式: X:X:X:X::X"/>
+                                <span style=" color:#FF0000">&nbsp;&nbsp;*&nbsp;&nbsp;</span>
+                            </td>
+                        </tr>
+                        <tr id="gmneg_peersubnet">
+                            <td style="width:130px;height:25px;">{$Think.lang.PEER_ADDRESS}</td>
+                            <td>
+                                <input type="text" name="static_name" id="peersubnet" style="width:150px;"/>
+                                <img src="Public/images/image/help.png" title="支持IPv4和IPv6,IPv6格式：X:X:X:X::X"/>
+                                <span style=" color:#FF0000">&nbsp;&nbsp;*&nbsp;&nbsp;</span>
+                            </td>
+                        </tr>	                            	                            	                            
+                        <tr id="gmneg_gm_xsms" style="display:none;">
+                            <td style="width:130px;height:25px;">{$Think.lang.IKE_NEGO_MODE}</td>
+                            <td>
+                                <span>{$Think.lang.MAIN_MODE}</span>
+                            </td>
+                        </tr>	                            
+                        <tr id="gmneg_negomode">
+                            <td style="width:130px;height:25px;">{$Think.lang.IKE_NEGO_MODE}</td>
+                            <td>
+                                <input type="radio" name="tunnel_negomode" id="negomode_main" value="main_mode"/>{$Think.lang.MAIN_MODE}
+                                <input type="radio" name="tunnel_negomode" id="negomode_aggressive" style="margin-left:36px;" value="savage_mode"/>{$Think.lang.SAVAGE_MODE}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:130px;height:25px;">{$Think.lang.START_TUNNEL_NEGO}</td>
+                            <td>
+                                <input type="radio" value="open" id="negotiate_open" name="negotiate">{$Think.lang.ON}
+                                <input type="radio" value="stop" id="negotiate_close" name="negotiate" checked="checked">{$Think.lang.OFF}
+                                <!--<img src="static/images/image/start.png" alt="open" id="negotiate" style="cursor: pointer; display:block" onClick="change(this);">-->
+                            </td>
+                        </tr> 				
+                    </table>
+                </div>           
+                <div id="seniorDiv" style="clear:both;display:none;">
+                    <table class="ngtos_form_table">
+                        <tr>
+                            <td style="width:130px;height:25px;">{$Think.lang.DESCRIPTION}</td>
+                            <td>
+                                <input type="text" name="static_name" id="discription" style="width:150px;"/>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:130px;height:25px;">{$Think.lang.SA_KEYING_RETRY_TIME}</td>
+                            <td>
+                                <input type="text" name="static_name" value="" id="consult_num" style="width:50px;"/>
+                                <span>次  [ 范围: 1-100，缺省：<span id="consult_num_qs"></span> ]</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:130px;height:25px;">ISAKMP-{$Think.lang.SA_LIFE}</td>
+                            <td>
+                                <input type="text" name="static_name" value="" id="ISAKMP_life" style="width:50px;"/>
+                                <span>[{$Think.lang.UNIT_SECONDS},{$Think.lang.MAX}:86400,缺省:<span id="ISAKMP_life_qs"></span>]</span>
+                            </td>
+                        </tr>
+                        <tr id='addrTr'>
+                            <td colspan="2">									
+                                <fieldset><legend>&nbsp;&nbsp;ISAKMP-{$Think.lang.SA_SECURITY_POLICY_ATTRIBUTES}&nbsp;&nbsp;</legend>	
+                                    <div style="overflow: auto; height: 180px; border: none">
+                                        <table width="100%" cellpadding="5" cellspacing="5" height="150px;" class="ngtos_border0_table">	
+                                            <tr id="addr1" valign="top">
+                                                <td align="center" style="border:none;">
+                                                    <table id="policy_addr">
+                                                        <tr>
+                                                            <td>
+                                                                <img src='Public/images/icon/mini_clear.gif' style='visibility:hidden' />
+                                                                <select name="" id="SA_ONE0" style="width:78px;height:22px;">
+                                                                    <option id="sa_3des" value="3des">3DES</option>
+                                                                    <option id="sa_aes" value="aes" selected="selected">AES</option>
+                                                                    <option id="sa_des" value="des">DES</option>
+                                                                    <!--	                                                                <option value="sm1">SM1</option>-->
+                                                                    <option id="sa_sm4" value="sm4">SM4</option>
+                                                                </select><select name="" id="SA_TWO0" style="width:78px;height:22px;margin-left:10px">
+                                                                    <option id="sa_sha1" value="sha1">SHA1</option>
+                                                                    <option id="sa_md5" value="md5">MD5</option>
+                                                                    <option id="sa_sm3" value="sm3">SM3</option>
+                                                                </select><select name="" id="SA_THREE0" style="width:78px;height:22px;margin-left:10px">
+                                                                    <option id="sa_modp768" value="modp768">DH1</option>
+                                                                    <option id="sa_modp1024" value="modp1024">DH2</option>
+                                                                    <option id="sa_modp1536" value="modp1536">DH5</option>
+                                                                </select>	
+                                                                <img src="Public/images/icon/mini_add.gif" width="10" height="10" style="cursor:pointer;" name="add_type1" onClick="add_ISAKMP()"/>
+                                                                <input type="text" id="SA_ISAKMP" value="" style="display: none">
+                                                            </td>    	
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>		
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </table>
+                </div>            
+            </fieldset>
+        </div>
+        <div style="float: right;width: 470px;">
+            <fieldset style="height:410px;font-weight:bold;font-family:Arial;"><legend>&nbsp;&nbsp;{$Think.lang.SECOND_STEP}&nbsp;&nbsp;</legend>
+                <div style="width:140; height:32; clear:both;font-size:12pt; font-family:Arial;font-weight:normal;">
+                    <div style="float:left; width:75px;height:32px;font-size:12px;font-weight:normal;cursor: pointer;text-align:center;background-image:url('Public/images/image/tag_black1.png');line-height:32px" onClick="setChangeTwo(this)" id="basic2">{$Think.lang.BASIC_CONFIG}</div>
+                    <div style="float:left; width:75px;height:32px;font-size:12px;font-weight:normal;cursor: pointer;text-align:center;background-image:url('Public/images/image/tag_black2.png');line-height:32px;" onClick="setChangeTwo(this)" id="senior2">{$Think.lang.SENIOR_CONFIG}</div>       
+                </div>  
+                <div id="basic2Div" style="clear:both;display:block;">
+                    <table class="ngtos_form_table">
+                        <tr>
+                            <td style="width:100px">{$Think.lang.LOCAL_SUBNET_MASK}</td>
+                            <td>
+                                <input name="network_localsub" id="network_localsub_cid" style="width:110px"/>/
+                                <input name="network_localsub" id="network_localsub_yid" style="width:110px"/>
+                                <img src="Public/images/image/help.png" title="支持IPv4和IPv6,IPv6格式：X:X:X:X::/<0-128>"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:100px">{$Think.lang.PEER_SUBNET_MASK}</td>
+                            <td>
+                                <input name="network_peersub" id="network_peersub_cid" style="width:110px"/>/
+                                <input name="network_peersub" id="network_peersub_yid" style="width:110px"/>
+                                <img src="Public/images/image/help.png" title="支持IPv4和IPv6,IPv6格式：X:X:X:X::/<0-128>"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:130px;height:25px;">{$Think.lang.ESP_ALG_SUGGEST}</td>
+                            <td style="clear:both">
+                                <span>{$Think.lang.ENCRYPT_ALG}</span>
+                                <select name="static_name" id="encrypt_type" style="width:60px;">
+                                    <option value="3des" id="encrypt_3des">3DES</option>
+                                    <option value="aes128" id="encrypt_aes128">AES128</option>
+                                    <option value="aes192" id="encrypt_aes192">AES192</option>
+                                    <option value="aes256" id="encrypt_aes256">AES256</option>
+                                    <option value="des" id="encrypt_des">DES</option>                                        
+                                    <option value="null" id="encrypt_null">NULL</option>
+                                    <option value="sm4" id="encrypt_sm4">SM4</option>
+                                </select>&nbsp;&nbsp;&nbsp;                                    	
+                                <span>{$Think.lang.CALIBRATION_ALG}</span>
+                                <select name="static_name" id="verify_type" style="width:60px;">
+                                    <option value="sha1" id="verify_sha1">SHA1</option>
+                                    <option value="md5" id="verify_md5">MD5</option>
+                                    <option value="sm3" id="verify_sm3">SM3</option>
+                                </select>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:135px">{$Think.lang.IPSECSA_POLICY_ATTR}：</td>
+                            <td>
+                                <input type="checkbox" name="manual_start" id="tunnel_ipsecmode" style="" value="ipsecmode"/>
+                                <span style="" id="compress">{$Think.lang.TUNNEL_MODE}</span>                       
+                                <input type="checkbox" name="manual_start" id="proto_esp" style="margin-left:26px;" value="esp"/>
+                                <span style="" id="encrypt">{$Think.lang.ESP}</span>
+                                <input type="checkbox" name="manual_start" id="proto_ah" style="" value="ah"/>
+                                <span style="" id="authenticate">{$Think.lang.AH}</span><br>
+                            </td>
+                        </tr>
+                    </table>
+                </div>	
+                <div id="senior2Div" style="clear:both;display:none;">
+                    <table class="ngtos_form_table">
+                        <tr>
+                            <td style="width:110px;height:25px">IPSec-{$Think.lang.SA_LIFE}</td>
+                            <td>
+                                <input name="network_localsub" id="SA_life_time" style="width:110px" value=""/>
+                                <span>s  [{$Think.lang.MAX}：86400，缺省,<span id="SA_life_time_qs"></span> ]</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:110px;height:25px">{$Think.lang.ENABLE}DPD</td>
+                            <td>
+                                <!--<img src="static/images/image/start.png" alt="open" id="dpd" style="cursor: pointer; display:block" onClick="changeDPD(this);">-->
+                                <input type="radio" id="dpd_open" name="dpd" value="open">{$Think.lang.ON}
+                                <input type="radio" id="dpd_stop" name="dpd" value="close" checked="checked">{$Think.lang.OFF}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:110px;height:25px">{$Think.lang.DPD_INTERVAL}</td>
+                            <td>
+                                <input name="network_localsub" id="interval_dpd" style="width:110px" value=""/>
+                                <span>s  [ 范围:1-3600，缺省,<span id="interval_dpd_qs"></span> ]</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:110px;height:25px">{$Think.lang.DPD_TIMEOUT}</td>
+                            <td>
+                                <input name="network_localsub" id="dpd_timeout" style="width:110px" value=""/>
+                                <span>s  [ 范围：1-28800，缺省,<span id="dpd_timeout_qs"></span> ]</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>	
+            </fieldset>
+        </div>
+    </div>        
+    <div style="height:50px; clear: both" style="width：920px">
+        <input type="reset" style="display: none" id="reset_html">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.RECOVER}" style="margin-left:10px" onclick="resetdefault()"/>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CONFIRM}" style="margin-top:10px; margin-left:600px;" id="submit_add" onClick="submitAdd()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" style="margin-left:10px" onClick="closeWindow('add_page')">
+    </div>
+    </form>
+<script type="text/javascript">
+	 $(function() {
+        if (submint_content != 1) {
+            if (submint_content == 2) {
+                $('#static_name').attr('disabled', 'ture');
+            }
+            $('#static_name').val(param[0]);
+            $('#discription').val(param[1]);
+            if (param[2] == 'off') {
+                $('#gmneg_gj').trigger("click");
+                if (param[4] == 'psk') {
+                    $('#type_presharekey').trigger("click");
+                    $('#gmneg_gm_zs').hide();
+                    $('#gmneg_gm_zswz').hide();
+                    $('#gmneg_gm_dfbz').hide();
+                    $('#gmneg_authmode').show();
+                    $('#gmneg_presharekey').show();
+                    $('#gmneg_localid').show();
+                    $('#gmneg_peerid').show();
+                    $('#gmneg_negomode').show();
+                } else {
+                    $('#type_number_key').trigger("click");
+                    $('#gmneg_gm_zswz').show();
+                    $('#gmneg_gm_dfbz').show();
+                    $('#peerid').val(param[10]);
+                    $('#gmneg_localid').hide();
+                    $('#gmneg_peerid').hide();
+                    $('#gmneg_presharekey').hide();
+                }
+                $('#gmneg_gm_xsms').hide();
+                $('#SA_THREE0').show();
+                var ike_policy = param[20].split('-');
+                var arr1 = [];
+                arr1['3des'] = '3DES';
+                arr1['aes'] = 'AES';
+                arr1['des'] = 'DES';
+                arr1['sm4'] = 'SM4';
+                selectValue('SA_ONE0', arr1, ike_policy[0]);
+                var arr2 = [];
+                arr2['sha1'] = 'SHA1';
+                arr2['md5'] = 'MD5';
+                arr2['sm3'] = 'SM3';
+                selectValue('SA_TWO0', arr2, ike_policy[1]);
+                var arr3 = [];
+                arr3['modp768'] = 'DH1';
+                arr3['modp1024'] = 'DH2';
+                arr3['modp1536'] = 'DH5';
+                selectValue('SA_THREE0', arr3, ike_policy[2]);
+                var alg_esp = param[19].split('-');
+                var encrypt = [];
+                encrypt['3des'] = '3DES';
+                encrypt['aes128'] = 'AES128';
+                encrypt['aes192'] = 'AES192';
+                encrypt['aes256'] = 'AES256';
+                encrypt['des'] = 'DES';
+                encrypt['null'] = 'NULL';
+                encrypt['sm4'] = 'SM4';
+                selectValue('encrypt_type', encrypt, alg_esp[0]);
+                var verify = [];
+                verify['sha1'] = 'SHA1';
+                verify['md5'] = 'MD5';
+                verify['sm3'] = 'SM3';
+                selectValue('verify_type', verify, alg_esp[1]);
+                if (param[4] == 'psk') {
+                    $('#localid').val(param[7]);
+                    $('#presharekey').val(param[13]);
+                    $('#gj_peerid').val(param[10]);
+                } else {
+                    $('#peerid').val(param[10]);
+                    if (param[3] == 'primary') {
+                        $('#primary').attr('selected', 'selected');
+                    } else {
+                        $('#secondary').attr('selected', 'selected');
+                    }
+                }
+                if (param[3] == 'primary') {
+                    $('#primary').attr('selected', 'selected');
+                } else {
+                    $('#secondary').attr('selected', 'selected');
+                }
+                $('#localnet').val(param[8]);
+                $('#peersubnet').val(param[11]);
+                if (param[5] == 'main') {
+                    $('#negomode_main').attr('checked', 'checked');
+                } else {
+                    $('#negomode_aggressive').attr('checked', 'checked');
+                }
+                if (param[27] == 'on') {
+                    $('#negotiate_open').trigger("click");
+                } else {
+                    $('#negotiate_close').trigger("click");
+                }
+                $('#consult_num').val(param[18]);
+                $('#consult_num_qs').html(param[18]);
+                $('#ISAKMP_life').val(param[14]);
+                $('#ISAKMP_life_qs').html(param[14]);
+                var local_arr = param[9];
+                $('#network_localsub_cid').val(local_arr[0]);
+                $('#network_localsub_yid').val(local_arr[1]);
+                var peer_arr = param[12];
+                $('#network_peersub_cid').val(peer_arr[0]);
+                $('#network_peersub_yid').val(peer_arr[1]);
+                var ipsecpolicy = param[26];
+                if ($.inArray('tunnel', ipsecpolicy) != -1) {
+                    $('#tunnel_ipsecmode').attr('checked', 'checked');
+                }
+                if ($.inArray('encrypt', ipsecpolicy) != -1) {
+                    $('#proto_esp').attr('checked', 'checked');
+                }
+                if ($.inArray('authenticate', ipsecpolicy) != -1) {
+                    $('#proto_ah').attr('checked', 'checked');
+                }
+
+                $('#SA_life_time').val(param[15]);
+                $('#SA_life_time_qs').html(param[15]);
+                if (param[22] == 'on') {
+                    $('#dpd_open').trigger("click");
+                } else {
+                    $('#dpd_stop').trigger("click");
+                }
+               
+                $('#interval_dpd').val(param[23]);
+                $('#interval_dpd_qs').html(param[23]);
+                $('#dpd_timeout').val(param[24]);
+                $('#dpd_timeout_qs').html(param[24]);
+            } else {
+                $('#gmneg_gm').trigger("click");
+                $('#gmneg_gm_zs').show();
+                $('#gmneg_gm_zswz').show();
+                $('#gmneg_gm_dfbz').show();
+                $('#gmneg_gm_xsms').show();
+                $('#SA_THREE0').hide();
+                var ike_policy = param[20].split('-');
+                var arr1 = [];
+                arr1['sm4'] = 'SM4';
+                selectValue('SA_ONE0', arr1, ike_policy[0]);
+                var arr2 = [];
+                arr2['sha1'] = 'SHA1';
+                arr2['sm3'] = 'SM3';
+                selectValue('SA_TWO0', arr2, ike_policy[1]);
+                var alg_esp = param[19].split('-');
+                var encrypt = [];
+                encrypt['sm4'] = 'SM4';
+                selectValue('encrypt_type', encrypt, alg_esp[0]);
+                var verify = [];
+                verify['sha1'] = 'SHA1';
+                verify['sm3'] = 'SM3';
+                selectValue('verify_type', verify, alg_esp[1]);
+                $('#gmneg_authmode').hide();
+                $('#gmneg_presharekey').hide();
+                $('#gmneg_localid').hide();
+                $('#gmneg_peerid').hide();
+                $('#gmneg_negomode').hide();
+                if (param[3] == 'primary') {
+                    $('#primary').attr('selected', 'selected');
+                } else {
+                    $('#secondary').attr('selected', 'selected');
+                }
+                $('#peerid').val(param[10]);
+                $('#localnet').val(param[8]);
+                $('#peersubnet').val(param[11]);
+                if (param[27] == 'on') {
+                    $('#negotiate_open').trigger("click");
+                } else {
+                    $('#negotiate_close').trigger("click");
+                }
+                $('#consult_num').val(param[18]);
+                $('#ISAKMP_life').val(param[14]);
+                var local_arr = param[9];
+                $('#network_localsub_cid').val(local_arr[0]);
+                $('#network_localsub_yid').val(local_arr[1]);
+                var peer_arr = param[12];
+                $('#network_peersub_cid').val(peer_arr[0]);
+                $('#network_peersub_yid').val(peer_arr[1]);
+                var ipsecpolicy = param[26];
+                if ($.inArray('tunnel', ipsecpolicy) != -1) {
+                    $('#tunnel_ipsecmode').attr('checked', 'checked');
+                }
+                if ($.inArray('encrypt', ipsecpolicy) != -1) {
+                    $('#proto_esp').attr('checked', 'checked');
+                }
+                if ($.inArray('authenticate', ipsecpolicy) != -1) {
+                    $('#proto_ah').attr('checked', 'checked');
+                }
+
+                $('#SA_life_time').val(param[15]);
+                if (param[22] == 'on') {
+                    $('#dpd_open').trigger("click");
+                } else {
+                    $('#dpd_stop').trigger("click");
+                }
+                $('#interval_dpd').val(param[23]);
+                $('#dpd_timeout').val(param[24]);
+            }
+        } else {
+            $('#tunnel_ipsecmode').attr('checked', 'checked');
+    $('#proto_esp').attr('checked', 'checked');
+    $.ajax({
+        url: "?c=Network/StaticTunnel&a=getsingle",
+        type: 'POST',
+        dataType: 'json',
+        async: false,
+        data: {
+        },
+        success: function(data, textStatus) {
+            if (data['type'] == 0 || data['type'] == 2) {
+                ngtosPopMessager("error", data['info']);
+            } else if (data['type'] == 1) {
+                ngtosPopMessager("error", data['info'], '', "login");
+            } else {
+                if (data["rows"][0]["gmneg"] == 0) {
+                    $('#gmneg_gj').trigger("click");
+                    if (data["rows"][0]["authmode"] == 'psk') {
+                        $('#type_presharekey').trigger("click");
+                        $('#gmneg_gm_zs').hide();
+                        $('#gmneg_gm_zswz').hide();
+                        $('#gmneg_gm_dfbz').hide();
+                        $('#gmneg_authmode').show();
+                        $('#gmneg_presharekey').show();
+                        $('#gmneg_localid').show();
+                        $('#gmneg_peerid').show();
+                        $('#gmneg_negomode').show();
+                    } else {
+                        $('#type_number_key').trigger("click");
+                        $('#gmneg_gm_zswz').show();
+                        $('#gmneg_gm_dfbz').show();
+                        $('#gmneg_localid').hide();
+                        $('#gmneg_peerid').hide();
+                        $('#gmneg_presharekey').hide();
+                    }
+                } else {
+                    $('#gmneg_gm').trigger("click");
+                }
+                if (data["rows"][0]["negomode"] == 'main') {
+                    $('#negomode_main').attr('checked', 'checked');
+                }
+                if (data["rows"][0]["negomode"] == 'aggressive') {
+                    $('#negomode_aggressive').attr('checked', 'checked');
+                }
+                if (data["rows"][0]["dpd_switch"] == 'on') {
+                    $('#dpd_open').trigger("click");
+                } else {
+                    $('#dpd_stop').trigger("click");
+                }
+                var ike_policy = data["rows"][0]["ikepolicy"].split('-');
+                var arr1 = [];
+                arr1['3des'] = '3DES';
+                arr1['aes'] = 'AES';
+                arr1['des'] = 'DES';
+                arr1['sm4'] = 'SM4';
+                selectValue('SA_ONE0', arr1, ike_policy[0]);
+
+                var arr2 = [];
+                arr2['sha1'] = 'SHA1';
+                arr2['md5'] = 'MD5';
+                arr2['sm3'] = 'SM3';
+                selectValue('SA_TWO0', arr2, ike_policy[1]);
+
+                var arr3 = [];
+                arr3['modp768'] = 'DH1';
+                arr3['modp1024'] = 'DH2';
+                arr3['modp1536'] = 'DH5';
+                selectValue('SA_THREE0', arr3, ike_policy[2]);
+
+                var alg_esp = data["rows"][0]["alg_esp"].split('-');
+                var encrypt = [];
+                encrypt['3des'] = '3DES';
+                encrypt['aes128'] = 'AES128';
+                encrypt['aes192'] = 'AES192';
+                encrypt['aes256'] = 'AES256';
+                encrypt['des'] = 'DES';
+                encrypt['null'] = 'NULL';
+                encrypt['sm4'] = 'SM4';
+                selectValue('encrypt_type', encrypt, alg_esp[0]);
+
+                var verify = [];
+                verify['sha1'] = 'SHA1';
+                verify['md5'] = 'MD5';
+                verify['sm3'] = 'SM3';
+                selectValue('verify_type', verify, alg_esp[1]);
+
+                var ipsecpolicy = data["rows"][0]["ipsecpolicy"].split(',');
+                if ($.inArray('tunnel', ipsecpolicy) != -1) {
+                    $('#tunnel_ipsecmode').attr('checked', 'checked');
+                }
+                if ($.inArray('encrypt', ipsecpolicy) != -1) {
+                    $('#proto_esp').attr('checked', 'checked');
+                }
+                if ($.inArray('authenticate', ipsecpolicy) != -1) {
+                    $('#proto_ah').attr('checked', 'checked');
+                }
+                $('#consult_num').val(data["rows"][0]["sa_keying_tries"]);
+                $('#consult_num_qs').html(data["rows"][0]["sa_keying_tries"]);
+
+                $('#ISAKMP_life').val(data["rows"][0]["ike_life_seconds"]);
+                $('#ISAKMP_life_qs').html(data["rows"][0]["ike_life_seconds"]);
+
+                $('#SA_life_time').val(data["rows"][0]["ipsec_life_seconds"]);
+                $('#SA_life_time_qs').html(data["rows"][0]["ipsec_life_seconds"]);
+
+                $('#interval_dpd').val(data["rows"][0]["dpd_delay"]);
+                $('#interval_dpd_qs').html(data["rows"][0]["dpd_delay"]);
+
+                $('#dpd_timeout').val(data["rows"][0]["dpd_timeout"]);
+                $('#dpd_timeout_qs').html(data["rows"][0]["dpd_timeout"]);
+            }
+        }
+    });
+        }
+        function selectValue(selectid, array, val)
+        {
+            $("#" + selectid).empty();
+            for (var key in array) {
+                if (key == val) {
+                    $("#" + selectid).append("<option selected='selected' value='" + key + "'>" + array[key] + "</option>");
+                } else {
+                    $("#" + selectid).append("<option value='" + key + "'>" + array[key] + "</option>");
+                }
+            }
+        }
+    })
+
+</script>

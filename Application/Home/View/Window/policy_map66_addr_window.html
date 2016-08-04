@@ -1,0 +1,59 @@
+<div id="pop_div">
+<form id="map66_addr_form">
+    <div>
+        <table class="ngtos_form_table">
+            <tr><td width="150px"  class="tdlabel_net">{$Think.lang.NAME}</td>
+                <td width="400px">
+                    <input type="text" name="addr_name" id="addr_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','addrName']">
+                    <span class="form_comment">{$Think.lang.MAX_CHAR30}</span>
+                </td>
+            </tr>
+            <tr id="addr_vshare" style="display:none">
+                <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+                <td width="450px">
+                    <input type="radio" name="addr_sha" id="addr_share1" value="1">
+                    <label for="addr_share1">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="addr_sha" id="addr_share2" value="0" checked>
+                    <label for="addr_share2">{$Think.lang.DENY}</label>
+                </td>
+            </tr>
+            <tr><td align="center" colspan="2"><br/>
+                <div id="host_div" style="overflow:auto;height:80px;float: left;width:490px;">
+                    <fieldset style="border:1px solid #e5e5e5;"><legend>&nbsp;&nbsp;{$Think.lang.SUBNET}&nbsp;&nbsp;</legend>
+                        <table width="100%" cellpadding="5" cellspacing="5" class="ngtos_border0_table">
+                            <tr id="addr3">
+                                <td align=center>
+                                <input type="text" name="ipaddr_sub" id="ipaddr_sub" class="easyui-textbox input_length" data-options="required:true,validType:'ipSix'">
+                                    &nbsp;/&nbsp;
+                                    <input type="text" name="ipaddr_mask" id="ipaddr_mask" class="easyui-textbox" data-options="width:80,required:true,validType:'range[0,128]'">
+                                <input type="text" name="resub" id="resub" style="display:none">
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </div>
+                <div style="float: right;padding-top:5px;">
+                    <img src="{$Think.config.NG_PATH}Public/images/icon/icon_warm.png" class="easyui-tooltip" data-options="position:'top'" title='{$Think.lang.ONLY_SUPPORT_IPV6}xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx' style="cursor: pointer">
+                </div>
+            </td>
+            </tr>
+        </table>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addAddr'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('addr_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function(){
+        if(!isShared())
+            $('#addr_vshare').css("display","");
+        else
+            $('#addr_vshare').css("display","none");
+
+        $('#addAddr').click(function(){
+            addSubnet(addr_tag);
+        });
+    })
+</script>

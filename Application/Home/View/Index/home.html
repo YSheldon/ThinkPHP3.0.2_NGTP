@@ -1,0 +1,90 @@
+<include file='Index:header'/>
+<!-- 添加模块:弹出框页面 -->
+<script src="{$Think.config.NG_PATH}Public/plugins/echarts/esl.js"></script>
+<script src="{$Think.config.NG_PATH}Public/plugins/echarts/echarts.js"></script>
+ <script src="{$Think.config.NG_PATH}Public/plugins/echarts/esl.js"></script>
+ <script src="{$Think.config.NG_PATH}Public/plugins/echarts/echarts.js"></script>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/home.css" type="text/css"/>
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/plugins/simpletooltip/simpletooltip.css" media="screen" />
+<div id="center" class="home-center" style="z-index:0;">
+</div>
+<div id="panel">
+    <a href="javascript:void(0)" onclick="reset_module()">
+        <span class="STYLE4 module-default" >{$Think.lang.RECOVER}</span>
+    </a>
+    <span class="STYLE4">
+        <input type="checkbox" name="check_all" id="check_all" onclick="checkAll(this)" /> 
+        {$Think.lang.CHECK_ALL}
+        </span>
+    <hr/>
+    <div class="import-module-center">
+        <div class="module-list">
+            <volist name="allModule" id="value">
+                <if condition= "$value.show eq '1'" >
+                    <div class="module-select">
+                        <input type="checkbox"  checked="checked" name="modules_check" id="{$key}" /><span class="modyle-text">{$value.text}</span>
+                    </div>
+                    <else />
+                    <div class="module-select">
+                        <input type="checkbox" name="modules_check" id="{$key}" /><span class="modyle-text">{$value.text}</span>
+                    </div>
+                </if>
+            </volist>
+        </div>
+    </div>
+</div>
+<div id="sidebar">
+    <img id="img" src="{$Think.config.NG_PATH}Public/images/image/add_module1.png" alt="{$Think.lang.ADD_TEMPLAT}"  ondrag="return false;"/>
+</div>
+<script type="text/javascript">
+    $(function(){
+        //获取div元素
+        var did=$("#sidebar");
+        //鼠标按下
+        did.onmousedown=function(e){
+            //兼容火狐和ie
+            ee=e||window.event;
+            //获取坐标
+            x=ee.clientX-did.offsetLeft;
+            y=ee.clientY-did.offsetTop;
+            did.style.cursor="move";
+            //鼠标移动
+            document.onmousemove=function(e){
+                // alert("111111");
+                //兼容火狐和ie
+                a=e||window.event;
+                //获取横坐标和纵坐标
+                xx=a.clientX;
+                // alert(xx);
+                yy=a.clientY;
+                x1=xx-x;
+                y1=yy-y;
+                //给left和top赋值
+                did.style.left=x1+"px";
+                did.style.top=y1+"px";
+            }
+        }
+        //鼠标抬起
+        did.onmouseup=function(){
+            did.style.cursor="default";
+            //清空鼠标移动事件
+            document.onmousemove=null;
+        }
+    });
+
+    // 
+    var curModuleArr = new Array();
+    var intervalModuleArr = new Array();
+    var curModuleJsonStr = '{$module}';
+    var defaultModuleJsonStr = '{$default}';
+    var intervalModuleJsonStr = '{$interval}';
+</script>
+<script src="{$Think.config.NG_PATH}Public/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="{$Think.config.NG_PATH}Public/plugins/easyui/jquery.easyui.all.js" ></script>   
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/plugins/easyui/locale/easyui-lang-{$Think.LANG_SET}.js" ></script>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/js/home.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/monitor/echarts.js"></script>
+<script src="{$Think.config.NG_PATH}Public/plugins/simpletooltip/simpletooltip.js"></script>
+</body>
+</html>

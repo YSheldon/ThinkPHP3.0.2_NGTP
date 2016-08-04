@@ -1,0 +1,107 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<style>
+    .datagrid{padding-top:0;}
+    .datagrid-toolbar a{margin:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/vr_veth.js"></script>
+<table id="tt"></table>	
+</div>	
+<!-- 菜单栏-->
+<div id="tb">
+    <div>
+        <a href="###" onClick="add_vveth_row()" class="easyui-linkbutton" id="icon-add" iconCls="icon-add" plain="true">{$Think.lang.ADD}</a>
+        <a href="###" id="icon-edit" onClick="edit_vveth_row()" class="easyui-linkbutton" iconCls="icon-edit" plain="true">{$Think.lang.EDIT}</a>
+        <a href="###" id="icon-delete" onClick="delete_vveth_row()" class="easyui-linkbutton" iconCls="icon-delete" plain="true">{$Think.lang.DELETE}</a>
+        <a href="###" id="icon-searchall" onClick="searchall_vveth_row()" class="easyui-linkbutton" iconCls="icon-search" plain="true">{$Think.lang.CHECK_ALL}</a>
+        <a href="###" id="icon-searcha" onClick="searcha_vveth_row()" class="easyui-linkbutton" iconCls="icon-search" plain="true" style="border:none;">{$Think.lang.CHECK_ROOT_USER}</a>
+    </div>
+</div>
+<script>
+    var param = [];
+    var vsys_name = "{$vsys_name}";//判断当前是不是虚系统用户
+    var vsys_start = "{$vsys_start}";//判断当前是不是已经开启虚系统
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'interface_name',
+            autoRowHeight: true,
+            checkOnSelect: true,
+            selectOnCheck: true,
+            url: '?c=Network/Vrveth&mod=veth',
+//            queryParams:{
+//                mod:'network veth'
+//            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'interface_name', title: $LANG.INTERFACE_NAME, width: 100, sortable: true,
+                        formatter: function(value) {
+                            return "<a style='cursor:pointer;'onclick='show_flow(&quot;" + value + "&quot;)'>" + value + "</a>";
+                        }
+                    },
+                    {field: 'description', title: $LANG.DESCRIPTION, width: 100},
+                    {field: 'ip', title: $LANG.ADDRESS + "/" + $LANG.MASK, width: 300,
+                        formatter: function(value, row) {
+                            return format_ip(row.ip4, row.ip6);
+                        }
+                    },
+                    {field: 'vsys_name', title: $LANG.VIRTUAL_SYSTEM_USER, width: 100}
+                ]],
+            toolbar: '#tb',
+            pagination: true,
+            pageSize: 20, 
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onClickRow: set_vveth_toolbar,
+            onCheck: set_vveth_toolbar,
+            onUncheck: set_vveth_toolbar,
+            onCheckAll: set_vveth_toolbar,
+            onUncheckAll: set_vveth_toolbar,
+            onSelect: set_vveth_toolbar,
+            onUnselect: set_vveth_toolbar,
+            onDblClickRow: function(index, row) {
+                <!--判断当前用户为徐系统用户的时候-->
+                if(isShared()){
+//                    if (getPrivilege("vsys-manage") != false){
+                        $("#tt").datagrid('unselectAll');
+                        $("#tt").datagrid('selectRow', index);
+                        edit_vveth_row(row.interface_name, row.description, row.ip4, row.ip6);
+//                    }
+                }else{
+                    if(row.vsys_name == 'root_vsys'){
+                        if (getPrivilege("vsys-manage") != false){
+                            $("#tt").datagrid('unselectAll');
+                            $("#tt").datagrid('selectRow', index);
+                            edit_vveth_row(row.interface_name, row.description, row.ip4, row.ip6);
+                    }
+                 }
+                }
+            },
+            onLoadSuccess: function() {
+                set_vveth_toolbar();
+                if($('.tagvif_tip').length > 0) {
+                    $('.tagvif_tip').tooltip({ position: 'bottom'});
+                    $('.tagvif_tip').mouseover(function(){$(this).tooltip('show');});
+                }
+            }
+        });
+        if (vsys_name == 1) {
+            $('#icon-searchall').linkbutton('disable');
+            $('#icon-searcha').linkbutton('disable');
+        }
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

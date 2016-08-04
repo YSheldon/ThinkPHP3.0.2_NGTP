@@ -1,0 +1,137 @@
+<include file='Index:main'/>
+<style>
+    .ngtos_form_table tr:nth-child(2) >td:first-child{ }
+</style>
+<div class="ngtos_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ENTER_THE_ORIGINAL_PASSWORD}</td>
+            <td><input type="password" name="old-password" id="old-password" class="easyui-textbox input_length" /> </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net" style="position:absolute;left:105px;">{$Think.lang.INPUT_PWD}</td>
+            <td class="ngtos_width_85pc">
+                <input type="password" name="new" id="passwd" class="input_length" style="border:solid #ABAFB8 1px;height:22px;padding:0 4px;width:212px;font-size: 12px;font-family: '微软雅黑';" onkeyup="pwdStrengthShow($(this).val(), event, 0)" onfocus="pwdStatShow();" onblur="showPwdStateText();"/>
+                <img id='pwdStatImg' src="{$Think.config.NG_PATH}Public/images/icon/icon_on.png" style="cursor: pointer;display: none">
+                <div id="adminPwdStatus" class="pwdTips">
+                    <span id='low_span' class="spanP">{$Think.lang.LOW}</span>
+                    <span id='med_span' class="spanP">{$Think.lang.LN}</span>
+                    <span id='high_span' class="spanP">{$Think.lang.HIGH}</span>
+                </div>
+                <div id='adminPwdText' style="display: none" class="tdlabel_net">{$Think.lang.PASSWORD_STRENGTH}<span id='pwdStengthSpan'></span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.AGAIN_INPUT}</td>
+            <td><input type="password" name="repeat" id="passwdsec" class="easyui-textbox input_length" />
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net" style="font-weight: bold">{$Think.lang.CURRENT_PASSWORD_STRENGTH}</td>
+            <td><span style="font-weight: bold">{$pwdStatText}</span></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><span style="font-weight: bold">{$pwdExplain}</span></td>
+        </tr>
+    </table>
+    <div style="text-align:right;width:295px;">
+        <input type="button" value="{$Think.lang.APPLY}" class="ngtos_button_large confirmenable" style="margin-top:10px" onClick="return form_submit();"/>
+    </div>
+</div>
+<script type="text/javascript">
+    $(".ngtos_form_table tr:nth-child(2) >td:first-child").css("position","static");
+    $('#adminPwdStatus').hide();
+    var pwdStength = 0;
+    $(document).ready(function() {
+        $('#passwd').val('');
+        $('#passwd2sec').val('');
+        $('#old-password').val('');
+    });
+    function form_submit() {
+        if($('#old-password').val()==""){
+            ngtosPopMessager("info", "原始密码不能为空！");
+            return;
+        }else if($('#passwd').val()==""){
+            ngtosPopMessager("info", "输入密码不能为空！");
+            return;
+        }else if($('#passwdsec').val()==""){
+            ngtosPopMessager("info", "再次输入密码不为能为空！");
+            return;
+        }
+        $.ajax({
+            url: "?c=System/Admin",
+            type: 'put',
+            dataType: 'text',
+            data: {
+                new_pwd: '\'' + $('#passwd').val() + '\'',
+                repeat: '\'' + $('#passwdsec').val() + '\'',
+                old_password: '\'' + $('#old-password').val() + '\''
+            },
+            success: function(data) {
+                if (data == '0') {
+                    ngtosPopMessager("success", $LANG.CHANGE_PASSWORD_SUCCESS, function() {
+                        window.location.reload();
+                    });
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+    function pwdStrengthShow(value, event) {
+        event = event ? event : window.event;
+        if (value.length >= 16 && (/[0-9]/.test(value)) && (/[a-z]/.test(value)) && (/[A-Z]/.test(value)) && (/[\!\@\#\$\%\^\&\*\(\)\_\+\-\=]/.test(value))) {
+            $('#high_span').removeClass().addClass('s3');
+            $('#med_span').removeClass().addClass('s3');
+            $('#low_span').removeClass().addClass('s3');
+            pwdStength = 3;
+            $('#pwdStatImg').show();
+        } else if (value.length >= 12 && (/[0-9]/.test(value)) && (/[a-z]/.test(value)) && (/[A-Z]/.test(value))) {
+            $('#high_span').removeClass().addClass('spanP');
+            $('#med_span').removeClass().addClass('s2');
+            $('#low_span').removeClass().addClass('s2');
+            pwdStength = 2;
+            if ("$pwdStat" == 'medium' || "$pwdStat" == 'low')
+                $('#pwdStatImg').show();
+            else
+                $('#pwdStatImg').hide();
+        } else if (value.length >= 8) {
+            $('#high_span').removeClass().addClass('spanP');
+            $('#med_span').removeClass().addClass('spanP');
+            $('#low_span').removeClass().addClass('s1');
+            pwdStength = 1;
+            if ("$pwdStat" == 'low')
+                $('#pwdStatImg').show();
+            else
+                $('#pwdStatImg').hide();
+        } else if (value.length < 8) {
+            $('#high_span').removeClass().addClass('spanP');
+            $('#med_span').removeClass().addClass('spanP');
+            $('#low_span').removeClass().addClass('spanP');
+            pwdStength = 0;
+            $('#pwdStatImg').hide();
+        }
+    }
+    function pwdStatShow() {
+        $('#adminPwdStatus').show();
+        $('#adminPwdText').hide();
+    }
+    function showPwdStateText() {
+        $('#adminPwdStatus').hide();
+        if (pwdStength != 0) {
+            $('#adminPwdText').show();
+            if (pwdStength == 1)
+                $('#pwdStengthSpan').html($LANG.LOW);
+            else if (pwdStength == 2)
+                $('#pwdStengthSpan').html($LANG.LN);
+            else if (pwdStength == 3)
+                $('#pwdStengthSpan').html($LANG.HIGH);
+        }
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

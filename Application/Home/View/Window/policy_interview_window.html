@@ -1,0 +1,414 @@
+<form id="interview_policy_edit_form">
+<div class="ngtos_window_switch">
+    <div class="ngtos_window_tab">
+        <!--<a href="#" onClick="whole_conf();change_style_policy(1)">-->
+        <a href="#" onClick="page_show('admin1', 'basic')">
+            <div class='ngtos_window_tab_on' id="basicStyle"><b>{$Think.lang.BASIC_INFO}</b></div>
+        </a>
+        <!--<a href="#" onClick="local_conf();change_style_policy(2)">-->
+        <a href="#" onClick="page_show('admin1', 'super')">
+            <div class="ngtos_window_tab_off" id="superStyle"><b>{$Think.lang.SENIOR_INFO}</b></div>
+        </a>
+    </div>
+    <div class="ngtos_window_content" style="margin:0;width:470px; height:450px;max-height: 450px;overflow-y: auto;">
+
+        <table class="basic_table ngtos_form_pop padding_min">
+            <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.SRC}</b></td></tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.ADDRESS}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_src' name='src'  type="text">
+                    <a href="###" onClick="addObjectToSelect('add_src', 'host', 'show', 'define group_address');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.REGION}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_srcarea'  name='srcarea' type="text">
+                    <a href="###" onClick="addObjectToSelect('add_srcarea', 'define area', 'show', '');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <if condition='$user_conf eq 1'>
+                <tr id='user_tr'>
+                    <td  class="tdlabel_net">{$Think.lang.USER}</td>
+                    <td>
+                        <input class="easyui-textbox input_length" id='add_user' name='schedule'  type="text">
+                        <a href="###" onClick="addObjectToSelect('add_user', 'user', 'show');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                    </td>
+                </tr>
+            </if>
+            <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.DST}</b></td></tr>
+            <tr>
+                <td  class="tdlabel_net">{$Think.lang.ADDRESS}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_dst' name='dst' type="text">
+                    <a href="###" onClick="addObjectToSelect('add_dst', 'host', 'show', 'define group_address');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.REGION}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_dstarea' name='dstarea' type="text">
+                    <a href="###" onClick="addObjectToSelect('add_dstarea', 'define area', 'show', '');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.OTHER}</b></td></tr>
+            <tr>
+                <td  class="tdlabel_net">{$Think.lang.SERVICE}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_service' name='dservice' type="text">
+                    <a href="###" onClick="addObjectToSelect('add_service', 'service', 'show', 'define group_service');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr>
+                <td  class="tdlabel_net">{$Think.lang.TIME}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_schedule' name='schedule' type="text">
+                    <a href="###" onClick="addObjectToSelect('add_schedule', 'define schedule', 'show', 'define group_schedule');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr>
+                <td  class="tdlabel_net">{$Think.lang.ACTION}</td>
+                <td><input type='radio' name='action' id='action1' value="accept" checked="checked">&nbsp;
+                    <label for="action1">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name='action' id='action2'  value="deny">&nbsp;
+                    <label for="action2">{$Think.lang.DENY}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td  class="tdlabel_net">{$Think.lang.STATE}</td>
+                <td><input type="radio" id='enable1' name='enable' value="yes" checked="checked">&nbsp;
+                    <label for="enable1">{$Think.lang.ENABLE}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id='enable2' name='enable' value="no">&nbsp;
+                    <label for="enable2">{$Think.lang.DISABLE}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.POLICY_GROUP}</td>
+                <td>
+                    <select class="easyui-combobox combobox_len" data-options="panelHeight: 'auto',panelMaxHeight: 198," id='add_group_name'></select>
+                </td>
+            </tr>
+            <tr>
+                <td  class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+                <td>
+                    <textarea id='add_comment' class="easyui-textbox input_length"data-options="multiline:true,height:66" name='comment'></textarea>
+                </td>
+            </tr>
+        </table>
+
+        <table class="super_table ngtos_form_table" style="display:none">
+            <tr style="height: 20px"></tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.LONG_CONNECT}</td>
+                <td style="width: 30%">
+                    <input type="radio" id='permanent1' name='permanent' value="yes">&nbsp;
+                    <label for="permanent1">{$Think.lang.ON}</label>
+                </td>
+                <td>
+                    <input type="radio" id='permanent2' name='permanent' value="no" checked="checked">&nbsp;
+                    <label for="permanent2">{$Think.lang.OFF}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.STATISTIC}</td>
+                <td>
+                    <input type="radio" id='traffic-statistic1' name='traffic-statistic' value="on">&nbsp;
+                    <label for="traffic-statistic1">{$Think.lang.ON}</label>
+                </td>
+                <td>
+                    <input type="radio" id='traffic-statistic2' name='traffic-statistic' value="off" checked="checked">&nbsp;
+                    <label for="traffic-statistic2">{$Think.lang.OFF}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.ACCESS_LOG}</td>
+                <td>
+                    <input type='radio' name='log' id='log1' value="on"/>&nbsp;
+                    <label for="log1">{$Think.lang.RECORD}</label>
+                </td>
+                <td>
+                    <input type="radio" name='log' id='log2' value="off" checked="checked"/>&nbsp;
+                    <label for="log2">{$Think.lang.UNRECORD}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.CONN}</td>
+                <td>
+                    <input type='radio' name='add_slog' id='add_slog1' value="on"/>&nbsp;
+                    <label for="add_slog1">{$Think.lang.RECORD}</label>
+                </td>
+                <td>
+                    <input type="radio" name='add_slog' id='add_slog2' value="off" checked="checked"/>&nbsp;
+                    <label for="add_slog2">{$Think.lang.UNRECORD}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.ORIG_DST}</td>
+                <td colspan="2">
+                    <input type="text" class="easyui-textbox input_length" id='add_orig_dst' name='schedule' >
+                    <a href="###" onClick="addObjectToSelect('add_orig_dst', 'host', 'show', 'define group_address');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.MAX_ACTIVE_SESSION}</td>
+                <td colspan="2">
+                    <input type="text" class="easyui-textbox input_length" data-options="validType:'range[1,2147483647]'" id='add_max_active_session' ><span class="form_comment">[1-2147483647]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.IPV6_OPTION}</td>
+                <td>
+                    <input type="checkbox" id='add_hopopts'>
+                    <label for="add_hopopts">{$Think.lang.HOP_HEAD}</label>
+                </td>
+                <td>
+                    <input type="checkbox" id='add_fragment'>
+                    <label for="add_fragment">{$Think.lang.FRAGMENT_HEAD}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net"></td>
+                <td>
+                    <input type="checkbox" id='add_dstopts'>
+                    <label for="add_dstopts">{$Think.lang.DST_HEAD}</label>
+                </td>
+                <td>
+                    <input type="checkbox" id='add_ah'>
+                    <label for="add_ah">{$Think.lang.AUTH_HEAD}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net"></td>
+                <td>
+                    <input type="checkbox" id='add_routing'>
+                    <label for="add_routing">{$Think.lang.ROUTE_HEAD}</label>
+                </td>
+                <td>
+                    <input type="checkbox" id='add_esp'>
+                    <label for="add_esp">{$Think.lang.ESP_HEAD}</label>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id="addR">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('admin1')">
+    </div>
+</div>
+</form>
+<script>
+    $(function() {
+        setSelectOptions('?c=Policy/Interview&a=showPolicyGroup');
+        $('#add_group_name').val('none');
+
+        if(policyParam[0] != '') {
+            $('#addR').click(function() {
+                editSubmit();
+            });
+        } else {
+            $('#addR').click(function() {
+                addSubmit();
+            });
+        }
+
+        if(policyParam[0] != '') {
+            $('#add_group_name')[0].value=$.trim(policyParam[12] == '' ? 'none' : policyParam[12]);
+            if(policyParam[1] != '') $('#add_srcarea')[0].value=policyParam[1].replace(/,/g,' ');
+            if(policyParam[2] != '') $('#add_src')[0].value=policyParam[2].replace(/,/g,' ');
+            if(policyParam[3] != '') $('#add_dstarea')[0].value=policyParam[3].replace(/,/g,' ');
+            if(policyParam[4] != '') $('#add_dst')[0].value=policyParam[4].replace(/,/g,' ');
+            //if(policyParam[28] != '') $('#add_srcport')[0].value=policyParam[28].replace(/,/g,' ');
+            if(policyParam[5] != '') $('#add_service')[0].value=policyParam[5].replace(/,/g,' ');
+            if(policyParam[6] != '') $('#add_schedule')[0].value=policyParam[6].replace(/,/g,' ');
+            if(user_conf==1)
+                if(policyParam[11] != '') $('#add_user')[0].value=policyParam[11].replace(/,/g,' ');
+
+            if(policyParam[13] != '') $('#add_orig_dst')[0].value=policyParam[13].replace(/,/g,' ');
+            $('#add_max_active_session')[0].value=$.trim(policyParam[14]);
+
+            $('#add_comment')[0].value=$.trim(policyParam[10]);
+
+            checkboxSet($('#add_hopopts')[0],policyParam[20]);
+            checkboxSet($('#add_dstopts')[0],policyParam[21]);
+            checkboxSet($('#add_routing')[0],policyParam[22]);
+            checkboxSet($('#add_fragment')[0],policyParam[23]);
+            checkboxSet($('#add_ah')[0],policyParam[24]);
+            checkboxSet($('#add_esp')[0],policyParam[25]);
+            if(policyParam[27]=='on')
+                $('#add_slog1')[0].checked=true;
+            else
+                $('#add_slog2')[0].checked=true;
+
+            if(policyParam[7]=='accept') {
+                $('#action1')[0].checked=true;
+            }
+            else if(policyParam[7]=='deny') $('#action2')[0].checked=true;
+            else if(policyParam[7]=='collect') $('#action3')[0].checked=true;
+
+            if(policyParam[8]=='yes') $('#enable1')[0].checked=true;
+            else if(policyParam[8]=='no') $('#enable2')[0].checked=true;
+
+            if(policyParam[9]=='on') $('#log1')[0].checked=true;
+            else if(policyParam[9]=='') $('#log2')[0].checked=true;
+
+            if(policyParam[15]=='yes') $('#permanent1')[0].checked=true;
+            else $('#permanent2')[0].checked=true;
+
+            if(policyParam[16]=='on') $('#traffic-statistic1')[0].checked=true;
+            else if(policyParam[16]=='off') $('#traffic-statistic2')[0].checked=true;
+        }
+    });
+
+    function editSubmit() {
+        var isValid = $("#interview_policy_edit_form").form('validate');
+        if(isValid) {
+            var act='';
+            if($('#action1')[0].checked) act=$('#action1').val();
+            else if($('#action2')[0].checked) act=$('#action2').val();
+
+            if(act==policyParam[7])
+                act='';
+
+            var en='';
+            if($('#enable1')[0].checked) en=$('#enable1').val();
+            else if($('#enable2')[0].checked) en=$('#enable2').val();
+
+            var lo='';
+            if($('#log1')[0].checked) lo=$('#log1').val();
+            else if($('#log2')[0].checked) lo=$('#log2').val();
+//    else if($('#adduserDiv').find('#log3')[0].checked) lo=$('#adduserDiv').find('#log3').val();
+
+            if(policyParam[12]=='' && $('#add_group_name').combobox('getValue')=='none')
+                var groupname='';
+            else if(policyParam[12]==$('#add_group_name').combobox('getValue'))
+                var groupname='';
+            else
+                var groupname=$('#add_group_name').combobox('getValue');
+            var srcarea=showSubmintValue('#add_srcarea',policyParam[1]);
+
+            var dstarea=showSubmintValue('#add_dstarea',policyParam[3]);
+
+            var src=showSubmintValue('#add_src',policyParam[2]);
+            var dst=showSubmintValue('#add_dst',policyParam[4]);
+            var service=showSubmintValue('#add_service',policyParam[5]);
+            var schedule=showSubmintValue('#add_schedule',policyParam[6]);
+            if(user_conf==1)
+                var user=showSubmintValue('#add_user',policyParam[11]);
+            var orig_dst=showSubmintValue('#add_orig_dst',policyParam[13]);
+            var max_active_session=showSubmintValue('#add_max_active_session',policyParam[14]);
+            var hopopts=showSubmintValue('#add_hopopts',policyParam[20],1);
+            var dstopts=showSubmintValue('#add_dstopts',policyParam[21],1);
+            var routing=showSubmintValue('#add_routing',policyParam[22],1);
+            var fragment=showSubmintValue('#add_fragment',policyParam[23],1);
+            var ah='';
+            ah=showSubmintValue('#add_ah',policyParam[24],1);
+            var esp=showSubmintValue('#add_esp',policyParam[25],1);
+            var permanent=$('input[name="permanent"]:checked').val();
+            if((permanent == 'yes' && policyParam[15] == 'yes') || (permanent=='no') && policyParam[15] == null)
+                permanent='';
+            $.ajax({
+                url: "?c=Policy/Interview&a=interviewEdit",
+                type: 'POST',
+                dataType:'text',
+                async:false,
+                data:{
+                    id:policyParam[0],
+                    action1:act,
+                    enable :en,
+                    log1:lo,
+                    srcarea:srcarea,
+                    dstarea:dstarea,
+                    src:src,
+                    dst:dst,
+                    //srcport:srcport,
+                    service:service,
+                    schedule:schedule,
+                    comment:$('#add_comment').textbox('getValue'),
+                    user:user_conf==1?user:'',
+                    group_name:groupname,
+                    orig_dst:orig_dst,
+                    max_active_session:max_active_session,
+                    permanent:permanent,
+                    traffic_statistic:$('input[name="traffic-statistic"]:checked').val()==policyParam[16] ? '' : $('input[name="traffic-statistic"]:checked').val(),
+                    hopopts:hopopts,
+                    dstopts:dstopts,
+                    routing:routing,
+                    fragment:fragment,
+                    ah:ah,
+                    esp:esp,
+                    slog:$('input[name="add_slog"]:checked').val()
+                },
+                success: function(data) {
+                    if(data=='0') {
+                        $("#admin1").window('close');
+                        $('#tt').treegrid('unselectAll');
+                        $('#tt').treegrid('reload');
+                    } else {
+                        ngtosPopMessager("error", data);
+                    }
+                }
+            });
+        }
+    }
+
+    function addSubmit(){
+        var isValid = $("#interview_policy_edit_form").form('validate');
+        if(isValid) {
+            var act='';
+            if($('#action1')[0].checked) act=$('#action1').val();
+            else if($('#action2')[0].checked) act=$('#action2').val();
+            else if($('#action3')[0].checked) act=$('#action3').val();
+
+            var en='';
+            if($('#enable1')[0].checked) en=$('#enable1').val();
+            else if($('#enable2')[0].checked) en=$('#enable2').val();
+
+            var lo='';
+            if($('#log1')[0].checked) lo=$('#log1').val();
+            else if($('#log2')[0].checked) lo=$('#log2').val();
+            $.ajax({
+                url: "?c=Policy/Interview&a=interviewAdd",
+                type: 'POST',
+                dataType:'text',
+                async:false,
+                data:{
+                    action1:act,
+                    enable :en,
+                    log1:lo,
+                    srcarea:$('#add_srcarea').textbox('getValue'),
+                    dstarea:$('#add_dstarea').textbox('getValue'),
+                    src:$('#add_src').textbox('getValue'),
+                    dst:$('#add_dst').textbox('getValue'),
+                    //srcport:$('#add_srcport').val(),
+                    service:$('#add_service').textbox('getValue'),
+                    schedule:$('#add_schedule').textbox('getValue'),
+                    comment:$('#add_comment').textbox('getValue'),
+                    user:user_conf == 1 ? $('#add_user').textbox('getValue') : '',
+                    group_name:$('#add_group_name').combobox('getValue'),
+                    orig_dst:$('#add_orig_dst').textbox('getValue'),
+                    max_active_session:$('#add_max_active_session').textbox('getValue'),
+                    permanent:$('input[name="permanent"]:checked').val(),
+                    traffic_statistic:$('input[name="traffic-statistic"]:checked').val(),
+                    hopopts:$('#add_hopopts')[0].checked?'setup':'notset',
+                    dstopts:$('#add_dstopts')[0].checked?'setup':'notset',
+                    routing:$('#add_routing')[0].checked?'setup':'notset',
+                    fragment:$('#add_fragment')[0].checked?'setup':'notset',
+                    ah:$('#add_ah')[0].checked?'setup':'notset',
+                    esp:$('#add_esp')[0].checked?'setup':'notset',
+                    slog:$('input[name="add_slog"]:checked').val()
+                },
+                success: function(data, textStatus) {
+                    if(data=='0') {
+                        $("#admin1").window('close');
+                        $('#tt').treegrid('unselectAll');
+                        $('#tt').treegrid('reload');
+                    } else {
+                        ngtosPopMessager("error", data);
+                    }
+                }
+            });
+        }
+    }
+
+</script>

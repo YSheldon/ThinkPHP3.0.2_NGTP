@@ -1,0 +1,65 @@
+<div class="ngtos_form_main">
+    <form action="" method="post" enctype="multipart/form-data" name="upload_file_form" id='upload_file_form'>
+        <table class="ngtos_form_table">
+            <tr>
+                <td style="width:80px;">{$Think.lang.CERTIFICATE_TYPE}</td>
+                <td id='vlinkname_td'>
+                    <input type="radio" name="deposition_type" value="primary" id="deposition_type_pri"><span id="deposition_type_priv">{$Think.lang.MASTER_CERTIFICATE}</span>
+                    <input type="radio" name="deposition_type" value="secondary" style="margin-left:60px;" id="deposition_type_sec"><span id="deposition_type_secv">{$Think.lang.FORM_CERTIFICATE}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>{$Think.lang.FILE_TYPE}</td>
+                <td id='vlinkname_td'>
+                    <input type="radio" name="key_type" value="keyfile" checked="" onClick="changeFileType(1)">{$Think.lang.CERTIFICATE_PRIVATE_KEY_FILE}
+                    <input type="radio" name="key_type" value="pkcs12" style="margin-left:27px;" onClick="changeFileType(2)">PKCS12{$Think.lang.FILE}
+                    <input type="radio" name="key_type" value="tarfile" style="margin-left:25px;" onClick="changeFileType(3)">TAR{$Think.lang.FILE}
+                </td>
+            </tr>
+            <tr style="" id="deposition_file">
+                <td>{$Think.lang.CERTIFICATE_FILE}</td>
+                <td id='vlinkname_td'>
+                    <!--                    	<input type="file" name="file[]" id="cert_file" value="浏览..." >-->
+                    <input class="input_text" style="width:250px;" type="text" id="cert_filetxt" name="cert_filetxt" />
+                    <input type="button" value="{$Think.lang.BROWSER}" />
+                    <input class="input_file" size="30" name="cert_file" id="cert_file" style="width:300px; margin-left:-300px; filter:alpha(opacity=0); opacity:0;" type="file" onchange="cert_filetxt.value = this.value" />
+                </td>
+            </tr>
+            <tr style="" id="key_file">
+                <td>{$Think.lang.PRIVATE_KEY_FILE}</td>
+                <td id='vlinkname_td'>
+                    <!--                        <input type="file" name="file[]" id="key" value="浏览...">-->
+                    <input class="input_text" style="width:250px;" type="text" id="keytxt" name="keytxt" />
+                    <input type="button" value="{$Think.lang.BROWSER}" />
+                    <input class="input_file" size="30" name="key" id="key" style="width:300px; margin-left:-300px; filter:alpha(opacity=0); opacity:0;" type="file" onchange="keytxt.value = this.value" />
+                </td>
+            </tr>
+            <tr style="display:none" id="file_password">
+                <td>{$Think.lang.CERTIFICATE_FILE_PASSWORD}</td>
+                <td id='vlinkname_td'>
+                    <input type="password" id='password'name="password" >
+                </td>
+            </tr>
+        </table>
+
+        <div>
+            <input type="button"  id='' onclick="submitCert()" class="ngtos_button_middle" style="margin-top:20px; margin-left:180px; margin-bottom:20px" value="{$Think.lang.CONFIRM}">
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('addExceptDivCert')" style="margin-left:10px">
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        if ($('#add_page').find('#localcert_id').val() == 'primary') {
+            $('#addExceptDivCert').find('#deposition_type_pri').hide();
+            $('#addExceptDivCert').find('#deposition_type_priv').show();
+            $('#addExceptDivCert').find('#deposition_type_sec').hide();
+            $('#addExceptDivCert').find('#deposition_type_secv').hide();
+        } else {
+            $('#addExceptDivCert').find('#deposition_type_pri').hide();
+            $('#addExceptDivCert').find('#deposition_type_priv').hide();
+            $('#addExceptDivCert').find('#deposition_type_sec').hide();
+            $('#addExceptDivCert').find('#deposition_type_secv').show();
+        }
+    })
+</script>

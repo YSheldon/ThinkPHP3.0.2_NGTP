@@ -1,0 +1,61 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/mac.js"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false">
+    <table id="tt"></table>
+</div>
+<div id="tb">
+    <span style='margin-left:10px;'/>{$Think.lang.MAC_ADDR}:</span>
+    <input type="text" id='find_mac' class="ngtos_input"/>
+    <span style='margin-left:10px;'/>{$Think.lang.VLAN_ID}:</span>
+    <input type="text" id='find_vlan' class="ngtos_input" style="width:80px;"/>
+    <span style='margin-left:10px;'/>{$Think.lang.INTERFACE}:</span>
+    <select id="find_interface" class="ngtos_select" style="width:80px;">
+        <option value=""></option>
+    </select>
+    &nbsp;&nbsp;
+    <a href="###" class="easyui-linkbutton" iconCls="icon-search" onClick="mySearch();" plain="true" >{$Think.lang.QUERY}</a>
+    <a href="###" class="easyui-linkbutton" id="icon_clear" iconCls="icon-clear" onClick="myDynamicMacClear();" plain="true" style="border:none;">{$Think.lang.CLEAR}</a>
+</div>
+
+</body>
+</html>
+<script>
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            url: '?c=Network/DynamicMac',
+            columns: [[
+                    {field: 'mac', title: $LANG.MAC_ADDR, width: 120, sortable: true},
+                    {field: 'vlanid', title: $LANG.VLAN, width: 120},
+                    {field: 'devname', title: $LANG.INTERFACE, width: 120},
+                    {field: 'vcomid', title: 'vcom', width: 80, sortable: true}
+            ]],
+            toolbar: '#tb',
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING
+        });
+        if (!getVsysTurn()) {
+            $('#tt').datagrid("hideColumn", "vcomid");
+        }
+        getPhysicsInterface("find_interface");
+        if (getPrivilege("network") == false) {
+            $('#icon_clear').linkbutton('disable');
+        }
+        $("#find_mac").textbox({
+            validType:'mac'
+        });
+        $("#find_vlan").textbox({
+            validType:'integer'
+        });
+    });
+</script>

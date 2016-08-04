@@ -1,0 +1,100 @@
+<div>
+    <form id="address_group_form">
+        <table id="setstyles" class="ngtos_form_table">
+            <tr style="border-bottom:1px solid #ccc">
+                <td width="50px" class="tdlabel_net">{$Think.lang.NAME}</td>
+                <td width="450px">
+                    <input type="text" id="gro_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','addrName']">
+                    <span class="form_comment">{$Think.lang.MAX_CHAR30}</span>
+                </td>
+            </tr>
+            <tr id="ag_vshare" style="display:none">
+                <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+                <td width="450px">
+                    <input type="radio" name="ag_sha"  value="1" id="addr_group_share1">
+                    <label for="addr_group_share1">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="ag_sha" value="0" checked id="addr_group_share2">
+                    <label for="addr_group_share2">{$Think.lang.DENY}</label>
+                </td>
+            </tr>
+            <tr style="display:none">
+                <td>{$Think.lang.VERSION}</td>
+                <td class="tdlabel_net">
+                    <input type="radio" name="ip_ver" value="1" checked id="ipv4_type">
+                    <label for="ipv4_type">IPV4</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="ip_ver" value="2" id="ipv6_type">
+                    <label for="ipv6_type">IPV6</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net" style="vertical-align: middle;">{$Think.lang.ADDRESS}</td>
+                <td>
+                    <div class="select_div">
+                        <div class="select_ldiv">
+                            <div class="select_ldiv_bottom border_bottom0">
+                                <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                                <span class="searchbox width100">
+                                    <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'addrgroup_item_cid', 0)">
+                                    <span class="searchbox-button"></span>
+                                </span>
+                            </div>
+                            <select class="select middle2 " style="height:190px;" id="addrgroup_item_cid" multiple ondblclick="move_options('addrgroup_item_cid', 'd_addrgroup_item_cid', '1', 'sel_addr_num');">
+                            </select>
+                            <div id='group_add_div' class="select_ldiv_bottom border_top0">
+                                <a class="lineHeight26 cursorPoint" onclick="add_addrs('{$Think.lang.ADD}')">{$Think.lang.ADD_ADDR}</a>
+                            </div>
+                        </div>
+                        <div class="select_cdiv">
+                            <input type="button" class="width40" onClick="move_options('addrgroup_item_cid', 'd_addrgroup_item_cid', '1', 'sel_addr_num');" value=" > ">
+                            <br/><br/>
+                            <input type="button" class="width40" onClick="move_options('d_addrgroup_item_cid', 'addrgroup_item_cid', '0', 'sel_addr_num');" value=" < ">
+                        </div>
+                        <div class="select_rdiv">
+                            <div id="sel_addr_num" class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+
+                            </div>
+                            <select class="select middle2 height12" style="height:190px;" id="d_addrgroup_item_cid" name="service_item[]" multiple ondblclick="move_options('d_addrgroup_item_cid', 'addrgroup_item_cid', '0', 'sel_addr_num');">
+                            </select>
+                            <div class="select_ldiv_bottom border_top0">
+                                <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_addrgroup_item_cid', 'addrgroup_item_cid', '0', 'sel_addr_num');">{$Think.lang.CLEAR_ALL}</a>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addAddrGro'>
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('addrGroup_div')">
+        </div>
+    </form>
+</div>
+
+<script>
+    $(function() {
+        if (!isShared())
+            $('#ag_vshare').css("display", "");
+        else
+            $('#ag_vshare').css("display", "none");
+        if (typeof (grtag) != 'undefined' && (grtag == 6 || grtag == 9)) {
+            $('#group_add_div').hide();
+            $('#addrgroup_item_cid').css('height', 216.5);
+        }
+        if (gaddr_tag == 1) {
+            refresh_addr();
+        } else {
+            modify_refresh_addr(param[2]);
+
+            $('#gro_name').val(param[0]);
+            $("#gro_name").attr('disabled', 'disabled');
+            if (param[1] == 'on')
+                $('input:radio[name="ag_sha"]').get(0).checked = true;
+            else
+                $('input:radio[name="ag_sha"]').get(1).checked = true;
+        }
+        $('#addAddrGro').click(function() {
+            sel_addr_group(gaddr_tag);
+        });
+    });
+
+</script>

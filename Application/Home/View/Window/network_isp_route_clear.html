@@ -1,0 +1,54 @@
+<div>
+    <table class="ngtos_form_table">
+        <tr>
+            <td>{$Think.lang.ISP_NAME}</td>
+            <td>
+                <select name="isp_name" id="isp_name" style="width:153px;"></select>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="clearIspRouteSubmit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('isp_clear_page')">
+    </div>
+</div>
+<script>
+    $(function() {
+        //获取所有物理接口
+        $("#isp_name").combobox({
+            url: '?c=Network/IspRoute&a=ispName',
+            required:false,
+            valueField:'isp_key',
+            textField:'isp_name',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:true
+        });
+        $("#isp_name").combobox('setValue',$LANG.ALL);
+    });
+
+    function clearIspRouteSubmit() {
+        if(!$("#isp_name").combobox('getText')) {
+            ngtosPopMessager('info',$LANG.SELECT_CLEAR_ITEM);
+            return false;
+        }
+        $.ajax({
+            url: "?c=Network/IspRoute&all=1",
+            type: 'delete',
+            dataType: 'text',
+            data: {
+                ispname: $("#isp_name").combobox('getValue')
+            },
+            success: function(data){
+                if(data == '0') {
+                    $('#tt').datagrid('reload');
+                    $("#isp_clear_page").window('close');
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+                    $("#tt").datagrid("unselectAll");
+            }
+        });
+    }
+</script>

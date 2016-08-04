@@ -1,0 +1,180 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/service_info.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/service.js" type="text/javascript"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=Resource/Service&a=service_info">
+        <li>
+            {$Think.lang.PREDEF_SERVICE}
+        </li>
+    </a>
+    <a href="?c=Resource/Service&a=service_info&tag=self">
+        <li>
+            {$Think.lang.CUSTOM_SERVICE}
+        </li>
+    </a>
+    <a href="?c=Resource/Service&a=service_info&tag=group">
+        <li  id="ipv_4">
+            {$Think.lang.SERVICE_GROUP}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table>
+<div id="dlg-toolbar" style="padding:2px 0">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true" onClick="add_serv_group('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+                <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" onClick="editServGroRow('{$Think.lang.EDIT}');">{$Think.lang.EDIT}</a>
+                <a href="#" class="easyui-linkbutton" id='icon_del' data-options="iconCls:'icon-delete',plain:true" onClick="delete_sgroup_item()">{$Think.lang.DELETE}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_clear" data-options="iconCls:'icon-clear',plain:true" onClick="clear_sgroup_item()">{$Think.lang.CLEAR}</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    var grtag = 2;
+    var gserv_tag;
+    var param = [];
+
+    $(function() {
+        $('#tt').treegrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: false,
+            border: false,
+            rownumbers: false,
+            remoteSort: false,
+            idField: 'id',
+            treeField: 'name',
+            autoRowHeight: true,
+            animate: false,
+            url: '?s=Home/Resource/Service&mod=servicegroup&grid=tree',
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'id', title: 'ID', width: 10},
+                    {field: 'name', title: $LANG.NAME, width: 250},
+                    {field: 'protocol', title: $LANG.PROTOCOL, width: 150,
+                        formatter: function(value, rowData) {
+                            if (rowData.protocol == null)
+                                var s = "";
+                            else {
+                                if (rowData.protocol == "6")
+                                    var s = "TCP";
+                                else if (rowData.protocol == "17")
+                                    var s = "UDP";
+                                else if (rowData.protocol == "1")
+                                    var s = "ICMP";
+                                else
+                                    var s = rowData.protocol;
+                            }
+                            return s;
+                        }
+                    },
+                    {field: 'port', title: $LANG.DETAIL, width: 250,
+                        formatter: function(value, rowData) {
+                            if (rowData.port == null)
+                                var s = "";
+                            else {
+                                if (rowData.protocol == "1") {
+                                    var iport = rowData.port.split("~");
+                                    if (iport.length == 1)
+                                        var s = $LANG.TYPE + "：" + rowData.port;
+                                    else
+                                        var s = $LANG.TYPE + "：" + iport[0] + "&nbsp;" + $LANG.CODE + "：" + iport[1];
+                                } else {
+                                    if (rowData.port == '0')
+                                        var s = ""
+                                    else
+                                        var s = $LANG.PORT + "：" + rowData.port;
+                                }
+                            }
+                            return s;
+                        }
+                    },
+                    {field: 'shared', title: $LANG.SHARE, width: 100,
+                        formatter: function(value, rowData) {
+                            if (rowData.shared == "on")
+                                return $LANG.YES;
+                            else
+                                return $LANG.NO;
+                        }
+                    },
+                    {field: 'comment', title: $LANG.DESCRIPTION, width: 450,
+                        formatter: function(value, rowData) {
+                            if (rowData.comment == null)
+                                var s = "";
+                            else
+                            {
+                                var comm = rowData.comment;
+                                var s = comm.replace(/\'/g, '')
+                                return s;
+                            }
+                        }
+                    }
+                ]],
+            singleSelect: false,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar",
+            checkOnSelect: true,
+            onBeforeExpand: before_expand_action,
+            onExpand: expand_action,
+            onCheck: setServGroToolBar,
+            onUncheck: setServGroToolBar,
+            onClickRow: setServGroToolBar,
+            onCheckAll: setServGroToolBar,
+            onUncheckAll: setServGroToolBar,
+            onSelect: setServGroToolBar,
+            onUnselect: setServGroToolBar,
+            onDblClickRow: function(row) {
+                if (row.port != null) {
+                    var comm = row.comment;
+                    var len = comm.length - 2;
+                    comment = comm.substr(1, len);
+                    comment = $.trim(comment);
+                    if (row.type == 0)
+                        if(!isShared() || (isShared() && row.shared != "on")){
+                            edit_selfserv_name(row.name, row.protocol, row.port, comment, row.shared, $LANG.EDIT);
+                        }
+                } else
+                    if(!isShared() || (isShared() && row.shared != "on")){
+                        edit_group_name(row.name, row.member, row.shared, $LANG.EDIT);
+                    }
+            },
+            onLoadSuccess: function(data) {
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_del').linkbutton('disable');
+            }
+        });
+        $('#tt').treegrid('hideColumn', 'id');
+        var p = $('#tt').treegrid('getPager');
+        $(p).pagination({
+            onBeforeRefresh: function() {
+                $('#tt').treegrid('options').url = '?s=Home/Resource/Service&mod=servicegroup&grid=tree';
+            }
+        });
+        if (getPrivilege("define") == false) {
+           $('#icon_add').linkbutton('disable');
+           $('#icon_clear').linkbutton('disable');
+        }
+    });
+
+    function before_expand_action(row) {
+        if (row.member != '')
+            $('#tt').treegrid('options').url = '?s=Home/Resource/Service&mod=servicegroup&grid=tree&name=' + encodeURI(row.member);
+    }
+    function expand_action() {
+        $('#tt').treegrid('options').url = '?s=Home/Resource/Service&mod=servicegroup&grid=tree';
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

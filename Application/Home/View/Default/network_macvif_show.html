@@ -1,0 +1,134 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/macvif.js"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=Network/Macvif&a=show">
+        <li id="ipv_4">
+            {$Think.lang.MAC_SUBIF}
+        </li>
+    </a>
+    <a href="?c=Network/Macvif&a=show&tabs=tag">
+        <li>
+            {$Think.lang.TAG_SUBIF}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table> 
+<script>
+    // //定位和切换tab
+    // $('#easyui_tab').tabs({
+    //     selected: 0, //tab的位置，从0开始第几个
+    //     border: false,
+    //     onSelect: function(title, index) {
+    //         if (index == 1) {   //点击tab标签跳转的页面
+    //             location.href = '?c=Network/Macvif&a=show&tabs=tag';
+    //         }
+    //     }
+    // });
+/*    var vsys_name = "{$vsys_name}";//判断当前是不是虚系统用户
+    var vsys_start ="{$vsys_start}";//判断当前是不是已经开启虚系统*/
+    var param = [];
+    $(function() {
+        if (getPrivilege("network") != false) {
+            $('#tt').datagrid({
+                toolbar: [{
+                    id: 'icon-add',
+                    text: $LANG.ADD,
+                    iconCls: 'icon-add',
+                    handler: addMacvifRow
+                }, {
+                    id: 'icon-edit',
+                    text: $LANG.EDIT,
+                    iconCls: 'icon-edit',
+                    handler: editMacvifRow
+                }, {
+                    id: 'icon-delete',
+                    text: $LANG.DELETE,
+                    iconCls: 'icon-delete',
+                    handler: deleteMacvifRow
+                }, {
+                    id: 'icon-clear',
+                    text: $LANG.CLEAR,
+                    iconCls: 'icon-clear',
+                    handler: clearMacvifRow
+                }
+                ]
+            });
+        }
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            nowrap:false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'interface_name',
+//            url: '?c=Network/Macvif&a=datagridShow',
+            url: '?c=Network/Macvif&mod=macvif',
+//            queryParams:{
+//                mod:'network macvif'
+//            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'interface_name', title: $LANG.INTERFACE_NAME, width: 80, sortable: true,
+                        formatter: function(value) {
+                            return "<a style='cursor:pointer;' onclick='show_flow(&quot;" + value + "&quot;)'>" + value + "</a>";
+                        }
+                    },
+                    {field: 'description', title: $LANG.DESCRIPTION, width: 250},
+                    {field: 'ip', title:$LANG.ADDR_MASK, width: 250,
+                        formatter: function(value, row) {
+                            return format_ip(row.ip4, row.ip6);
+                        }
+                    },
+                    {field: 'mtu', title: 'MTU', width: 60},
+                    {field: 'shutdown', title: $LANG.STATE, width: 60, sortable: true,
+                        formatter: function(value) {
+                            if (value == "enable") {
+                                return $LANG.ENABLE;
+                            } else {
+                                return $LANG.DOWN;
+                            }
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onDblClickRow: function(index, row) {
+                if (getPrivilege("network") != false) {
+                    $("#tt").datagrid('unselectAll');
+                    $("#tt").datagrid('selectRow', index);
+                    editMacvifRow(row.interface_name);
+                }
+            },
+            onCheck: set_macvif_toolbar,
+            onUncheck: set_macvif_toolbar,
+            onClickRow: set_macvif_toolbar,
+            onCheckAll: set_macvif_toolbar,
+            onUncheckAll: set_macvif_toolbar,
+            onSelect: set_macvif_toolbar,
+            onUnselect: set_macvif_toolbar,
+            onLoadSuccess: function() {
+                set_macvif_toolbar();
+                if($('.tagvif_tip').length > 0) {
+                    $('.tagvif_tip').tooltip({ position: 'bottom'});
+                    $('.tagvif_tip').mouseover(function(){$(this).tooltip('show');});
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

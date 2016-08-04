@@ -1,0 +1,73 @@
+<include file='Index:main'/>
+<style type="text/css">
+    .datagrid{padding-top:30px;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/system/journal.js" type="text/javascript"></script>
+<div class="tab_tag_a">
+    <volist name="data" id="vo">
+<!--        <span class="tab_tag_b" id="tb1" style="margin-left: 5px;"><a class="tab_tag_b_on" href="?c=System/Journal&a=system_log_show">{$Think.lang.SYSTEM}</a></span>
+        <span class="tab_tag_b" id="tb2"><a href="?c=System/Journal&a=system_log_show&tab=1">{$Think.lang.HA}</a></span>
+        <span class="tab_tag_b" id="tb3"><a href="?c=System/Journal&a=system_log_show&tab=2">{$Think.lang.PF}</a></span>-->
+        <if condition=" $vo.menu eq 'system_log'">
+            <span class="tab_tag_b" id="tb1" style="margin-left: 5px;"><a class="menus" href="?c=System/Journal&a=system_log_show&base={$vo.data}&table={$vo.table}&id=1">{$vo.cn}</a></span>
+        </if>
+    </volist>
+</div>
+<table id="tt"></table>
+<!-- 菜单栏-->
+<div id="tb" style="height: auto">
+    <if condition="($id eq 1)">
+        <div>
+			<input type="hidden"  id ="did" value ="{$base}">
+            <input type="hidden"  id ="tid" value ="{$table}">
+            <a href="###" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onClick="deleteall();">{$Think.lang.CLEAR}</a>
+            <a href="###" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="superQuery()">{$Think.lang.QUERY}</a>
+            <a href="###" class="easyui-linkbutton" iconCls="icon-export" plain="true" onClick="logExport()">{$Think.lang.EXPORT}</a>
+        </div>
+     </if>
+</div>
+<div id="log_search" style="width: 400px; display: none"></div>
+<script>
+ var log_type = $("#hid").val();
+//数据库名
+var base = "{$base}";
+//表名
+var table = "{$table}";
+var id = "{$id}";
+var log_language = "{$outcome['log-language']}";
+    $(function() {
+        $(".menus").click(function(){
+            $(this).removeClass("menus");
+            $(this).addClass("tab_tag_b_on");
+        });
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: false,
+            border: false,
+            remoteSort: false,
+            showFooter: false,
+            collapsible: true,
+            url: '?c=System/Journal&a=JournalJsondata&base='+base+'&table='+table+'&language='+log_language,
+            pagination: true,
+            rownumbers: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: '#tb',
+            checkOnSelect: true,
+            selectOnCheck: true,
+			onLoadSuccess: function() {
+                $('#tt').datagrid('fixRownumber');
+            },
+            onClickRow: function(rowIndex, rowData) {
+                $('#tt').datagrid("unselectRow", rowIndex);
+            },
+        });
+        if(id==1)
+            fetchColumns(base,table)
+    });
+</script>
+</body>
+</html>

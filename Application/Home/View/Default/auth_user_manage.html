@@ -1,0 +1,326 @@
+<include file='Index:main'/>
+<link rel="stylesheet" type="text/css" href="{$Think.config.NG_PATH}Public/css/yngtos/authentication.css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/authentication.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/address.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/schedule.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/region.js" type="text/javascript"></script>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/plugins/simpletooltip/ajaxfileupload.js">
+
+</script>
+<style>
+    .main-center-user {
+        clear:both;
+        position:absolute;
+        left:0px;
+        top:0px;
+        bottom:0px;
+        right:0px;
+        border: none;
+        /* min-width:800px;*/
+        /* background-color: #fff;*/
+        /* float: left;*/
+        /* margin-bottom: 5px;
+           margin-top: 2px;*/
+        /* overflow-y:hidden;
+           overflow-x:auto;*/
+        margin:1px 1px 1px 1px;
+        padding:0px;
+        _height: expression(parseInt(document.body.clientHeight)- parseInt(this.currentStyle.top)
+            - parseInt(this.currentStyle.bottom));
+    }
+    .datagrid-view{
+        margin-left: 12px;
+    }
+</style>
+    <div class="content-wrap">
+        <!-- 用户组： -->
+        <div id="left_div" class="left-panel-wrap" style="float:left;"
+             data-options="region:'west',title:'{$Think.lang.GROUP}',collapsed:false,split:true">
+            <div id="user_group_menu"class="datagrid-toolbar nopading">
+                <div class="btn-anchor">
+                    <a href="#"  onClick="add_group('{$Think.lang.ADD}')" class="easyui-linkbutton"
+                        data-options="iconCls:'icon-add-group',plain:true">
+                        {$Think.lang.ADD}
+                    </a>
+                </div>
+                <div class="btn-anchor disabled">
+                    <a href="#" id="group_edit" onClick="modify_group('{$Think.lang.EDIT}')" 
+                       class="easyui-linkbutton" data-options="iconCls:'icon-edit-group',plain:true">
+                        {$Think.lang.EDIT}
+                    </a>   
+                </div>
+                <div class="btn-anchor disabled">
+                    <a href="#"  id="group_del" onClick="del_group()"  class="easyui-linkbutton" data-options="iconCls:'icon-delete-group',plain:true">
+                        {$Think.lang.DELETE}
+                    </a>
+                </div>
+            </div> 
+            <div>
+                <ul id="tt1" style="overflow:auto;" class="easyui-tree" 
+                    data-options="url:'?c=Auth/User&a=groupJsondata',dnd:true,onBeforeExpand:before_expand_action">
+                </ul>
+            </div>
+        </div>
+        <!-- 用户组：End！ -->
+        <div id="content_div" data-options="region:'center',border:false" 
+             style="position:relative;top:0px;left:0px;right:5px;">
+            <table id="tt"></table>
+        </div>   
+        <!-- 用户： -->
+        <div id="dlg-toolbar" class="table-wrap flotRight">
+            <!-- 标题栏： -->
+            <div class="datagrid-toolbar">
+                <div class="tools-lft">
+                    <div class="btn-anchor">
+                        <a href="#" class="easyui-linkbutton" onClick="add_user('{$Think.lang.ADD}')"    data-options="iconCls:'icon-add',plain:true" >
+                        {$Think.lang.ADD}
+                        </a>
+                    </div>
+                    <div class="btn-anchor disabled">
+                        <a href="#" class="easyui-linkbutton" id="user_edit" data-options="iconCls:'icon-edit',plain:true" id="icon_edit" onClick="editUserRow('{$Think.lang.EDIT}')">
+                        {$Think.lang.EDIT}
+                        </a>   
+                    </div>
+                    <div class="btn-anchor disabled">
+                        <a href="#" class="easyui-linkbutton" id="user_del" data-options="iconCls:'icon-delete',plain:true" onClick="delete_user_item()">
+                        {$Think.lang.DELETE}
+                        </a>
+                    </div>
+                    <div class="btn-anchor disabled">
+                        <a href="#" class="easyui-linkbutton" id="user_enable" data-options="iconCls:'icon-enable',plain:true" onClick="but_enable_handle('no')">
+                        {$Think.lang.ENABLE}
+                        </a>
+                    </div>
+                    <div class="btn-anchor disabled">
+                        <a href="#" class="easyui-linkbutton" id="user_disable" data-options="iconCls:'icon-disable',plain:true" onClick="but_enable_handle('yes')">
+                        {$Think.lang.DISABLE}
+                        </a>
+                    </div>
+                    <div class="btn-anchor">
+                        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-import',plain:true" onClick="import_user('{$Think.lang.IMPORT}')">
+                        {$Think.lang.IMPORT}
+                        </a>
+                    </div>
+                    <div class="btn-anchor">
+                        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-export',plain:true" onClick="export_user('{$Think.lang.EXPORT_FILENAME}')">
+                        {$Think.lang.EXPORT}
+                        </a>
+                    </div>
+                    <div class="btn-anchor">
+                        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-scan',plain:true" onClick="scan_user('{$Think.lang.SCAN_USER}')">
+                        {$Think.lang.SCAN}
+                        </a>
+                    </div>
+                </div>
+                <div class="tools-rgt">
+                    <select id="searchType" class="easyui-combobox" data-options="panelHeight:'auto'">
+                        <option value="1">{$Think.lang.USER}</option>
+                        <option value="2">{$Think.lang.ALLOW_LOGIN_ADDR}</option>
+                    </select>
+                    <span class="rgt_search">
+                        <input class="searchbox-text searchbox-prompt" type="text" value="{$Think.lang.INPUT_SEARCH}" id="searchUname" onkeyup="freshUserItem($(this).val())">
+                        <span class="search-icon" onclick="searchUser()" style="cursor:pointer;"></span>
+                    </span>
+                </div>
+                <div style="clear:both;"></div>
+            </div>                  
+        </div>
+
+        <script>
+            var NAME = $LANG.NAME;
+            var BELONG_GROUP = $LANG.BELONG_GROUP;
+            var AUTH_SERVER = $LANG.AUTH_SERVER;
+            var DESCRIPTION = $LANG.DESCRIPTION;
+            var EXPIRE_TIME = $LANG.EXPIRE_TIME;
+            var ip_init_num;
+            var time_tag = 1;
+            var ip_num;
+            var addr_tag = 1;
+            var grtag = 3;
+            var auth_tag = 1;
+            var group_tag;
+            var user_tag;
+            var allnode = "";
+            var group_node = "/";
+            var param = [];
+            var region_tag = 1;
+
+            var sobj;
+            var searchStr;
+            var checktotal = "";
+            var checkmsg = "";
+            // 网页可见区域高度：
+            var mheight = window.innerHeight-79;
+            $("#left_div").css("height",mheight+'px');
+            function before_expand_action(node) {
+                $('#tt1').tree('options').url = '?c=Auth/User&a=groupJsondata';
+            }
+            // 部分文本框属性设置：
+            $('.textbox combo').css("height","35px");
+
+            $(function() {
+                $(".datagrid-toolbar nopading").parent().attr("class", "search");
+                var search_box = $('<div class="search" style="position:relative;"><span class="search-icon" onclick="search_gro_name()" style="position:absolute;top:10px;cursor:pointer;"></span><span class="rgt_search"><input  type="text" value="' + $LANG.INPUT_SEARCH + '"  id="searchGroup" style="color:#A9A9A9;" onkeyup="freshGroupItem($(this).val())"></span></div>');
+                $("#user_group_menu").before(search_box);
+
+                checkSearchInfo('searchGroup');
+                checkSearchInfo('searchUname');
+                $('#tt').datagrid({
+                    fitColumns: true,
+                    nowrap: true,
+                    striped: true,
+                    // sortName: 'name', //当数据表格初始化时以哪一列来排序。
+                    sortOrder: 'asc', //定义排序顺序，可以是'asc'或者'desc'（正序或者倒序）。
+                    url: '?c=Auth/User&a=userinfoJsondata',
+                    fit: true,
+                    border: false,
+                    remoteSort: false, //定义是否通过远程服务器对数据排序。
+                    frozenColumns: [[
+                            {field: 'ck', checkbox: true}
+                        ]],
+                    columns: [[
+                            {field: 'name', title: NAME, width: 200, sortable: true},
+                            {field: 'group', title: BELONG_GROUP, width: 200, sortable: true,
+                                formatter: function(value, rowData, rowIndex) {
+                                    if (rowData.group != "" && rowData.group != null)
+                                        rowData.group = $.trim(rowData.group);
+
+                                    if (rowData.group == "null")
+                                        return '/';
+                                    else
+                                        return rowData.group;
+                                }
+                            },
+                            {field: 'auth_server', title: AUTH_SERVER, width: 200, sortable: true,
+                                formatter: function(value, rowData, rowIndex) {
+                                    rowData.auth_server = $.trim(rowData.auth_server);
+                                    if (rowData.auth_server == "null")
+                                        return '';
+                                    else
+                                        return rowData.auth_server;
+                                }
+                            },
+                            {field: 'description', title: DESCRIPTION, width: 200,
+                                formatter: function(value, rowDate, rowIndex) {
+                                    if (value == "null")
+                                        return "";
+                                    else
+                                        return value;
+                                }
+                            },
+                            {field: 'account_end_time', title: EXPIRE_TIME, width: 213,
+                                formatter: function(value, rowDate, rowIndex) {
+                                    if (value == null || value.indexOf("1970-01-01") != -1)
+                                        return $LANG.NEVER_EXPIRE;
+                                    else
+                                        return rowDate.account_end_time;
+                                }
+                            }
+                        ]],
+                    onDblClickRow: function(rowindex, rowData) {
+                        edit_user(rowData.name, rowData.description, rowData.group, rowData.address_name, rowData.timer_name, rowData.type, rowData.auth_server, rowData.area_name, $LANG.EDIT);
+                    },
+                    pagination: true, //设置true将在数据表格底部显示分页工具栏。
+                    pageSize: 20, //当设置分页属性时，初始化每页记录数。
+                    pageList: [20, 50, 100], //当设置分页属性时，初始化每页记录数列表。
+                    rownumbers: true, //设置为true将显示行数。
+                    loadMsg: $LANG.WAITING, //当从远程站点载入数据时，显示的一条快捷信息。
+                    toolbar: "#dlg-toolbar",
+                    checkOnSelect: true,
+                    rowStyler: function(rowIndex, rowData) {
+                        if (rowData.invalid != "no") {
+                            return 'background-color:#d5d5d5';
+                        }
+                    },
+                    onLoadSuccess: function(data) {
+                        $('#tt').datagrid('fixRownumber');
+                        $('#user_edit').linkbutton('disable');
+                        $('#user_del').linkbutton('disable');
+                        $('#user_enable').linkbutton('disable');
+                        $('#user_disable').linkbutton('disable');
+                    },
+                    onCheck: setUserToolBar,
+                    onUncheck: setUserToolBar,
+                    onClickRow: setUserToolBar,
+                    onCheckAll: setUserToolBar,
+                    onUncheckAll: setUserToolBar,
+                    onSelect: setUserToolBar,
+                    onUnselect: setUserToolBar
+                });
+                $("#tt1").css("height", $("#left_div").height() - 30);
+                $('#tt1').tree({
+                    onClick: function(node) {
+                        var pnode = $('#tt1').tree('getParent', node.target);
+                        allnode = "";
+                        if (pnode == null) {
+                            $('#group_edit').linkbutton('disable');
+                            $('#group_del').linkbutton('disable');
+                            group_node = "/";
+                            $('#tt').datagrid({
+                                pageNumber: 1,
+                                fitColumns: true,
+                                url: '?c=Auth/User&a=userinfoJsondata'
+                            });
+                        } else {
+                            $('#group_edit').linkbutton('enable');
+                            $('#group_del').linkbutton('enable');
+                            group_node = node.text;
+                            var cid = node.text;
+                            var cnode = $('#tt1').tree('getChildren', node.target);
+                            for (var i = 0; i < cnode.length; i++) {
+                                allnode += cnode[i].text + ',';
+                            }
+                            allnode += cid;
+                            child_user();
+                            $('#tt').datagrid('reload');
+                        }
+                    },
+                    onLoadSuccess: function(data) {
+                        $('#group_edit').linkbutton('disable');
+                        $('#group_del').linkbutton('disable');
+                    },
+                    onDrop: function(targetNode, source, point) {
+                        var tarNode = $("#tt1").tree('getNode', targetNode);
+                        if (tarNode.text == '/')
+                            tarNode.text = "null";
+                        $.ajax({
+                            url: "?c=Auth/User&a=usergroupModify",
+                            type: 'POST',
+                            dataType: 'text',
+                            data: {
+                                pname: tarNode.text,
+                                sname: source.text
+                            },
+                            success: function(data, textStatus) {
+                                if (data == '0') {
+                                    $('#tt1').tree('options').url = '?c=Auth/User&a=groupJsondata';
+                                    $('#tt1').tree('reload');
+                                } else {
+                                    ngtosPopMessager('error', data);
+                                    $('#tt1').tree('reload');
+                                }
+                            }
+                        });
+                    }
+                });
+
+            });
+
+            var ob = $(".tree_3over").parents(".sub-nav").attr("id");
+            $(function(){
+                $("#main_close").click(function(){
+                    $(".datagrid .datagrid-pager").css("width","78%");
+                    $(".datagrid .datagrid-pager").css("margin-left","10px");
+
+                });
+                $("#main_open").click(function(){
+                    $(".datagrid .datagrid-pager").css("width","68%");
+                });
+            });
+        </script>
+    </div>
+</section>
+<!--     </div>
+</div> -->
+</body>
+</html>

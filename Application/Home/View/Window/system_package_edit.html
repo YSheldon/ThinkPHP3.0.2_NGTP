@@ -1,0 +1,193 @@
+<div>
+    <div>
+        <table class="ngtos_form_table">
+<!--            <tr>
+                <td>{$Think.lang.NAME}</td>
+                <td>
+                    <input type="text" name="rname" id="rname" class='ngtos_input' style="width:180px"><font color="red">*</font>
+                    <span id="rname"></span>
+                </td>
+            </tr>-->
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.STATE}</td>
+                <td>
+                    <span id="role_status"></span>
+                </td>
+            </tr>
+            <tr id="rmethod">
+                <td class="tdlabel_net">{$Think.lang.WAY}</td>
+                <td>
+                    <input type="radio" name="role_type" id="role_type1" value="http" onclick="check_ftp(0)" checked><label for="role_type1">HTTP</label>
+                    <input type="radio" name="role_type" id="role_type2" value="ftp" onclick="check_ftp(1)"><label for="role_type2">FTP</label>
+                </td>
+            </tr>
+            <tr id="user" style="display:none"><td class="tdlabel_net">{$Think.lang.NAME}</td>
+                <td><input type="text" id="user_name" value="" class="easyui-textbox input_length"></td>
+            </tr>
+            <tr id="passwd" style="display:none"><td class="tdlabel_net">{$Think.lang.PASSWORD}</td>
+                <td><input type="password" id="pass_name" value="" class="easyui-textbox input_length"></td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net" style="margin-top:100px;">{$Think.lang.UPDATE_TIME}</td>
+                <td>
+                    <table>
+                        <tr>
+                            <td colspan="2">
+                                <input type="radio" name="time_type" id="time_type1" value="date" onclick="check_time(0)" checked><label for="time_type1">{$Think.lang.MONTHLY}</label>
+                                <input type="radio" name="time_type" id="time_type2" value="week" onclick="check_time(1)"><label for="time_type2">{$Think.lang.WEEKLY}</label>
+                                <input type="radio" name="time_type" id="time_type3" value="day" onclick="check_time(2)"><label for="time_type3">{$Think.lang.EVERYDAY}</label>
+                                <input type="radio" name="time_type" id="time_type4" value="min" onclick="check_time(3)"><label for="time_type4">{$Think.lang.ALL_TIME}</label>
+                            </td>
+                        </tr>
+                        <tr id="month_info" style="display:none">
+                            <td>
+                                <select id="date_info">
+                                    <option value="01">{$Think.lang.DATE1}</option><option value="02">{$Think.lang.DATE2}</option><option value="03">{$Think.lang.DATE3}</option><option value="04">{$Think.lang.DATE4}</option>
+                                    <option value="05">{$Think.lang.DATE5}</option><option value="06">{$Think.lang.DATE6}</option><option value="07">{$Think.lang.DATE7}</option><option value="08">{$Think.lang.DATE8}</option>
+                                    <option value="09">{$Think.lang.DATE9}</option><option value="10">{$Think.lang.DATE10}</option><option value="11">{$Think.lang.DATE11}</option><option value="12">{$Think.lang.DATE12}</option>
+                                    <option value="13">{$Think.lang.DATE13}</option><option value="14">{$Think.lang.DATE14}</option><option value="15">{$Think.lang.DATE15}</option><option value="16">{$Think.lang.DATE16}</option>
+                                    <option value="17">{$Think.lang.DATE17}</option><option value="18">{$Think.lang.DATE18}</option><option value="19">{$Think.lang.DATE19}</option><option value="20">{$Think.lang.DATE20}</option>
+                                    <option value="21">{$Think.lang.DATE21}</option><option value="22">{$Think.lang.DATE22}</option><option value="23">{$Think.lang.DATE23}</option><option value="24">{$Think.lang.DATE24}</option>
+                                    <option value="25">{$Think.lang.DATE25}</option><option value="26">{$Think.lang.DATE26}</option><option value="27">{$Think.lang.DATE27}</option><option value="28">{$Think.lang.DATE28}</option>
+                                    <option value="29">{$Think.lang.DATE29}</option><option value="30">{$Think.lang.DATE30}</option><option value="31">{$Think.lang.DATE31}
+                                </select>
+                            </td>
+                            <td>
+                                <input id="date_time" width="50px" name="date_time"  type="text" class="easyui-timespinner" data-options="min:'00:00'"  size="10" maxlength="10" value="00:00" style="width:78px">
+                            </td>
+                        </tr>
+                        <tr id="week_info" style="display:none">
+                            <td>
+                                <select id="week_st">
+                                    <option value="1">{$Think.lang.MONDAY}</option><option value="2">{$Think.lang.TUESDAY}</option><option value="3">{$Think.lang.WEDNESDAY}</option><option value="4">{$Think.lang.THURSDAY}</option>
+                                    <option value="5">{$Think.lang.FRIDAY}</option><option value="6">{$Think.lang.SATURDAY}</option><option value="0">{$Think.lang.SUNDAY}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input id="week_time" name="week_time"  type="text" class="easyui-timespinner" data-options="min:'00:00'"  size="10" maxlength="10" value="00:00" style="width:78px">
+                            </td>
+                        </tr>
+                        <tr id="day_info" style="display:none">
+                            <td colspan="2" align="center">
+                                <input id="day_time" name="day_time"  type="text" class="easyui-timespinner" data-options="min:'00:00'"  size="10" maxlength="10" value="00:00" style="width:78px">
+                            </td>
+                        </tr>
+                        <tr id="interval_info" style="display:none">
+                            <td colspan="2" class="tdlabel_net">{$Think.lang.PRE_NUM}
+                                <select id="inter_min">
+                                </select>{$Think.lang.UPDATE_MINUTELY}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr id="raddr">
+                <td class="tdlabel_net">{$Think.lang.SERVER_ADDR}</td>
+                <td>
+                    <div id="ip_div" style="overflow:auto;height:30px">
+                        <table id="serv_addr">
+                            <tr>
+                                <td>
+                                    <img src='{$Think.config.NG_PATH}Public/images/icon/mini_clear.gif' width='10' height='10' style='visibility:hidden' />
+                                    <input type="text" name="ipaddr" id="ipaddr" class='easyui-textbox global_input' maxlength="63" style="width:200px;">
+                                    <img src="{$Think.config.NG_PATH}Public/images/icon/mini_add.gif" width="10" height="10" style="cursor:pointer;" name="add_type1" onClick="add_serip()"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addRoles'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('package_div');">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.RECOVER}"  onClick="reset_more_roles()">
+        <!--<a href="#" class="ngtos_button_middle" iconCls="icon-reset" plain="true" id="icon_reset" onClick="reset_more_roles()">{$Think.lang.RECOVER}</a>-->
+    </div>
+</div>
+<script>
+    var ip_num = 0;
+    var check_ftpp = "{$check_ftp}";
+    var name = "{$name}";
+    var password = "{$password}";
+    var staus = "{$list_array.status}";
+    var ip = "{$check_ip}";
+    var time = "{$list_array.time}";
+    var mon = "{$list_array.mon}";
+    var day = "{$list_array.day}";
+    var week = "{$list_array.week}";
+    var hour = "{$list_array.hour}";
+    var min = "{$list_array.min}";
+    var confVal = "{$conf}";
+    var vsidVal = "{$vsid}";
+    $(function() {
+        var options = "";
+        for (var i=0;i<60;i++)
+            options += "<option value='" + i + "'>" + i +"</option>";
+        check_time(0);
+        check_ftp(0);
+        $('#inter_min').html(options);
+        $('#addRoles').click(function() {
+            add_more_roles();
+        }); 
+        //使能判断
+        if (staus == "disable") {
+            $("#role_status").html($LANG.CLOSED);
+        } else {
+            $("#role_status").html($LANG.OPEN);
+        }
+        //方式判断
+        if (check_ftpp == "ftp") {
+             $('input:radio[name="role_type"]').get(1).checked = true;
+        } else if (check_ftpp == "http") {
+            $('input:radio[name="role_type"]').get(0).checked = true;
+
+        }
+        $("#user_name").val(name);
+        $("#pass_name").val(password);
+        //服务器地址操作
+        var nip = ip.split(',');
+        if (nip[0]) {
+            $('#ipaddr').val(nip[0]);
+            $('#ipaddr').css('color', "#000");
+        } else {           
+            $('#ipaddr').val("www.ngtos.com/192.168.1.1");
+            $('#ipaddr').css('color', "#ccc");
+            
+        }
+        if(nip.length > 1) {
+            
+            for(var p=1;p<nip.length;p++) {
+                add_serip();
+                $('#ip_addr'+p).val(nip[p]);
+            }
+        }
+        //时间操作
+        time = time.split(" ");
+        var dateVal;
+        if (day > 0){
+            $('input:radio[name="time_type"]').get(0).checked = true;
+            if (day.length == 1)
+                dateVal = "0" + day;
+            else
+                dateVal = day;
+            $('#date_info').val(dateVal);
+            $('#date_time').val(time[1]);
+        } else if (week <8) {
+            $('input:radio[name="time_type"]').get(1).checked = true;
+            check_time(1);
+            $('#week_st').val(week);
+            $('#week_time').val(time[1]);
+              
+        } else if (hour==24) {
+            $('input:radio[name="time_type"]').get(3).checked = true;
+            check_time(3);
+            $('#inter_min').val(min);
+        } else {
+            $('input:radio[name="time_type"]').get(2).checked = true;
+            check_time(2);
+            $('#day_time').val(time[0]);
+        }
+    })
+</script>

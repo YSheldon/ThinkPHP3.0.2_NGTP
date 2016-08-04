@@ -1,0 +1,137 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<style>
+    .datagrid-toolbar > table{margin-top:0px;}
+    .datagrid-toolbar > table td{border-right:none;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/schedule.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=Resource/Time&a=time_info&tabs=loop">
+        <li id="ipv_4">
+            {$Think.lang.CIRCULATE_TIME}
+        </li>
+    </a>
+    <a href="?c=Resource/Time&a=time_info&tabs=sig">
+        <li>
+            {$Think.lang.SINGLE_TIME}
+        </li>
+    </a>
+    <a href="?c=Resource/Time&a=time_info&tabs=group">
+        <li>
+            {$Think.lang.TIME_GROUP}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table>
+<div id="dlg-toolbar" style="padding:2px 0">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true" onClick="add_cir_time('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+                <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" onClick="editCirTimeRow('{$Think.lang.EDIT}');">{$Think.lang.EDIT}</a>
+                <a href="#" class="easyui-linkbutton" id='icon_del' data-options="iconCls:'icon-delete',plain:true" onClick="delete_cir_time()">{$Think.lang.DELETE}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_clear" data-options="iconCls:'icon-clear',plain:true" onClick="clear_cir_time()">{$Think.lang.CLEAR}</a>
+            </td>
+            <td style="text-align:right;padding-right:2px">
+                <input type="text" id="searchName" name="searchName" class="easyui-textbox input_length" data-options="validType:['nospace','eSymbols'],tipPosition:'left',onChange:freshItem_cir,buttonIcon:'panel-tool-close',onClickButton:clearSearch"/>
+                <a href="###" onClick="search_cir_data()" class="easyui-linkbutton" iconCls="icon-search">{$Think.lang.QUERY}</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    var param = [];
+    var circle_tag;
+    var grtag = 1;
+
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'name',
+            sortOrder: 'asc',
+            url: '?s=Home/Resource/Time&mod=schedule&parKey=type&param=cycle',
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'name', title: $LANG.NAME, width: 350, sortable: true},
+                    {field: 'eff_time', title: $LANG.EFFECT_TIME, width: 550,
+                        formatter: function(value, rowData) {
+                            var value = rowData.week__mon_year;
+                            var s = "";
+                            if (rowData.type == "weekcyc") {
+                                for (var i = 0; i < value.length; i++) {
+                                    if (value.charAt(i) == 1)
+                                        s += $LANG.MONDAY + " ";
+                                    else if (value.charAt(i) == 2)
+                                        s += $LANG.TUESDAY + " ";
+                                    else if (value.charAt(i) == 3)
+                                        s += $LANG.WEDNESDAY + " ";
+                                    else if (value.charAt(i) == 4)
+                                        s += $LANG.THURSDAY + " ";
+                                    else if (value.charAt(i) == 5)
+                                        s += $LANG.FRIDAY + " ";
+                                    else if (value.charAt(i) == 6)
+                                        s += $LANG.SATURDAY + " ";
+                                    else if (value.charAt(i) == 7)
+                                        s += $LANG.SUNDAY + " ";
+                                }
+                                s += rowData.start + "- " + rowData.stop;
+                            } else if (value == "1-31")
+                                s = $LANG.EVERYDAY + " " + rowData.start + "- " + rowData.stop;
+                            else
+                                s = value + $LANG.DAYTIME + " " + rowData.start + "- " + rowData.stop;
+                            return s;
+                        }
+                    },
+                    {field: 'shared', title: $LANG.SHARE, width: 200,
+                        formatter: function(value, rowData) {
+                            if (rowData.shared == "on")
+                                return $LANG.YES;
+                            else
+                                return $LANG.NO;
+                        }
+                    }
+                ]],
+            checkOnSelect: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar",
+            onCheck: setTimeToolBar,
+            onUncheck: setTimeToolBar,
+            onClickRow: setTimeToolBar,
+            onCheckAll: setTimeToolBar,
+            onUncheckAll: setTimeToolBar,
+            onSelect: setTimeToolBar,
+            onUnselect: setTimeToolBar,
+            onDblClickRow: function(rowindex, rowData) {
+                if(!isShared() || (isShared() && rowData.shared != "on")){
+                    edit_circle_time(rowData.name, rowData.type, rowData.week__mon_year, rowData.start, rowData.stop, rowData.shared, $LANG.EDIT);
+                }
+            },
+            onLoadSuccess: function() {
+                $('#tt').datagrid('fixRownumber');
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_del').linkbutton('disable');
+            }
+        });
+        if (getPrivilege("define") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+        }
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

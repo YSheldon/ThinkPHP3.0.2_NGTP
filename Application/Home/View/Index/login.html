@@ -1,0 +1,378 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>      
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{$Think.lang.TOPSEC}</title>
+    <link href="./Public/css/yngtos/google-fonts.css" rel="stylesheet" type="text/css"/>
+    <link href="./Public/css/yngtos/style.css" rel="stylesheet" type="text/css"/>
+    <link href="./Public/css/yngtos/font-awesome.css" rel="stylesheet" type="text/css"/>
+    <link href="./Public/css/yngtos/responsive.css" rel="stylesheet" type="text/css"/>
+
+    <link href="{$Think.config.NG_PATH}Public/css/style.css" rel="stylesheet" type="text/css" />
+    <script src="./Public/js/yngtos/jquery-1.9.0.min.js" type="text/javascript"></script>
+    <script src="./Public/js/yngtos/jquery.slimscroll.js" type="text/javascript"></script>
+    <script src="./Public/js/yngtos/scripts.js" type="text/javascript"></script>  
+    <script src="./Public/js/html5shiv.min.js" type="text/javascript"></script>
+</head>
+<body> 
+    <!-- 新版： -->
+    <div class="header-login">
+        <a href="http://www.topsec.com.cn/">
+            <img src="./Public/images/images/login_logo.gif"/>
+        </a>
+    </div>       
+    <!-- 旧版： -->
+    <div id="content">
+        <div class="login-wrap">
+            <div class="w">
+                <div class="login-box">
+                    <div class="mc">
+                        <!-- 新版： -->
+                        <div id="wrapper-login" class="form">
+                        <!-- <div id="wrapper-login" class="login-form"> -->
+                        <div class="login-box">    
+                            <div class="mc">
+                            <div class="form">
+                            <div class="user-icon"></div>
+                            <div class="pass-icon"></div>
+                            <form id="formlogin" name="login-form" class="login-form" 
+                                  onsubmit="return false;" method="post"> 
+                                <div class="header">
+                                    <h1>{$Think.lang.WELCOME_LOGIN}</h1>
+                                </div>
+                                <div class="msg-wrap"></div>
+                                <div class="content">
+                                    <!-- username： -->
+                                    <div class="item item-fore1">
+                                        <label for="loginname" class="login-label name-label">
+                                        </label>
+                                        <input id="loginname" name="loginname" type="text" 
+                                        class="input username" tabindex="1" autocomplete="off" 
+                                        placeholder="{$Think.lang.USERNAME}"/>
+                                        <span class="clear-btn"></span>
+                                    </div>
+                                    <!-- pwd： -->
+                                    <div id="entry" class="item item-fore2">
+                                        <label for="nloginpwd" class="login-label pwd-label">
+                                        </label>  
+                                        <input type="password" id="nloginpwd" name="nloginpwd"
+                                        class="input password" tabindex="2" autocomplete="off" placeholder="{$Think.lang.PASSWORD}"/>
+                                        <span class="clear-btn"></span>
+                                        <span class="capslock" style="display: none;">
+                                            <b></b>{$Think.lang.CapsLock_ON}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <input id="loginsubmit" tabIndex="3" type="submit" 
+                                    name="submit" value="{$Think.lang.LOGIN_SPACE}" 
+                                    class="button"/>
+                                </div>  
+                            </form>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                        <!-- 新版结束！ -->
+                    </div>
+                </div>
+            </div>
+            <div class="login-banner" style="background-color: #e93854">                      
+                <div class="w">
+                </div>                 
+            </div>
+        </div>
+    </div>
+    <!-- <div class="w">
+        <div id="footer-2013">
+            <div class="links">
+                <a rel="nofollow" target="_blank" href="http://www.topsec.com.cn/gytrx/gytrx1/index.htm">
+                    {$Think.lang.ABOUT_US}
+                </a>
+                |
+                <a rel="nofollow" target="_blank" href="http://www.topsec.com.cn/fwzc/fwjgjqlxfs/index.htm">
+                    {$Think.lang.CONTACT_US}
+                </a>
+                |
+                <a target="_blank" href="http://www.topsec.com.cn/">English Site</a>
+            </div>
+            <div class="copyright">
+                {$Think.lang.COPYRIGHT}
+            </div>
+        </div>
+    </div> -->
+    <div class="copyright">
+        {$Think.lang.COPYRIGHT}
+    </div>
+    <!-- 内部： -->
+    <script type="text/javascript" src="./Public/plugins/jquery-1.11.2.min.js" ></script>
+    <script type="text/javascript" src="./Public/plugins/jquery.cookie.js"></script>
+    <script type="text/javascript" src="./Public/plugins/easyui/jquery.easyui.all.js" ></script>
+    <script type="text/javascript" src="./Public/lang/{$Think.LANG_SET}.js" ></script>
+    <script type="text/javascript" src="./Public/js/function.js" ></script>
+    <script type="text/javascript">
+                                    $(function() {
+                                        /*----------初始化清空cookie------------*/
+//                                            //超时时间
+//                                            $.cookie("timeout", 0, {secure: true});
+//                                            //空闲时间
+//                                            $.cookie("idletime", 0, {secure: true});
+//                                            //标识是否已有超时弹出框
+//                                            $.cookie("messager", 0, {secure: true});
+//                                            //通信错误标识
+//                                            $.cookie("commflag", 0, {secure: true});
+//                                            //通信错误信息
+//                                            $.cookie("commmsg", "", {secure: true});
+//                                            //保存标识
+//                                            $.cookie("saveFlag", 0, {secure: true});
+//                                            //首页模块保活标识
+//                                            $.cookie("moduleAliveFlag", 0, {secure: true});
+//                                            $.cookie("moduleAliveFlagTime", 0, {secure: true});
+
+                                        //不支持浏览器警告：不支持ie6，推荐火狐、IE8+
+//                                            var agent = window.navigator.userAgent;
+//                                            if (agent.indexOf("MSIE 6") != -1) {
+//                                                showMesInfo('{$Think.lang.BROWSER_ERR}', 'warn');
+//                                                return;
+//                                            }
+
+                                        var gb = getBrowser();
+//                                            if (gb[0] != 'Firefox' && gb[0] != 'IE') {
+//                                                showMesInfo('{$Think.lang.BROWSER_SUGGEST}', 'warn');
+//                                            } else {
+                                            if (gb[0] == 'IE' && gb[1] == '6.0') {
+                                                showMesInfo('{$Think.lang.BROWSER_ERR}', 'warn');
+                                            }
+//                                            }
+
+                                        //默认选中用户名
+                                        $("#loginname").focus();
+                                        if ($.cookie('lastusername') != "" && $("#loginname").val() == "") {
+                                            $("#loginname").val($.cookie('lastusername'));
+                                        }
+
+                                        //username  为登录成功后用户名缓存
+                                        //unname    为未登录时用户名缓存
+                                        /*
+                                         if ($("#loginname").val() == "") {
+                                         if ($.cookie('username') != "") {
+                                         $("#loginname").val($.cookie('username'));
+                                         } else if ($.cookie('unname') != "") {
+                                         $("#loginname").val($.cookie('unname'));
+                                         }
+                                         }
+                                         */
+
+
+                                        //随机更换背景色
+
+                                        var data = [
+                                            {src: "./Public/images/image/photongfw.png", bgColor: "#7ddcd8", weight: "4"},
+                                            {src: "./Public/images/image/photongfw.png", bgColor: "#ecfeff", weight: "4"},
+                                            {src: "./Public/images/image/photongfw.png", bgColor: "#81deff", weight: "4"},
+                                            {src: "./Public/images/image/photongfw.png", bgColor: "#f24f6f", weight: "4"}
+
+//                    {src: "./Public/images/image/photongfw.png", bgColor: "#FFFFFF", weight: "4"},
+//                    {src: "./Public/images/image/photongfw.png", bgColor: "#6921ff", weight: "4"},
+//                    {src: "./Public/images/image/photongfw.png", bgColor: "#df403a", weight: "4"},
+//                    {src: "./Public/images/image/photongfw.png", bgColor: "#e32424", weight: "4"},
+//                    {src: "./Public/images/image/photongfw.png", bgColor: "#109ef0", weight: "4"},
+//                    {src: "./Public/images/image/photongfw.png", bgColor: "#e93854", weight: "4"},
+//                    {src: "./Public/images/image/photongfw.png", bgColor: "#57ACE8", weight: "4"}
+                                        ];
+                                        var getRandom = function(arr) {
+                                            var _temp = 0, _random = 0, _weight, _newArr = [];
+                                            for (var i = 0; i < arr.length; i++) {
+                                                _weight = arr[i].weight ? parseInt(arr[i].weight) : 1;
+                                                _newArr[i] = [];
+                                                _newArr[i].push(_temp);
+                                                _temp += _weight;
+                                                _newArr[i].push(_temp);
+                                            }
+                                            _random = Math.ceil(_temp * Math.random());
+                                            for (var i = 0; i < _newArr.length; i++) {
+                                                if (_random > _newArr[i][0] && _random <= _newArr[i][1]) {
+                                                    return arr[i];
+                                                }
+                                            }
+                                        };
+                                        var tpl = '<div class="login-banner" style="background-color: {bgColor}">' +
+                                                '<div class="w">' +
+//                        '<div id="banner-bg"  clstag="pageclick|keycount|20150112ABD|46" class="i-inner" style="background: url({imgURI}) 0px 0px no-repeat;background-color: {bgColor}"></div>' +
+                                                '</div>' +
+                                                '</div>';
+                                        var bgData = getRandom(data);
+                                        if (!isEmpty(bgData)) {
+                                            var bannerHtml = tpl.replace(/{bgColor}/g, bgData.bgColor).replace(/{imgURI}/g, bgData.src);
+                                            $('.login-banner').replaceWith(bannerHtml);
+                                        }
+                                    });
+                                    //用于标记登录中状态
+                                    //防止多次点击登录按钮导致多次登录
+                                    var logining = 0;
+                                    //登陆操作
+                                    function loginSubmit() {
+                                        if (logining == 1) {
+                                            return;
+                                        } else {
+                                            logining = 1;
+                                        }
+
+                                        $('#loginsubmit').text('{$Think.lang.LOGINING}');
+                                        if ($("#loginname").val() == "") {
+                                            logining = 0;
+                                            showMesInfo("{$Think.lang.INPUT_USERNAME}", "error");
+                                            $("#loginname").focus();
+                                            $("#loginsubmit").html("{$Think.lang.LOGIN_SPACE}");
+                                            return;
+                                        }
+                                        
+                                        if ($("#nloginpwd").val() == "") {
+                                            logining = 0;
+                                            showMesInfo("{$Think.lang.INPUT_PWD}", "error");
+                                            $("#nloginpwd").focus();
+                                            $("#loginsubmit").html("{$Think.lang.LOGIN_SPACE}");
+                                            return;
+                                        }
+                                        
+                                        //$.cookie('username', $("#loginname").val(), {secure:true});
+                                        //$.cookie('unname', $("#loginname").val(), {secure: true});
+                                        $.ajax({
+                                            url: "?c=Index&a=login&random=" + Math.random(),
+                                            type: 'POST',
+                                            data: {
+                                                name: $("#loginname").val(),
+                                                password: $("#nloginpwd").val()
+                                            },
+                                            dataType: 'json',
+                                            async: false,
+                                            success: function(data) {
+                                                if (data['url'] == 'password' || data['url'] == 'home' || data['url'] == 'main') {
+                                                    //记录原始url
+                                                    $.cookie("urlorg", window.location.href, {secure: true});
+                                                    //拼接新url
+                                                    var href = window.location.href;
+                                                    var pos = href.lastIndexOf('/');
+                                                    var head = href.substring(0, pos + 1);
+                                                    var dir = head + data['authid'] + "/?c=Index&a=" + data['url'];
+                                                    //跳转页面
+                                                    window.location.href = dir;
+//                                                        window.location.href = "?c=Index&a=" + data;
+                                                } else {
+                                                    logining = 0;
+                                                    showMesInfo(data, 'error');
+                                                    $("#loginsubmit").html("{$Think.lang.LOGIN_SPACE}");
+                                                }
+                                            },
+                                            error: function(data) {
+                                                logining = 0;
+                                                showMesInfo(data['responseText'], "error");
+                                                $("#loginsubmit").html("{$Think.lang.LOGIN_SPACE}");
+//                                                    showMesInfo("{$Think.lang.TRY_LATER}", "error");
+                                            }
+                                        });
+                                    }
+
+                                    //显示错误信息
+                                    function showMesInfo(msg, type) {
+                                        $('.msg-wrap').empty();
+                                        if (type == 'warn') {
+                                            var info = '<div class="msg-warn"><b></b>' + msg + '</div>';
+                                            $('.msg-wrap').append(info);
+                                        }
+                                        if (type == 'error') {
+                                            var info = '<div class="msg-error"><b></b>' + msg + '</div>';
+                                            $('.msg-wrap').append(info);
+                                        }
+                                    }
+
+                                    //点击登录，提交
+                                    $("#loginsubmit").bind("click", function() {
+                                        loginSubmit();
+                                    });
+
+                                    //增加选中效果
+                                    $("#loginname, #nloginpwd").bind("focus keydow keyup", function(a) {
+                                        $(this).parent().addClass("item-focus");
+                                        if ("" == $(this).val()) {
+                                            $(this).siblings(".clear-btn").hide();
+                                        } else {
+                                            $(this).siblings(".clear-btn").show();
+                                        }
+                                    });
+
+                                    //移除选中效果
+                                    $("#loginname, #nloginpwd").bind("blur", function(a) {
+                                        $(this).parent().removeClass("item-focus");
+                                    });
+
+                                    //点击叉清空内容
+                                    $(".form .item").delegate(".clear-btn", "click", function() {
+                                        var b = $(this).siblings("input[placeholder]");
+                                        $(this).hide();
+                                        b.val("");
+                                        setTimeout(function() {
+                                            b.focus();
+                                        }, 500);
+                                    });
+
+                                    //placeholder兼容IE
+                                    $(function() {
+                                        if (!placeholderSupport()) {    //判断浏览器是否支持 placeholder
+                                            $('[placeholder]').each(function() {
+                                                var c = $(this);
+                                                var d = document.createElement("txt");
+                                                var e = "#ccc";
+                                                c.prev().is("txt") ? d = c.prev() : c.before(d);
+                                                d.innerHTML = c.attr("placeholder");
+                                                c.attr("placeholder", " ");
+                                                $(d).css({position: "absolute", "z-index": "2", "line-height": c.outerHeight() + "px", "margin-left": parseInt(c.css("padding-left")) + parseInt(c.css("border-left-width")), "margin-top": 0, "font-size": c.css("font-size"), "font-family": c.css("font-family"), color: e});
+                                                "" != c.val() && c.prev("txt").hide()
+                                            });
+
+                                            $('[placeholder]').bind("keyup keydown change click blur focus", function() {
+                                                var c = $(this);
+                                                "" == c.val() ? c.prev("txt").show() : c.prev("txt").hide()
+                                            });
+
+                                            //点击提示文字，选中对应的文本框
+                                            $('txt').click(function() {
+                                                $(this).next("input").focus();
+                                            });
+
+                                        }
+                                    });
+                                    function placeholderSupport() {
+                                        return 'placeholder' in document.createElement('input');
+                                    }
+
+
+                                    document.onkeypress = function(event) {
+                                        var e = event || window.event;
+                                        var keyCode = e.keyCode || e.which; // 按键的keyCode 
+                                        if (keyCode === 13) {   //回车登录
+                                            loginSubmit();
+                                        }
+                                    };
+
+                                    //检查是否开启大写键
+                                    function  detectCapsLock(event) {
+                                        var e = event || window.event;
+                                        var keyCode = e.keyCode || e.which; // 按键的keyCode 
+                                        var isShift = e.shiftKey || (keyCode == 16) || false; // shift键是否按住
+
+                                        // Caps Lock 打开，且没有按住shift键 || Caps Lock 打开，且按住shift键
+                                        if (((keyCode >= 65 && keyCode <= 90) && !isShift)
+                                                || ((keyCode >= 97 && keyCode <= 122) && isShift)) {
+                                            $(".capslock").show();
+                                        }
+                                        else {
+                                            $(".capslock").hide();
+                                        }
+                                    }
+                                    document.getElementById('nloginpwd').onkeypress = detectCapsLock;
+    </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<div xmlns="http://www.w3.org/1999/html">
+<form id="local_attr_form">
+<div style="overflow:auto;height:500px">
+    <table id="setstyles" class="ngtos_form_pop" onselectstart="return false;" style="-moz-user-select:none;">
+        <tr>
+            <td colspan="2" class="window_subtitle" style="padding-left:20px">
+                <input type="checkbox" name="obey_local_conf" id="obey_local_conf" onclick="disable_local_self()"><label for="obey_local_conf">{$Think.lang.OBEDIENT_GLOBAL_CONFIG}</label>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+            <table width="100%" id="disable_local" class="ngtos_form_pop">
+                <tr>
+                    <td colspan="2" class="window_subtitle"><b>{$Think.lang.AUTH_ITEM}</b></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="checkbox" name="local_cert_auth" id="local_cert_auth">
+                        <label for="local_cert_auth">{$Think.lang.CA}</label>
+                        <span class="form_comment">
+                            <input type="checkbox" name="local_pass_auth" id="local_pass_auth">
+                            <label for="local_pass_auth">{$Think.lang.PASS_AUTH}</label>
+                        </span>
+                        <span class="form_comment">
+                            <input type="checkbox" name="local_msg_auth" id="local_msg_auth">
+                            <label for="local_msg_auth">{$Think.lang.SMS_AUTH}</label>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="window_subtitle"><b>{$Think.lang.PREVENT_BRUTE_FORCE}</b></td>
+                </tr>
+                <tr><td colspan="2" style="padding-left:20px">
+                    <input type="checkbox" name="local_fail_login_limit" id="local_fail_login_limit" onclick="login_limit_disabled2()"><label for="local_fail_login_limit">{$Think.lang.LOCAL_PWD_AUTH_FAIL}</label>
+                    <input type="text" name="local_max_auth_fail" id="local_max_auth_fail" class="easyui-textbox" data-options="width:60,value:'4',validType:'range[4,16]'"> {$Think.lang.SECOND_LOCK}
+                    <input type="text" name="local_accout_lock_time" id="local_accout_lock_time" class="easyui-textbox" data-options="width:60,value:'300',validType:'range[300,1800]'"> {$Think.lang.SECOND}
+                </td>
+                </tr>
+                <tr><td colspan="2" style="padding-left:20px">
+                    <input type="checkbox" name="local_pass_reset_limit" id="local_pass_reset_limit" onclick="reset_limit_disabled2()"><label for="local_pass_reset_limit">{$Think.lang.MAX_RESET_IN24}</label>
+                    <input type="text" name="local_pass_reset_max" id="local_pass_reset_max" class="easyui-textbox" data-options="width:60,value:'1',validType:'range[1,32]'"> {$Think.lang.SECOND_PWD_RETRIEVE_INTERVAL}
+                    <input type="text" name="local_pass_reset_interval" id="local_pass_reset_interval" class="easyui-textbox" data-options="width:60,value:'3',validType:'range[3,180]'"> {$Think.lang.MINUTES}
+                </td>
+                </tr>
+                <tr><td style="padding-left:20px" width="130px" colspan="2">{$Think.lang.RESET_PWD_WAY}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="local_pass_reset_type" id="local_pass_reset_type1" value="no" onclick="localResetPwdType(this)"><label for="local_pass_reset_type1">{$Think.lang.DENY}</label> &nbsp;&nbsp;
+                    <input type="radio" name="local_pass_reset_type" id="local_pass_reset_type2" value="mail" checked onclick="localResetPwdType(this)"><label for="local_pass_reset_type2">{$Think.lang.MAIL}</label> &nbsp;&nbsp;
+                    <input type="radio" name="local_pass_reset_type" id="local_pass_reset_type3" value="sms" onclick="localResetPwdType(this)"><label for="local_pass_reset_type3">{$Think.lang.SMS}</label>
+                </td>
+                </tr>
+                <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.MAIL_SERVER_SET}</b></td></tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="radio" name="local_mail_server_type" id="local_mail_server_type1" value="smtp" checked onclick="localMailSet(this)">
+                        <label for="local_mail_server_type1">SMTP</label> &nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="local_mail_server_type" id="local_mail_server_type2" value="esmtp" onclick="localMailSet(this)">
+                        <label for="local_mail_server_type2">ESMTP</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td  colspan="2" style="padding-left:20px">
+                        {$Think.lang.MAIL_TIMEOUT} <input type="text" name="local_mail_time_out" id="local_mail_time_out"  class="easyui-textbox" data-options="width:60,required:true,validType:'range[10,300]'">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        {$Think.lang.MAIL_SERVER_ADDRESS} <input type="text" name="local_mail_server_host" id="local_mail_host" class="easyui-textbox" data-options="width:150,required:true,validType:'ipFour'">
+                        {$Think.lang.MAIL_SERVER_PORT} <input type="text" name="local_mail_server_port" id="local_mail_port" class="easyui-textbox" data-options="width:60,required:true,validType:'range[0,65535]'">
+                    </td>
+                </tr>
+                <tr>
+                    <td  colspan="2" style="padding-left:20px">
+                        {$Think.lang.ESMTP_MAIL_SERVER_USER} <input type="text" name="local_mail_server_auth_user" id="local_mail_server_auth_user" class="easyui-textbox" data-options="width:150,required:true,validType:'email'">
+                    </td>
+                </tr>
+                <tr>
+                    <td  colspan="2" style="padding-left:20px">
+                        {$Think.lang.ESMTP_MAIL_SERVER_PWD} <input type="text" name="local_mail_server_auth_passwd" id="local_mail_server_auth_passwd"  class="easyui-textbox" data-options="width:150,required:true,validType:'nospace '">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="window_subtitle"><b>{$Think.lang.PWD_COMPLEX}</b></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:20px">
+                        <input type="checkbox" name="local_pass_diff" id="local_pass_diff">
+                        <label for="local_pass_diff">{$Think.lang.NEW_OLD_DIFF}</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="local_pass_account" id="local_pass_account">
+                        <label for="local_pass_account">{$Think.lang.NOT_CONTAIN_USER_INFO}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left:20px">
+                        <input type="checkbox" name="local_char_lower" id="local_char_lower">
+                        <label for="local_char_lower">{$Think.lang.PWD_CONTAIN_LOWER_LETTER}</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="local_char_upper" id="local_char_upper">
+                        <label for="local_char_upper">{$Think.lang.PWD_CONTAIN_UPPER_LETTER}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left:20px">
+                        <input type="checkbox" name="local_char_digit" id="local_char_digit">
+                        <label for="local_char_digit">{$Think.lang.PWD_CONTAIN_NUM}</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="local_char_punct" id="local_char_punct">
+                        <label for="local_char_punct">{$Think.lang.PWD_CONTAIN_SPECIAL_CHAR}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="checkbox" name="local_pass_limit" id="local_pass_limit" onclick="pass_limit_disabled2()"><label for="local_pass_limit">{$Think.lang.MIN_PWD_LENGTH}</label>
+                    <input type="text" name="local_pass_min" id="local_pass_min" class="easyui-textbox" data-options="width:60,value:'6',validType:'range[6,255]'"> {$Think.lang.CHARACTER}，{$Think.lang.MAX_PWD_LENGTH}
+                    <input type="text" name="local_pass_max" id="local_pass_max" class="easyui-textbox" data-options="width:60,value:'32',validType:'range[6,255]'"> {$Think.lang.CHARACTER}
+                </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="checkbox" name="local_change_pass" id="local_change_pass">
+                        <label for="local_change_pass">{$Think.lang.FORCE_MODIFY_PWD}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="window_subtitle"><b>{$Think.lang.PWD_EFFECT}</b></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:20px">
+                        <input type="checkbox" name="local_deny_change" id="local_deny_change" onclick="change_disabled2()"><label for="local_deny_change">{$Think.lang.FORBID_MODIFY_PWD}</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="local_first_login" id="local_first_login">
+                        <span id="pass_change2">
+                            <label for="local_first_login">{$Think.lang.FIRST_MODIFY_PWD}</label>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="checkbox" name="local_termly_change" id="local_termly_change" onclick="termly_disabled2()"><label for="local_termly_change">{$Think.lang.MODIFY_PWD_INTERVAL}</label>
+                        <input type="text" name="local_pass_interval" id="local_pass_interval" class="easyui-textbox" data-options="width:60,value:'30',validType:'range[1,120]'">{$Think.lang.DAY_1_120}
+                    </td>
+                </tr>
+                <tr><td colspan="2" style="padding-left:20px">
+                    <input type="checkbox" name="local_pass_invalid" id="local_pass_invalid" onclick="invalid_disabled2()"><label for="local_pass_invalid">{$Think.lang.PWD_EFFECT_TIME}</label>
+                    <input type="text" name="local_invalid_period" id="local_invalid_period" class="easyui-textbox" data-options="width:60,value:'120',validType:'range[120,360]'">{$Think.lang.DAY_120_360}
+                </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="window_subtitle"><b>{$Think.lang.USER_INFO}</b></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:20px">
+                        <input type="checkbox" name="local_change_mail" id="local_change_mail">
+                        <label for="local_change_mail">{$Think.lang.FORBID_MODIFY_MAIL}</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="local_change_phone" id="local_change_phone">
+                        <label for="local_change_phone">{$Think.lang.FORBID_MODIFY_PHONE}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="window_subtitle"><b>{$Think.lang.ACCESS_POLICY}</b></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                    <input type="checkbox" name="local_more_login_whole" id="local_more_login_whole" onclick="multi_disabled2()"><label for="local_more_login_whole">{$Think.lang.MAX_LOGIN_ADDR}</label>
+                    <input type="text" name="local_login_num_whole" id="local_login_num_whole" >&nbsp;[1-1024]
+                </td>
+                </tr>
+                <tr><td style="padding-left:30px;width:110px;">{$Think.lang.ALLOW_LOGIN_ADDR}</td>
+                    <td colspan="2" width="190px">
+                        <select id="local_more_login_addr" name="state"></select>
+                    </td>
+                </tr>
+                <tr style="border-bottom:1px solid #ccc;width:510px">
+                    <td style="padding-left:30px;width:110px;">{$Think.lang.ALLOW_ONLINE_TIME}</td>
+                    <td colspan="2" width="190px">
+                        <select id="local_more_login_time" name="state"></select>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        </tr>
+    </table>
+</div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id="modifyLocalServer">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('server_local_conf_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        $('#local_more_login_addr').combotree({
+            url: '?c=Auth/Server&a=callFun',
+            parent_checked:false,
+            required:false,
+            width:150,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            multiple:false,
+            editable:true,
+            queryParams:{
+                fun: 'comboTree',
+                parentNode: 'Address,AddressGroup',
+                Address: 'define host,define range,define subnet',
+                AddressGroup: 'define group_address'
+            }
+        });
+         if ($("toolbar3").size() == 0)
+                $("#local_more_login_addr").combotree('panel').after(comboBut("add_loginAddr('"+$LANG.ADD+"','local_more_login_addr')","toolbar3"));
+        $('#local_more_login_time').combotree({
+            url: '?c=Auth/Server&a=callFun',
+            parent_checked:false,
+            required:false,
+            width:150,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            multiple:false,
+            editable:true,
+            queryParams:{
+                fun: 'comboTree',
+                parentNode: 'Time,TimeGroup',
+                Time: 'define schedule',
+                TimeGroup: 'define group_schedule'
+            }
+        });
+        if ($("toolbar2").size() == 0)
+                $("#local_more_login_time").combotree('panel').after(comboBut("add_loginTime('"+$LANG.ADD+"','whole_more_login_time')","toolbar2"));
+        $("#modifyLocalServer").click(function() {
+            modify_local_server(param[0])
+        });
+        $("#local_login_num_whole").textbox({width:60,validType:'range[1,1024]'});
+
+        $.ajax({
+            url: "?c=Auth/Server&a=datagridShow",
+            type: 'GET',
+            data:{
+                mod:encodeURI('user auth server'),
+                act:'show-policy',
+                parKey:'name',
+                param:encodeURI(param[0])
+            },
+            success: function(data) {
+                var obj = jQuery.parseJSON(data);
+                if (obj["rows"][0]["global_config"] == "yes")
+                    $("#obey_local_conf").prop("checked",true);
+                else
+                    $("#obey_local_conf").prop("checked", false);
+//本地服务器设置
+                if (obj["rows"][0]["cert_auth"] == "yes")
+                    $("#local_cert_auth").prop("checked",true);
+                else
+                    $("#local_cert_auth").prop("checked", false);
+                if (obj["rows"][0]["passwd_auth"] == "yes")
+                    $("#local_pass_auth").prop("checked",true);
+                else
+                    $("#local_pass_auth").prop("checked", false);
+                if (obj["rows"][0]["sms_auth"] == "yes")
+                    $("#local_msg_auth").prop("checked",true);
+                else
+                    $("#local_msg_auth").prop("checked", false);
+//防爆力破解
+                if (obj["rows"][0]["fail_login_limit"] == "yes")
+                    $("#local_fail_login_limit").prop("checked",true);
+                else
+                    $("#local_fail_login_limit").prop("checked", false);
+
+                if (obj["rows"][0]["reset_pass_limit"] == "yes")
+                    $("#local_pass_reset_limit").prop("checked",true);
+                else
+                    $("#local_pass_reset_limit").prop("checked", false);
+                $("#local_max_auth_fail").textbox('setValue',obj["rows"][0]["maxnum_auth_limit"]);
+                $("#local_accout_lock_time").textbox('setValue',obj["rows"][0]["account_locaked_time"]);
+                $("#local_pass_reset_max").textbox('setValue',obj["rows"][0]["maxnum_reset"]);
+                $("#local_pass_reset_interval").textbox('setValue',obj["rows"][0]["reset_pass_interval"]);
+                //邮件服务器
+            $("#local_mail_host").textbox('setValue',obj["rows"][0]["mail_server_host"]!='null'?obj["rows"][0]["mail_server_host"]:'');
+            $("#local_mail_port").textbox('setValue',obj["rows"][0]["mail_server_port"]!='null'?obj["rows"][0]["mail_server_port"]:25);
+            $("#local_mail_time_out").textbox('setValue',obj["rows"][0]["mail_time_out"]!='null'?obj["rows"][0]["mail_time_out"]:60);
+            $("#local_mail_server_auth_user").textbox('setValue',obj["rows"][0]["mail_server_auth_user"]!='null'?obj["rows"][0]["mail_server_auth_user"]:'');
+            $("#local_mail_server_auth_passwd").textbox('setValue',obj["rows"][0]["mail_server_auth_passwd"]!='null'?obj["rows"][0]["mail_server_auth_passwd"]:'');
+
+                if(obj["rows"][0]["mail_server_type"] == 'esmtp') {
+                    $('input[name="local_mail_server_type"]').get(1).checked = true;
+                    $("#local_mail_server_auth_user").textbox('enable');
+                    $("#local_mail_server_auth_passwd").textbox('enable');
+                } else {
+                    $('input[name="local_mail_server_type"]').get(0).checked = true;
+                    $("#local_mail_server_auth_user").textbox('disableValidation');
+                    $("#local_mail_server_auth_passwd").textbox('disableValidation');
+                    $("#local_mail_server_auth_user").textbox('disable');
+                    $("#local_mail_server_auth_passwd").textbox('disable');
+                }
+
+                if (obj["rows"][0]['accepet_reset_type'] == "sms"){
+                    $('input[name="local_pass_reset_type"]').get(2).checked = true;
+                    $("#local_pass_reset_limit").removeAttr("disabled");
+                    $("#local_mail_host").textbox("disableValidation");
+                    $("#local_mail_host").textbox("disable");
+                } else if (obj["rows"][0]['accepet_reset_type'] == "mail"){
+                    $('input[name="local_pass_reset_type"]').get(1).checked = true;
+                    $("#local_pass_reset_limit").removeAttr("disabled");
+                } else{
+                    $('input[name="local_pass_reset_type"]').get(0).checked = true;
+                    $("#local_pass_reset_limit").attr("checked", false);
+                    $("#local_pass_reset_limit").attr("disabled", "disabled");
+                    $("#local_pass_reset_max").textbox("disable");
+                    $("#local_pass_reset_interval").textbox("disable");
+                    $("#local_mail_host").textbox("disableValidation");
+                    $("#local_mail_host").textbox("disable");
+                }
+                //密码复杂度
+                if (obj["rows"][0]["diff_from_old_pass"] == "yes")
+                    $("#local_pass_diff").prop("checked",true);
+                else
+                    $("#local_pass_diff").prop("checked", false);
+                if (obj["rows"][0]["exclude_account_info"] == "yes")
+                    $("#local_pass_account").prop("checked",true);
+                else
+                    $("#local_pass_account").prop("checked", false);
+                if (obj["rows"][0]["include_char_lower"] == "yes")
+                    $("#local_char_lower").prop("checked",true);
+                else
+                    $("#local_char_lower").prop("checked", false);
+                if (obj["rows"][0]["include_char_upper"] == "yes")
+                    $("#local_char_upper").prop("checked",true);
+                else
+                    $("#local_char_upper").prop("checked", false);
+                if (obj["rows"][0]["include_char_digit"] == "yes")
+                    $("#local_char_digit").prop("checked",true);
+                else
+                    $("#local_char_digit").prop("checked", false);
+                if (obj["rows"][0]["include_char_punct"] == "yes")
+                    $("#local_char_punct").prop("checked",true);
+                else
+                    $("#local_char_punct").prop("checked", false);
+                if (obj["rows"][0]["limit_pass_len"] == "yes")
+                    $("#local_pass_limit").prop("checked",true);
+                else
+                    $("#local_pass_limit").prop("checked", false);
+                $("#local_pass_min").textbox('setValue',obj["rows"][0]["min_pass_len"]);
+                $("#local_pass_max").textbox('setValue',obj["rows"][0]["max_pass_len"]);
+                if (obj["rows"][0]["force_change_pass"] == "yes")
+                    $("#local_change_pass").prop("checked",true);
+                else
+                    $("#local_change_pass").prop("checked", false);
+//密码有效性
+                if (obj["rows"][0]["deny_change_pass"] == "yes")
+                    $("#local_deny_change").prop("checked",true);
+                else
+                    $("#local_deny_change").prop("checked", false);
+                if (obj["rows"][0]["first_login"] == "yes")
+                    $("#local_first_login").prop("checked",true);
+                else
+                    $("#local_first_login").prop("checked", false);
+                if (obj["rows"][0]["termly_change_pass"] == "yes")
+                    $("#local_termly_change").prop("checked",true);
+                else
+                    $("#local_termly_change").prop("checked", false);
+                $("#local_pass_interval").textbox('setValue',obj["rows"][0]["change_pass_interval"]);
+                if (obj["rows"][0]["invalid_password"] == "yes")
+                    $("#local_pass_invalid").prop("checked",true);
+                else
+                    $("#local_pass_invalid").prop("checked", false);
+                $("#local_invalid_period").textbox('setValue',obj["rows"][0]["pass_valid_period"]);
+//用户信息
+                if (obj["rows"][0]["deny_change_mail"] == "yes")
+                    $("#local_change_mail").prop("checked",true);
+                else
+                    $("#local_change_mail").prop("checked", false);
+                if (obj["rows"][0]["deny_change_phone"] == "yes")
+                    $("#local_change_phone").prop("checked",true);
+                else
+                    $("#local_change_phone").prop("checked", false);
+//接入策略
+                if (obj["rows"][0]["multi_login"] == "yes")
+                    $("#local_more_login_whole").prop("checked",true);
+                else
+                    $("#local_more_login_whole").prop("checked", false);
+                $("#local_login_num_whole").textbox('setValue',obj["rows"][0]["maxnum_login_addr"]);
+                var ipRange = obj["rows"][0]["access_ip_range"];
+                if (ipRange != 'null')
+                    $('#local_more_login_addr').combotree('setValue',ipRange);
+                else
+                    $('#local_more_login_addr').combotree('setValue','');
+                var timeRange = obj["rows"][0]["access_time_range"];
+                if (timeRange != 'null')
+                    $('#local_more_login_time').combotree('setValue',timeRange);
+                else
+                    $('#local_more_login_time').combotree('setValue','');
+
+                disable_local_self();
+                //disabled_text2();
+            }
+        });
+    })
+</script>

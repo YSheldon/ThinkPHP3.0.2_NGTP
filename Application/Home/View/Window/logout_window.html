@@ -1,0 +1,27 @@
+<div class="ngtos_form_main">
+    <div>
+        <div class="messager-icon messager-question"></div>
+        <div style="float: left;margin-top:22px;">
+            {$Think.lang.SURE_LOGOUT}
+        </div>
+    </div>
+    <div style="clear:both;padding-top:10px;">
+        <input type="checkbox" style="vertical-align:middle;" id='save_checked' name='save_checked'/>   {$Think.lang.SAVE_CONFIG}
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.confirm}" 
+               onClick="logout()" style="margin-left:30px;">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.cancel}" 
+               onClick="closeWindow('logout_page')" style="margin-left:10px">
+    </div>
+</div>
+<script>
+    function logout() {
+        $("#logout_page").window("close");
+        var save = $('#save_checked').prop("checked");
+        if(save) {
+            $("body").append("<div class='panel-loading loading_center'><p>loading....</p></div>", "<div class='window-mask1'></div>");
+        }
+//      var href = window.location.href;
+//      var src = href.substr(href.lastIndexOf('=') + 1, href.length);
+        doLogout(save);
+    }
+</script>

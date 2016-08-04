@@ -1,0 +1,158 @@
+<div>
+<form id="third_form">
+    <table id="setstyles" class="ngtos_form_pop">
+        <tr>
+            <td colspan="2" class="window_subtitle" style="padding-left:20px">
+                <input type="checkbox" name="obey_global_conf" id="obey_global_conf" onclick="disable_whole_self()"><label for="obey_global_conf">{$Think.lang.OBEDIENT_GLOBAL_CONFIG}</label>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+            <table width="100%" id="disable_global">
+                <tr>
+                    <td colspan="2" class="window_subtitle"><b>{$Think.lang.AUTH_ITEM}</b></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                    <input type="checkbox" name="whole_cert_auth" id="whole_cert_auth">
+                    <label for="whole_cert_auth">{$Think.lang.CA}</label>
+                    <span class="form_comment">
+                        <input type="checkbox" name="whole_pass_auth" id="whole_pass_auth">
+                        <label for="whole_pass_auth">{$Think.lang.PASS_AUTH}</label>
+                    </span>
+                    <span class="form_comment">
+                        <input type="checkbox" name="whole_msg_auth" id="whole_msg_auth">
+                        <label for="whole_msg_auth">{$Think.lang.SMS_AUTH}</label>
+                    </span>
+                </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="window_subtitle"><b>{$Think.lang.ACCESS_POLICY}</b></td>
+                </tr>
+                <tr>
+                    <td style="width:200px;" class="tdlabel">
+                        <input type="checkbox" name="whole_more_login" id="whole_more_login" onclick="multi_disabled3()"><label for="whole_more_login">{$Think.lang.MAX_LOGIN_ADDR}</label>
+                    </td>
+                    <td>
+                        <input type="text" name="whole_login_num" id="whole_login_num" ><span class="form_comment">[1-1024]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel">{$Think.lang.ALLOW_LOGIN_ADDR}</td>
+                    <td>
+                        <select id="whole_more_login_addr" name="state">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel">{$Think.lang.ALLOW_ONLINE_TIME}</td>
+                    <td colspan="2" width="190px">
+                        <select id="whole_more_login_time" name="state">
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='modifyWholeServ'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('server_third_conf_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function(){
+        $("#modifyWholeServ").click(function() {
+            modify_whole_serv(param[0]);
+        });
+        $("#whole_login_num").textbox({width:60,validType:'range[1,1024]'});
+        $('#whole_more_login_addr').combotree({
+            url: '?c=Auth/Server&a=callFun',
+            parent_checked:false,
+            width:150,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            required:false,
+            multiple:false,
+            editable:true,
+            queryParams:{
+                fun: 'comboTree',
+                parentNode: 'Address,AddressGroup',
+                Address: 'define host,define range,define subnet',
+                AddressGroup: 'define group_address'
+            }
+        });
+        if ($("toolbar3").size() == 0)
+                $("#whole_more_login_addr").combotree('panel').after(comboBut("add_loginAddr('"+$LANG.ADD+"','whole_more_login_addr')","toolbar3"));
+
+        $('#whole_more_login_time').combotree({
+            url: '?c=Auth/Server&a=callFun',
+            parent_checked:false,
+            width:150,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            required:false,
+            multiple:false,
+            editable:true,
+            queryParams:{
+                fun: 'comboTree',
+                parentNode: 'Time,TimeGroup',
+                Time: 'define schedule',
+                TimeGroup: 'define group_schedule'
+            }
+        });
+        if($("toolbar2").size() == 0)
+                $("#whole_more_login_time").combotree('panel').after(comboBut("add_loginTime('"+$LANG.ADD+"','whole_more_login_time')","toolbar2"));
+
+        $.ajax({
+            url: "?c=Auth/Server&a=datagridShow",
+            type: 'GET',
+            data:{
+                mod:encodeURI('user auth server'),
+                act:'show-policy',
+                parKey:'name',
+                param:encodeURI(param[0])
+            },
+            success: function(data){
+                var obj = jQuery.parseJSON(data);
+                if (obj["rows"][0]["global_config"] == "yes")
+                    $("#obey_global_conf").prop("checked",true);
+                else
+                    $("#obey_global_conf").prop("checked", false);
+                //本地服务器设置
+                if (obj["rows"][0]["cert_auth"] == "yes")
+                    $("#whole_cert_auth").prop("checked", true);
+                else
+                    $("#whole_cert_auth").prop("checked", false);
+                if (obj["rows"][0]["passwd_auth"] == "yes")
+                    $("#whole_pass_auth").prop("checked", true);
+                else
+                    $("#whole_pass_auth").prop("checked", false);
+                if (obj["rows"][0]["sms_auth"] == "yes")
+                    $("#whole_msg_auth").prop("checked", true);
+                else
+                    $("#whole_msg_auth").prop("checked", false);
+
+                //接入策略
+                if (obj["rows"][0]["multi_login"] == "yes")
+                    $("#whole_more_login").prop("checked", true);
+                else
+                    $("#whole_more_login").prop("checked", false);
+                $("#whole_login_num").textbox('setValue',obj["rows"][0]["maxnum_login_addr"]);
+                var ipRange = obj["rows"][0]["access_ip_range"];
+                if (ipRange != 'null')
+                    $('#whole_more_login_addr').combotree('setValue',ipRange);
+                else
+                    $('#whole_more_login_addr').combotree('setValue','');
+                var timeRange = obj["rows"][0]["access_time_range"];
+                if (timeRange != 'null')
+                    $('#whole_more_login_time').combotree('setValue',timeRange);
+                else
+                    $('#whole_more_login_time').combotree('setValue','');
+
+                disable_whole_self();
+            }
+        });
+    })
+</script>

@@ -1,0 +1,38 @@
+<div>
+<form id="macvif_clear_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.INTERFACE}</td>
+            <td>
+                <select name="interface_clear" id="interface_clear" class="combobox_len"></select>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="clearMacvifSubmit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('clear_page')">
+    </div>
+</form>
+</div>	
+<script>
+    $(function() {
+        //获取所有物理接口
+        //getPhysicsInterface("interface_clear");
+        $("#interface_clear").combobox({
+            url: '?c=Network/Macvif&a=comboBox',
+            queryParams:{
+                mod:'network interfaces',
+                parKey:'__NA__',
+                param:'eth-no-mnp',
+                textKey:'dev'
+            },
+            required:true,
+            valueField:'dev',
+            textField:'dev',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false
+        });
+    });
+</script>

@@ -1,0 +1,109 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<style>
+    .datagrid{padding-top:0;}
+    .datagrid-toolbar a{margin:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/network/route.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="tb">
+    <a href="###" class="easyui-linkbutton" iconCls="icon-add" id="icon_add" plain="true" onClick="addRouteWindow();">{$Think.lang.ADD}</a>
+    <a href="###" class="easyui-linkbutton" id='icon_delete' iconCls="icon-delete" plain="true" onClick="deleteselectrow();">{$Think.lang.DELETE}</a>
+    <a href="###" class="easyui-menubutton" menu="#mm2" id="icon_clear" iconCls="icon-clear" plain="true">{$Think.lang.CLEAR}</a>
+    <div id="mm2" style="width:120px;">
+        <div onClick="cleanRoutes('ipv4');">{$Think.lang.IPV4_ROUTING}</div>
+        <div onClick="cleanRoutes('ipv6');">{$Think.lang.IPV6_ROUTING}</div>
+    </div>
+    <a class="ipchose_box" style="border:none;">
+        <span style='margin-left:20px;'/>{$Think.lang.PROTOCOL}：</span>
+        <select style='width:100px;' id='ipchose' class="ngtos_input">
+            <option value=''>{$Think.lang.ALL}</option>
+            <option value='ipv4'>IPv4</option>
+            <option value='ipv6'>IPv6</option>
+        </select>
+    </a>
+
+    &nbsp;&nbsp;	&nbsp;&nbsp;
+    <a href="###" class="easyui-linkbutton" id="icon_search" iconCls="icon-search" onClick="searchRoute();"      plain="true" style="border:none;">
+        {$Think.lang.QUERY}
+    </a>
+</div>
+<script>
+    var switch_tag = "{$vr_switch}";
+    var oper = 0;
+    var editDst;
+    var editGw;
+    var editMetric;
+    var editWeight;
+    var editOif;
+    var editSerch_id;
+    var editVr;
+    var editFamily;
+    var editRoute_id;
+    var editFlags;
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            showFooter: false,
+            collapsible: true,
+            nowrap: true,
+            rownumbers: true,
+            remoteSort: false,
+            url: '?c=Network/Route',
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true},
+                    {field: 'dst', title: $LANG.DST_ADDR_MASK, width: 220, sortable: true, align: 'center'}
+                ]],
+            columns: [[
+                    {field: 'gw', title: $LANG.GATEWAY, align: 'center', resizable: true, width: 160, editor: 'text'},
+                    {field: 'metric', title: $LANG.MEASUREMENT, align: 'center', resizable: true, width: 100, editor: 'text'},
+                    {field: 'weight', title: $LANG.WEIGHT, align: 'center', resizable: true, width: 100, editor: 'text', hidden: true},
+                    {field: 'oif', title: $LANG.OUT_INTERFACE+'('+$LANG.ATTRIBUTE+')', align: 'center', resizable: true, width: 150, editor: 'text'},
+                    //屏蔽探测ID，ngtos2.1中不需要这个字段
+//                    {field: 'search_id', title: $LANG.PROBE_ID, align: 'center', resizable: true, width: 100, editor: 'text'},
+                    {field: 'flags', title: $LANG.FLAG, align: 'center', resizable: true, width: 150, editor: 'text'},
+                    {field: 'family', align: 'center', resizable: false, editor: 'text', hidden: true},
+                    {field: 'route_id', align: 'center', resizable: false, editor: 'text', hidden: true}
+
+                ]],
+            checkOnSelect: true,
+            selectOnCheck: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: '#tb',
+            onCheck: setToolBar,
+            onUncheck: setToolBar,
+            onCheckAll: setToolBar,
+            onUncheckAll: setToolBar,
+            onSelect: setToolBar,
+            onUnselect: setToolBar,
+            onClickRow: function(index, row) {
+                setToolBar();
+                if (row.route_id == '0')
+                    $('#tt').datagrid('unselectRow', index);
+            },
+            onLoadSuccess: function(data) {
+                setToolBar();
+                if (switch_tag == '1')
+                $('#icon_delete').linkbutton('disable');
+            },
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+        if(getPrivilege("network") == false){
+             $('#icon_add').linkbutton('disable');
+             $('#icon_clear').linkbutton('disable');
+        }
+    });
+</script>
+
+</body>
+</html>

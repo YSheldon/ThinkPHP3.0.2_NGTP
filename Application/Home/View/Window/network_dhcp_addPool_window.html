@@ -1,0 +1,125 @@
+<div class="ngtos_window_switch" xmlns="http://www.w3.org/1999/html">
+<form id="add_form">
+    <div class="ngtos_window_tab">
+        <a href="###" onClick="page_show('add_addrPool', 'basic');"><div class="ngtos_window_tab_on" id="basicStyle"><b>{$Think.lang.BASIC_INFO}</b></div></a>
+        <a href="###" onClick="page_show('add_addrPool', 'super');"><div class="ngtos_window_tab_off" id="superStyle"><b>{$Think.lang.SENIOR_INFO}</b></div></a>
+    </div>
+    <div class="ngtos_window_content">
+        <div class="basic_table">
+            <table class="ngtos_form_table">
+                <tr><td class="tdlabel_net">{$Think.lang.SUBNET}/{$Think.lang.MASK}</td>
+                    <td>
+                        <input type="text" style="width:109px" id="subnet" name="subnet" class="easyui-textbox global_input" data-options="required:true,validType:'ipFour'">/
+                        <input type="text" style="width:108px" id="mask" name="mask" class="easyui-textbox global_input" data-options="required:true,validType:'mask'"><span class="form_comment">[1.1.1.0/255.255.255.0]</span>
+                </tr>
+                <tr><td class="tdlabel_net">{$Think.lang.DIST_START_ADDR}</td>
+                    <td><input type="text" id="addr_start" name="addr_start" class="easyui-textbox input_length">
+                </tr>
+                <tr><td class="tdlabel_net">{$Think.lang.DIST_END_ADDR}</td>
+                    <td><input type="text" id="addr_stop" name="addr_stop" class="easyui-textbox input_length">
+                </tr>
+                <tr><td class="tdlabel_net">{$Think.lang.GATEWAY_ADDR}</td>
+                    <td><input type="text" id="web_addr" name="web_addr" class="easyui-textbox input_length"></td>
+                </tr>
+                <tr><td class="tdlabel_net">{$Think.lang.MASTER_DNS}</td>
+                    <td><input type="text" id="dns_main" name="dns_main" class="easyui-textbox input_length"></td>
+                </tr>
+                <tr><td class="tdlabel_net">{$Think.lang.SERVANT_DNS}</td>
+                    <td><input type="text" id="dns_second" name="dns_second" class="easyui-textbox input_length"></td>
+                </tr>
+<!--                <tr><td>{$Think.lang.VROUTE_ID}：</td>
+                    <td><input type="text" style="width:200px" id="vcomId" name="vcomId" value="0" class="easyui-textbox global_input"></td>
+                </tr>-->
+            </table>
+        </div>
+    
+        <div class="super_table" style="display:none" id="super_table">
+            <table class="ngtos_form_table">
+            <tr><td class="tdlabel_net">{$Think.lang.DEFAULT_LEASE_TIME}</td>
+                <td><input type="text" id="date_start_day" name="date_start_day"  value='1' size='1' class="ngtos_input_min">{$Think.lang.DAY}
+                    <input type="text" style="width:78px;" id="clock_cid" onblur="timeFormatterCheck(this);" class="easyui-timespinner" size="12" maxlength="12" data-options="min:'00:00',showSeconds:false" value="00:00">
+                
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.MAX_LEASE_TIME}</td>
+                <td><input type="text" id="date_max_day" name="date_max_day"  value='7' size='1' class="ngtos_input_min">{$Think.lang.DAY}
+                    <input type="text" style="width:78px;" id="clock_cid_max" onblur="timeFormatterCheck(this);" class="easyui-timespinner" size="12" maxlength="12" data-options="min:'00:00',showSeconds:false" value="00:00">
+                    
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.DOMAIN_NAME}</td>
+                <td><input type="text" id="yu_name" name="yu_name" class="easyui-textbox input_length"></td>
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.MASTER_WINS}</td>
+                <td><input type="text" id="client_type" name="client_type" class="easyui-textbox input_length"></td>
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.SERVANT_WINS}</td>
+                <td><input type="text" id="gro_desc" name="gro_desc" class="easyui-textbox input_length"></td>
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.PRIVATE_START_ADDR}</td>
+                <td><input type="text" id="addr_start1" name="addr_start1" class="easyui-textbox input_length"></td>
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.PRIVATE_END_ADDR}</td>
+                <td><input type="text" id="addr_stop1" name="addr_stop1" class="easyui-textbox input_length"></td>
+            </tr>
+            </table>
+        </div>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"value="{$Think.lang.CONFIRM}" id="addAddrPool">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_addrPool')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        if(dhcpPool_tag == 1) {
+           // $("#super_table").style("display","show");
+          // $("#super_table").show();
+            $("#subnet").removeAttr('disabled');
+//            $("#vcomId").removeAttr('disabled');
+        } else {
+            $("#subnet").val(param[0]);
+            $("#subnet").attr('disabled','true');
+            $("#mask").val(param[1]);
+            $("#addr_start").val(param[2]);
+            $("#addr_stop").val(param[3]);
+            $("#addr_start1").val(param[17]);
+            $("#addr_stop1").val(param[18]);
+            $("#date_start_day").val(param[4]);
+            var hour = param[5]<10?0+param[5]:param[5];
+            var min = param[6]<10?0+param[6]:param[6];
+            $("#clock_cid").val(hour+':'+min);
+//            $("#date_start_horse").val(param[5]);
+//            $("#date_start_min").val(param[6]);
+            $("#date_max_day").val(param[7]);
+            var hour_max = param[8]<10?0+param[8]:param[8];
+            var min_max = param[9]<10?0+param[9]:param[9];
+            $("#clock_cid_max").val(hour_max+':'+min_max);
+//            $("#date_max_horse").val(param[8]);
+//            $("#date_max_min").val(param[9]);
+            $("#web_addr").val(param[10]);
+            $("#dns_main").val(param[11]);
+            $("#dns_second").val(param[12]);
+            $("#yu_name").val(param[13]);
+            $("#client_type").val(param[14]);
+            $("#gro_desc").val(param[15]);
+//            $("#vcomId").val(param[16]);
+//            $("#vcomId").attr('disabled','true');
+        }
+        $ ('#addAddrPool').click(function() {
+            var addres = $('#add_form').form('validate');
+            if (addres) {
+                addAddrPoolSubmit(dhcpPool_tag);
+            }
+        })
+        $('#addr_start').textbox({
+            required: true,
+            missingMessage: '开始IP应小于等于结束IP',
+            validType: ['ipFour','ipRangeStr[$("#addr_stop").val()]']
+        });
+        $('#addr_stop').textbox({
+            required: true,
+            missingMessage: '结束IP应大于等于开始IP',
+            validType: ['ipFour','ipRangeEnd[$(\'#addr_start\').val()]']
+        });
+    });
+</script>

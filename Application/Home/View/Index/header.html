@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=8" >
+        <title>{$Think.lang.TOPSEC}</title>
+        
+        <link href='{$Think.config.NG_PATH}Public/images/image/favicon.ico' rel='shortcut icon'/>
+        <link href="{$Think.config.NG_PATH}Public/plugins/easyui/themes/metro-gray/easyui.css" rel="stylesheet" type="text/css" />
+        <link href="{$Think.config.NG_PATH}Public/css/icon.css" rel="stylesheet" type="text/css"/>
+        <!-- 外部导入新css插件： -->
+        <link href="{$Think.config.NG_PATH}Public/css/yngtos/google-fonts.css"rel="stylesheet"type="text/css"/>
+        <link href="{$Think.config.NG_PATH}Public/css/yngtos/style.css" rel="stylesheet" type="text/css"/>
+        <link href="{$Think.config.NG_PATH}Public/css/yngtos/font-awesome.css" rel="stylesheet" 
+              type="text/css"/>
+        <link href="{$Think.config.NG_PATH}Public/css/yngtos/responsive.css" rel="stylesheet" type="text/css"/>
+        <link href="{$Think.config.NG_PATH}Public/css/yngtos/easy-responsive-tabs.css "rel="stylesheet" type="text/css"/>
+        <!--加载该语言样式-->
+        <if condition="LANG_SET == 'en-us'">
+            <link rel="stylesheet" type="text/css" href="{$Think.config.NG_PATH}Public/css/style-en.css"/>
+        </if>
+        <link href="{$Think.config.NG_PATH}Public/css/pro-bars.min.css" rel="stylesheet" 
+              type="text/css" media="all"/>
+        <link rel="stylesheet" type="text/css" href="{$Think.config.NG_PATH}Public/css/style.css"/>
+        <!--  -->
+        <script>var NG_PATH = '../';</script>
+        <script type="text/javascript" src="{$Think.config.NG_PATH}Public/lang/{$Think.LANG_SET}.js" ></script>
+        <script src="{$Think.config.NG_PATH}Public/plugins/jquery-1.11.2.min.js" ></script>
+        <script type="text/javascript" src="{$Think.config.NG_PATH}Public/plugins/jquery.cookie.js"></script>
+        <script type="text/javascript" src="{$Think.config.NG_PATH}Public/plugins/easyui/jquery.easyui.all.js" >
+        </script>        
+        <script src="{$Think.config.NG_PATH}Public/plugins/easyui/locale/easyui-lang-{$Think.LANG_SET}.js" >
+        </script>
+        <script type="text/javascript" src="{$Think.config.NG_PATH}Public/js/function.js" ></script>
+        <script type="text/javascript" src="{$Think.config.NG_PATH}Public/js/html5shiv.min.js" ></script>
+        <script src="{$Think.config.NG_PATH}Public/js/visible.min.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <!-- header: -->
+        <nav class="top-nav">
+            <div class="nav-wrapper">
+                <div class="header-top-nav pull-left">
+                    <a href="#;" class="logo-dashboard">
+                        <img src="{$Think.config.NG_PATH}Public/images/images/logo-dasboard.png" />
+                    </a>
+                </div>
+                <ul id='topdiv_menu' >
+                    <foreach name="toptitle" item="vo" key="key">
+                        <li class="topmenu <if condition='$key eq $toptitleNow'>topmenuover</if>" 
+                            id="{$key}_menu">
+                            <a href="javascript:void(0)" onclick="mainOpens('{$vo.url}')">
+                                {$vo.text}
+                            </a>
+                        </li>
+                    </foreach>
+                </ul>
+                <script>
+                    function mainOpens(i){
+                    $.ajax({
+                        url: "?c=Home/Support&a=status",
+                        type: 'POST',
+                        data: {
+                            leftdiv: "200px"
+                        },
+                        async: false,
+                        success: function(data) {
+                            if (data == '1') {
+                                // alert("成功！");
+                                // window.location.href=i+"&status="+data;
+                                window.location.href=i;
+                            }else{
+                                // alert("失败！");
+                                window.location.href=i;
+                            }
+                        }
+                    });
+                }
+                </script>
+                <div class="right-top-nav list-group">
+                    <ul class="right-nav">
+                        <li>
+                        <a href="javascript:void(0)" 
+                            onMouseOut="$.cookie('saveFlagSuspend', 0, {secure: true});MM_swapImgRestore()"
+                            onMouseOver="$.cookie('saveFlagSuspend', 1, {secure: true});MM_swapImage('saveImage', '', '{$Think.config.NG_PATH}Public/images/image/bc.png', 1)"  onClick="saveConfigLoading();">
+                                <img src="{$Think.config.NG_PATH}Public/images/image/bc4.png"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" 
+                               onMouseOut="MM_swapImgRestore()"
+                               onMouseOver="MM_swapImage('quitImage', '', '{$Think.config.NG_PATH}Public/images/image/tc.png', 1)" onClick="prepareLogout();">
+                               <img src="{$Think.config.NG_PATH}Public/images/image/tc2.png"/>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="user">
+                        <ul>
+                            <li>
+                                <a href="#;">
+                                    {$Think.lang.user}：
+                                    <script>
+                                        var name = $.cookie('username');
+                                        if (isEmpty(name)) {
+                                            //如果cookie未保存用户名，从后台获取
+                                            name = getAdminName();
+                                            if (name == null || name == "") {
+                                                name = $LANG.NOT_LOGGED_IN;
+                                            } else {
+                                                $.cookie('username', name, {secure: true});
+                                            }
+                                        }
+                                        //如果字符串长度大于10，截取前7
+                                        if (getStrLength(name) > 10) {
+                                            name = name.substr(0, 7) + "...";
+                                        }
+                                        document.write(name);
+                                    </script>
+                                </a>
+                            </li>   
+                        </ul>
+                    </div>
+                </div>
+            </div>   
+        </nav>
+        <script src="{$Think.config.NG_PATH}Public/js/yngtos/scripts.js"></script>
+        <script src="{$Think.config.NG_PATH}Public/js/yngtos/easyResponsiveTabs.js"></script>
+        <script type="text/javascript">
+            //每5秒检查是否在线(延迟太高)
+            //window.setInterval("checkOnline();", 5000);
+
+            //设定超时间后，每秒更新在线时间
+            window.setInterval("updateIdletime();", 1000);
+            //每秒检查通信错误信息--暂不考虑
+            window.setInterval("checkComm();", 1000);
+
+            //检查是否有配置操作
+            //window.setInterval("checkSave();", 3000);
+
+            //如果终端超时为0，一小时保活一次
+            if ($.cookie('timeout') == 0) {
+                window.setInterval("keepAlive();", 3600000);
+            }
+
+            //鼠标移动和点击时保持激活
+            if (document.addEventListener) { //FireFox,Chrome,Opera…
+                document.addEventListener('mousemove', handAlive, false); //事件会在鼠标指针移动时发生。
+            } else if (document.attachEvent) { //IE
+                document.attachEvent('onmousemove', handAlive, false); //事件会在鼠标指针移动时发生。
+            } else { //Other（IE，FireFox，Chrome，Opera等，绝大部分浏览器支持方法 onclick 监听）
+                document.onmousemove = handAlive;
+            }
+
+            document.onkeydown = handAlive;
+
+            //每5秒发一次保活
+            var alive_time = 0;
+            function handAlive() {
+                var myDate = new Date().getTime();
+                var now_time = parseInt(myDate / 1000);
+                if (now_time % 5 == 0) {
+                    //防止同一时间的多次下发
+                    if (now_time == alive_time) {
+                        return;
+                    } else {
+                        alive_time = now_time;
+                        keepAlive();
+                    }
+                }
+            }
+        </script>

@@ -1,0 +1,150 @@
+
+<div class="ngtos_window_switch" xmlns="http://www.w3.org/1999/html">
+<form id="spantree_form">
+    <div class="ngtos_window_tab">
+        <a href="###" onClick="page_show('show_spantree', 'basic');"><div class="ngtos_window_tab_on" id="basicStyle"><b>{$Think.lang.SPAN_TREE_SET}</b></div></a>
+        <a href="###" onClick="page_show('show_spantree', 'super');"><div class="ngtos_window_tab_off" id="superStyle"><b>{$Think.lang.SPAN_TREE_STATE}</b></div></a>
+    </div>
+    <div class="ngtos_window_content">
+        <div class="basic_table">
+            <table class="ngtos_form_table">
+                <tr>
+                    <td class="tdlabel">VLAN ID</td>
+                    <td>
+                        <input type="text" id="id_hid" value="" style="width:15px;border-style:none" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel">{$Think.lang.SPAN_TREE_STATE}</td>
+                    <td>
+                        <input type="radio" name="snmp_manageHostType" id="spantree_enable" checked><label for="spantree_enable">{$Think.lang.ON}</label>&nbsp;
+                        <input type="radio" name="snmp_manageHostType" id="spantree_disable" ><label for="spantree_disable">{$Think.lang.OFF}</label>
+                    </td>
+                </tr>
+               <tr>
+                <td class="tdlabel">{$Think.lang.PRIORITY}</td>
+                <td>
+                    <input type="text" id='priority' name="priority" value="" class="easyui-textbox input_length" data-options="required:true,validType:'range[1,65535]'"/>
+                    <span class="form_comment">[1-65535]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">HELLO TIME</td>
+                <td>
+                    <!-- 生成树配置报文发送间隔<1~65535> -->
+                    <input type="text" id='hello' name="hello" value="" class="easyui-textbox input_length" data-options="required:true,validType:'range[1,65535]'"/>
+                    <span class="form_comment">[1-65535]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">FORWARD DELAY</td>
+                <td>
+                    <!-- 端口状态迁移时延<1~65535> -->
+                    <input type="text" id='fwddelay' name="fwddelay" value="" class="easyui-textbox input_length" data-options="required:true,validType:'range[1,65535]'"/>
+                    <span class="form_comment">[1-65535]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">MAX AGE</td>
+                <td>
+                    <!-- 生成树配置信息在设备中的生存周期<1~65535> -->
+                    <input type="text" id='maxage' name="maxage" class="easyui-textbox input_length" data-options="required:true,validType:'range[1,65535]'"/>
+                    <span class="form_comment">[1-65535]</span>
+                </td>
+            </tr>
+            </table>
+        </div>
+
+
+        <div class="super_table" style="display:none" id="super_table">
+            <table>
+                <tr>
+                    <td class="tdlabel">VLAN</td> 
+                    <td>
+                        <input type="text" id="id_vid" value="" class="spanhide">
+                    </td>
+                </tr>
+                </table><br>
+                <table>
+                <tr>
+                    <!--Designated Root-->
+                    <td class="tdlabel">{$Think.lang.ROOT_BRIDGE_MAC_ADDRESS}</td>
+                    <td>
+                        <input type="text" id="root" name="root" value="" class="spanhide">
+                    </td>
+                </tr>
+                <tr>    
+                    <!--Designated Root Priority-->
+                    <td class="tdlabel">{$Think.lang.ROOT_BRIDGE_PRIORITY}</td>
+                    <td>
+                        <input type="text" id="root_priori" name="root_priori" value="" class="spanhide">
+                    </td>
+                </tr>
+                </table><br>
+                <table>
+                <tr> 
+                    <!--BRIDGE ID MAC ADDR-->
+                    <td class="tdlabel">{$Think.lang.MAC_VLAN_ADDRESS}</td>
+                    <td>
+                        <input type="text" id="mac" name="mac" class="spanhide">
+                    </td>
+                </tr>
+                <tr>
+                    <!--BRIDGE ID PRIORITY-->
+                    <td class="tdlabel">{$Think.lang.MAC_VLAN_PRIORITY}</td>
+                    <td>
+                        <input type="text" id="bripriori" name="bripriori" class="spanhide">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel">Bridge Max Age</td>
+                    <td>
+                        <input type="text" id="bridge_max" name="bridge_max" value="" class="sspanhide">sec
+                    </td>
+                    </tr><tr>
+                    <td class="tdlabel">Hello Time</td>
+                    <td>
+                        <input type="text" id="htime" name="htime" value="" class="sspanhide">sec
+                    </td>
+                    </tr><tr>
+                    <td class="tdlabel">Forward Delay</td>
+                    <td>
+                        <input type="text" id="fdelay" name="fdelay" value="" class="sspanhide">sec
+                    </td>
+                </tr>
+            </table><br>
+            <table >
+                <tr>
+                    <td class="tdlabel">Port</td>
+                    <td style="text-align:right;width:80px">Port-State</td>
+                    <td class="ppan">Cost</td>
+                    <td class="ppan">Priority</td>
+                </tr>
+                <tr>
+                    <td class="tdlabel" id="a"></td>
+                    <td class="ppan" id="b"></td>
+                    <td class="ppan" id="c"></td>
+                    <td class="ppan" id="d"></td>
+                </tr>
+            </table>
+            </div>
+    </div>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"value="{$Think.lang.CONFIRM}" id="set_tree">
+        <input type="button" class="ngtos_button_middle"value="{$Think.lang.SET_ROOT_BRIDGE}" id="spantree">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('show_spantree')">
+    </div>
+</div>
+<script>
+    $('#set_tree').click(function() {
+        var span = $('#spantree_form').form('validate');
+        if (span) {
+            add_spantree();
+        }
+    });
+    //设为根桥
+    $('#spantree').click(function() {
+        set_spantree();
+    })
+</script>

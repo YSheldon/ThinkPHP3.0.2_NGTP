@@ -1,0 +1,48 @@
+<form id="neighbour_add">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel">{$Think.lang.INTERFACE}</td>
+            <td>
+                <input name="interface" id="interface_cid" class="input_length">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.IPV6_ADDR}</td>
+            <td>
+                <input type="text" name="ip" id="ip_cid" class="easyui-textbox input_length" data-options="required:true,validType:'ipSix'">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.MAC_ADDR}</td>
+            <td>
+                <input type="text" name="mac" id="mac_cid" class="easyui-textbox input_length" data-options="required:true,validType:'mac'"><span class="form_comment">[AA:BB:CC:DD:EE:FF]</span>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"
+               value="{$Think.lang.CONFIRM}" onClick="addNeighSubmit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}"
+               onClick="closeWindow('add_page')">
+    </div>
+</form>
+<script>
+    $(function() {
+         $("#interface_cid").combobox({
+            url: "?c=Network/Neighbour&a=comboBox",
+            queryParams:{
+                mod:'network interfaces',
+                textKey:'dev',
+                select:'true'
+             },
+            valueField: 'dev',
+            textField: 'dev',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple: false,
+            editable: false
+        });
+        //获取所有接口
+//        getAllInterface("interface_cid");
+    });
+</script>

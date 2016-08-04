@@ -1,0 +1,153 @@
+<div class="ngtos_window_switch">
+<form id="macvif_form">
+    <div class="ngtos_window_tab">
+        <a href="#" onClick="page_show('edit_page', 'basic');"><div class="ngtos_window_tab_on" id="basicStyle"><b>{$Think.lang.BASIC_INFO}</b></div></a>
+        <a href="#" onClick="page_show('edit_page', 'super');"><div class="ngtos_window_tab_off" id="superStyle"><b>{$Think.lang.SENIOR_INFO}</b></div></a>
+    </div>
+    <div class="ngtos_window_content" style="height:370px;">
+        <div class="basic_table">
+            <table class="ngtos_form_pop">
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.NAME}</td>
+                    <td>
+                        <span id="interface_name_cid"></span>
+                        <input type="hidden" id="interface_value_cid"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.STATE}</td>
+                    <td>
+                        <input type="radio" name="shutdown" id="shutdown_enable" value="enable" />
+                        <label for="shutdown_enable">{$Think.lang.START}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="shutdown" id="shutdown_disable" value="disable" />
+                        <label for="shutdown_disable">{$Think.lang.STOP}</label>&nbsp;&nbsp;
+                        <!--<img src="./static/images/image/start.png" onClick="changBtState(this);" title="启用" class="switch1" id="shutdown_cid"/>-->
+                        <input type="hidden" id="shutdown_old"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+                    <td>
+                        <input type="text" id="description_cid" class='easyui-textbox' style="width:300px;"/>
+                        <input type="hidden" id="description_old"/>
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td class="window_subtitle"><b>{$Think.lang.ROUTE_MODE}</b></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="easyui-tabs" id="easytabs" data-options="plain:true,border:false" style="width:530px;height:245px;">
+                            <div title="IPv4">
+                                <table class="ngtos_form_table padding_ip">
+                                    <tr>
+                                        <td>
+                                            <label for="ip4_cid">{$Think.lang.ADDRESS}</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="ip4_cid" class='easyui-textbox' data-options="validType:'ipFour'" style="width: 130px;"/>
+                                        </td>
+                                        <td>
+                                            <label for="mask4_cid">{$Think.lang.MASK}</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="mask4_cid" class='easyui-textbox' data-options="validType:'mask'" style="width: 110px;"/>
+                                        </td>
+                                        <td>
+                                            <label for="ha4_cid">{$Think.lang.ASYNC_ADDR}</label>
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" id="ha4_cid"/>
+                                        </td>
+                                        <td>
+                                            <input type="button" id="add4_cid" title="" value="{$Think.lang.ADD}" class="ngtos_button_small" onclick="addIpv4();"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table id="ip4_list_cid"></table>
+                                <input id="ip4addr_items_old" type="hidden"/>
+                            </div>
+                            <div title="IPv6">
+                                <table class="ngtos_form_table padding_ip">
+                                    <tr>
+                                        <td>
+                                            <label for="ip6_cid">{$Think.lang.ADDRESS}</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="ip6_cid" class='easyui-textbox' data-options="validType:'ipSixPrefix'" style="width: 275px;"/>
+                                        </td>
+                                        <td>
+                                            <label for="ha6_cid">{$Think.lang.ASYNC_ADDR}</label>
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" id="ha6_cid"/>
+                                        </td>
+                                        <td>
+                                            <input type="button" id="add6_cid" title="" value="{$Think.lang.ADD}" class="ngtos_button_small" onclick="addIpv6();"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table id="ip6_list_cid"></table>
+                                <input id="ip6addr_items_old" type="hidden"/>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table cellpadding="4" class="super_table ngtos_form_pop" style="display:none;width: 100%;">
+            <tr><td style="height: 2px;"></td></tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.MTU}</td>
+                <td>
+                    <input type="text" id="mtu_cid" class='easyui-textbox' data-options="width:150,required:true,validType:'range[68,1500]'"/><span class="form_comment">[68-1500]</span>
+                    <input id="mtu_old" type="hidden"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.MSS}</td>
+                <td>
+                    <input type="radio" id="mss_auto" name="mss" value="auto" onclick="change_mss('hide')"/>
+                    <label for="mss_auto">{$Think.lang.ADAPT}</label>&nbsp;
+                    <input type="radio" id="mss_off" name="mss" value="off" checked="checked" onclick="change_mss('hide')"/>
+                    <label for="mss_off">{$Think.lang.CLOSE}</label>&nbsp;&nbsp;
+                    <input type="radio" id="mss_define" name="mss" value="define" onclick="change_mss('show')"/>
+                    <label for="mss_define">{$Think.lang.CUSTOM}</label>
+                    <input id="mss_old" type="hidden"/>
+                </td>
+            </tr>
+            <tr id="mss_define_cid">
+                <td class="tdlabel_net">&nbsp;</td>
+                <td>
+                    <input type="text" id="define_cid"/><span class="form_comment">[200-1460]</span>
+                    <input id="define_old" type="hidden"/>
+                </td>
+            </tr>
+            <!--<tr id="vsysid">
+                <td style="padding-left:10px">{$Think.lang.VSYS_NAME}</td>
+                <td colspan="3">
+                    <select id='vsid_cid' class="ngtos_input" ></select>
+                    <input id="vsid_old" type="hidden"/>
+                </td>
+            </tr>-->
+        </table>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="editMacvifSubmit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('edit_page')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        $("#define_cid").textbox({
+            width:150,
+            required:true,
+            novalidate:false,
+            validType:'range[200,1460]'
+        });
+        editMacvifRowInit(param[0]);
+    });
+</script>

@@ -1,0 +1,70 @@
+<div id='selObj'>
+    <table >
+        <tr>
+            <td>
+            <span class="select_margin">
+                <div><input type="text" name="source_tag" id="source_tag" style="width:217px"  onkeyup="doSearchBlock($(this).val(), event, 'sel1',2)">
+                    <img src="{$Think.config.NG_PATH}Public/images/icon/icon_search.png" width="16" height="16" /></div>
+                <select class="select middle_selObj height_selObj" id="sel1"  name='2' multiple ondblclick="moveOptions('sel1','sel2', 0);" style="height: 280px">
+                </select>
+                <div style="border:1px solid #000;height: 20px;font-size: 12px" id='new_obj_div'></div>
+                <div><a href="###" class="easyui-linkbutton" iconCls="icon-sort" plain="true" onClick="sortSelBefore();">{$Think.lang.SORT}</a></div>
+            </span>
+            <span class="input_margin_selObj">
+                <input type="button" onClick="moveOptions('sel1','sel2', 0);" value=" > " ><br><br>
+                <input type="button" onClick="moveOptions('sel2','sel1', 0);" value=" < " >
+            </span>
+            <span class="select_margin">
+                <div><input type="text" name="source_tag" id="source_tag" style="width:217px" onkeyup="doSearchBlock($(this).val(), event, 'sel2',2)">
+                    <img src="{$Think.config.NG_PATH}Public/images/icon/icon_search.png" width="16" height="16" /></div>
+                <select class="select middle_selObj height_selObj" id="sel2"  name='2'  multiple ondblclick="moveOptions('sel2','sel1', 0);">
+                </select>
+                <div><a href="###" class="easyui-linkbutton" iconCls="icon-sort" plain="true" onClick="sortSelAfter();">{$Think.lang.SORT}</a></div>
+            </span>
+            </td></tr></table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" onClick="addObjectVal()" value="{$Think.lang.CONFIRM}">
+        <input type="button" class="ngtos_button_middle" onClick="closeWindow('nat_obj_public')" value="{$Think.lang.CANCEL}">
+    </div>
+</div>
+<script>
+        $('#new_obj_div').html("<a href='###' onClick=\"addMap66Addr('{$Think.lang.ADD_ADDR_ATTR}','notmac');\" style='position: relative; left: 98px'>{$Think.lang.ADD_ADDR}</a>");
+
+    if($('#'+addInput).textbox('getValue')) {
+        var sel_arr=$.trim($('#'+addInput).textbox('getValue')).split(' ');
+    } else {
+        var sel_arr = [];
+    }
+
+    $.ajax({
+        url: "?c=Policy/Map66&a=subnetShow",
+        type: 'POST',
+        dataType:'json',
+        async:false,
+        success: function(data, textStatus){
+            if(data.rows){
+                $.each(data.rows,function(){
+                    var opp = new Option(this.name,this.name)
+                    opp.title = this.name + ' ip : ' + this.ip;
+                    $(isArrayValue(sel_arr,this.name)?'#sel2':'#sel1')[0].add(opp);
+                });
+            }
+        }
+    });
+
+    function addObjectVal(){
+        var b=$('#sel2')[0];
+        var b_len=b.length;
+        if(b_len>128) {
+            ngtosPopMessager("error", $LANG.MAX_SELECT128);
+            return;
+        }
+        var b_value='';
+        for(var i=0; i<b_len;i++) {
+            b_value+=b.options[i].value+' ';
+        }
+        $("#nat_obj_public").window('close');
+        $("#"+addInput).textbox('setValue',b_value);
+    }
+
+</script>

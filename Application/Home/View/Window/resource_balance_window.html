@@ -1,0 +1,83 @@
+<div>
+<form id="balance_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td width="100px" class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td>
+                <input type="text" id="name" name="name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','eSymbols']">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.STATE}</td>
+            <td><img src="{$Think.config.NG_PATH}Public/images/image/start.png" onClick="changBtState(this);" title="{$Think.lang.ENABLE}" class="switch1"
+                     id="status"/></td>
+        </tr>
+        <!--            <tr id="vshare" style="display:none">
+                        <td>{lang tree_resource_share}：</td>
+                        <td width="450px">
+                            <input type="radio" name="shared" id="shared_on" value="1" checked>{lang tree_resource_region_on}
+                            <input type="radio" name="shared" id="shared_off" value="0">{lang tree_resource_region_off}
+                        </td>
+                    </tr>-->
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SERVER_AVAILABLE}</td>
+            <td>
+                <span class="select_margin">
+                    <select class="select middle2" style="height:150px" id="src_element" multiple
+                            ondblclick="move_options('src_element', 'dst_element', '1');">
+                    </select>
+                </span>
+                <span class="input_margin">
+                    <input type="button"
+                           onClick="move_options('src_element', 'dst_element', '1');"
+                           value=" > "/>
+                    <br/>
+                    <input type="button"
+                           onClick="move_options('dst_element', 'src_element', '0');"
+                           value=" < "/>
+                </span>
+                <span class="select_margin">
+                    <select class="select middle2" style="height:150px" id="dst_element" multiple
+                            ondblclick="move_options('dst_element', 'src_element', '0');">
+                    </select>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.BALANCE_WAY}</td>
+            <td>
+                <input type="radio" name="balance" value="rr" id="rr" checked>
+                <label for="rr">{$Think.lang.TAKE_TURNS}</label><br>
+                <input type="radio" name="balance" value="wrr" id="wrr">
+                <label for="wrr">{$Think.lang.WEIGHT_TAKE_TURNS}</label><br>
+                <input type="radio" name="balance" value="lc" id="lc">
+                <label for="lc">{$Think.lang.LEAST_CONNECT}</label><br>
+                <input type="radio" name="balance" value="wlc" id="wlc">
+                <label for="wlc">{$Think.lang.LEAST_CONNECT_ADD_AUTHORITY}</label><br>
+                <input type="radio" name="balance" value="sh" id="sh">
+                <label for="sh">{$Think.lang.SRC_DO_HASH_SEEK}</label><br>
+                <input type="radio" name="balance" value="dh" id="dh">
+                <label for="dh">{$Think.lang.DST_DO_HASH_SEEK}</label><br>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('window_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        if (tag == 1) {
+            add_prepare();
+        } else {
+            modify_prepare();
+        }
+
+        $('#confirm_button').click(function() {
+            submit_item(tag);
+        });
+
+    });
+</script>

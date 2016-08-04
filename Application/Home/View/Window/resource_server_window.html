@@ -1,0 +1,63 @@
+<div>
+<form id="res_server_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td style="width:100px;" class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td style="width:350px;">
+                <input type="text" id="name" name="name" class="easyui-textbox input_length" data-options="required:true,validType:['nospace','eSymbols']">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ADDRESS}</td>
+            <td>
+                <input type="text" id="host" name="host" class="easyui-textbox input_length" data-options="required:true,validType:'ipFourOripSix'">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.WEIGHT}</td>
+            <td>
+                <input type="text" id="weight" name="weight" class="easyui-textbox input_length" data-options="value:1,validType:'range[1,100]'">
+                <span class="form_comment">[1-100]</span>
+            </td>
+        </tr>
+        <tr id="vshare" style="display:none">
+            <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+            <td>
+                <input type="radio" name="shared" id="shared_on" value="1">
+                <label for="shared_on">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="shared" id="shared_off" value="0" checked>
+                <label for="shared_off">{$Think.lang.DENY}</label>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('window_div')">
+    </div> 
+</form>
+</div>
+<script>
+    $(function() {
+        if (tag == 1) {
+            $("#name").removeAttr('disabled');
+        } else {
+            $("#name").attr('disabled', 'disabled');
+            $('#name').val(param[0]);
+            $('#host').val(param[1]);
+            $('#weight').val(param[2]);
+            if (param[3] == 'on')
+                $('input:radio[name="shared"]').get(0).checked = true;
+            else
+                $('input:radio[name="shared"]').get(1).checked = true;
+        }
+
+        if (!isShared())
+            $('#vshare').css("display", "");
+        else
+            $('#vshare').css("display", "none");
+
+        $('#confirm_button').click(function() {
+            submit_item(tag);
+        });
+    });
+</script>

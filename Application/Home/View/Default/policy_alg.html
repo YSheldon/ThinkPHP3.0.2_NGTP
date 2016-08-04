@@ -1,0 +1,113 @@
+<include file="Index:main"/>
+<div  class="ngtos_form">
+    <table class="ngtos_form_table" style="width:400px;">
+        <tr>
+            <td width="15%" class="tdlabel_net">ftp</td>
+            <td class="tdlabel_net">
+                <input type="checkbox" value="1" name="ftp" id='ftp' class="global_checkbox"/>
+                <input type="hidden" value="{$ftp}" name="ftp_old" id='ftp_old'/>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">tftp</td>
+            <td class="tdlabel_net">
+                <input type="checkbox" value="1" name="tftp" id='tftp' class="global_checkbox">
+                <input type="hidden" value="{$tftp}" name="tftp_old" id='tftp_old'/>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">sqlnet</td>
+            <td class="tdlabel_net">
+                <input type="checkbox" value="1" name="sqlnet" id='sqlnet' class="global_checkbox">
+                <input type="hidden" value="{$sqlnet}" name="sqlnet_old" id='sqlnet_old'/>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">pptp</td>
+            <td class="tdlabel_net">
+                <input type="checkbox" value="1" name="pptp" id='pptp' class="global_checkbox">
+                <input type="hidden" value="{$pptp}" name="pptp_old" id='pptp_old'/>
+            </td>
+        </tr>                           
+        <tr>
+            <td class="tdlabel_net">
+                <input type="submit" class="ngtos_button_large confirmenable" value="{$Think.lang.APPLY}"  onClick="submit();">
+            </td>
+            <td class="tdlabel_net">
+                <input type="reset"  class="ngtos_button_large confirmenable" value="{$Think.lang.RESET}" onClick="reset();">
+            </td>
+        </tr>
+    </table>
+    <!--<div style="margin-left: 10px;margin-top: 20px;">
+        <input type="submit" class="ngtos_button_large confirmenable" value="{$Think.lang.APPLY}"  onClick="submit();">&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset"  class="ngtos_button_large" value="{$Think.lang.RESET}" onClick="reset();">
+    </div>-->
+</div>
+<script type="text/javascript">
+    $(function() {
+        var ftp = "{$ftp}";
+        var tftp = "{$tftp}";
+        var sqlnet = "{$sqlnet}";
+        var pptp = "{$pptp}";
+
+        if (ftp == "yes") {
+            $("#ftp").attr("checked", true);
+        }
+        if (tftp == "yes") {
+            $("#tftp").attr("checked", true);
+        }
+        if (sqlnet == "yes") {
+            $("#sqlnet").attr("checked", true);
+        }
+        if (pptp == "yes") {
+            $("#pptp").attr("checked", true);
+        }
+    });
+
+    function submit() {
+        $.ajax({
+            url: "?c=Policy/Alg&a=set",
+            type: 'POST',
+            dataType: 'text',
+            async: false,
+            data: {
+                ftp: $("#ftp").prop("checked")?'checked':'',
+                ftp_old: $("#ftp_old").val(),
+                tftp: $("#tftp").prop("checked")?'checked':'',
+                tftp_old: $("#tftp_old").val(),
+                sqlnet: $("#sqlnet").prop("checked")?'checked':'',
+                sqlnet_old: $("#sqlnet_old").val(),
+                pptp: $("#pptp").prop("checked")?'checked':'',
+                pptp_old: $("#pptp_old").val()
+            },
+            success: function(data) {
+                if (data == '0') {
+                    location.href="?c=Policy/Alg&a=show";
+                    ngtosPopMessager("success", $LANG.OPERATION_SUCCESS);
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+
+    function reset() {
+        $.ajax({
+            url: "?c=Policy/Alg&a=reset",
+            type: 'POST',
+            dataType: 'text',
+            success: function(data) {
+                if (data == '0') {
+                    location.href="?c=Policy/Alg&a=show";
+                    ngtosPopMessager("success", $LANG.OPERATION_SUCCESS);
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

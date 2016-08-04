@@ -1,0 +1,89 @@
+<div>
+<form id="service_form">
+    <table id="setstyles" class="ngtos_form_table">
+        <tr>
+            <td width="50px" class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td width="450px">
+                <input type="text" id="ser_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','eSymbols']">
+                <span class="form_comment">{$Think.lang.MAX_CHAR30}</span>
+            </td>
+        </tr>
+        <tr id="sg_vshare" style="display:none">
+            <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+            <td width="450px">
+                <input type="radio" name="sg_sha"  value="1" id="share_on">
+                <label for="share_on">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="sg_sha" value="0" id="share_off" checked>
+                <label for="share_off">{$Think.lang.DENY}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SERVICE}</td>
+            <td>
+                <div class="select_div">
+                    <div class="select_ldiv">
+                        <div class="select_ldiv_bottom border_bottom0">
+                            <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                            <span class="searchbox width100">
+                                <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'service_item_cid',0)">
+                                <span class="searchbox-button"></span>
+                            </span>
+                        </div>
+                        <select class="select middle2 height190" style="height:190px;" id="service_item_cid" multiple ondblclick="move_options('service_item_cid','d_service_item_cid','1','sel_service_num');">
+                        </select>
+                        <div id='service_add_div' class="select_ldiv_bottom border_top0">
+                            <a class="lineHeight26 cursorPoint" onclick="add_serv('{$Think.lang.ADD}')">{$Think.lang.ADD_SERVICE}</a>
+                        </div>
+                    </div>
+                    <div class="select_cdiv">
+                        <input type="button" class="width40" onClick="move_options('service_item_cid','d_service_item_cid','1','sel_service_num');" value=" > ">
+                        <br/><br/>
+                        <input type="button" class="width40" onClick="move_options('d_service_item_cid','service_item_cid','0','sel_service_num');" value=" < ">
+                    </div>
+                    <div class="select_rdiv">
+                        <div id="sel_service_num" class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+
+                        </div>
+                        <select class="select middle2 height12 height190" style="height:190px;" id="d_service_item_cid" name="service_item[]" multiple ondblclick="move_options('d_service_item_cid','service_item_cid','0','sel_service_num');">
+                        </select>
+                        <div class="select_ldiv_bottom border_top0">
+                            <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_service_item_cid','service_item_cid','0','sel_service_num');">{$Think.lang.CLEAR_ALL}</a>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addServGroup'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('service_group_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        if(!isShared())
+            $('#sg_vshare').css("display","");
+        else
+            $('#sg_vshare').css("display","none");
+        if(typeof(grtag)!='undefined' && (grtag==6 || grtag==9)) {
+            $('#service_add_div').hide();
+            $('#service_item_cid').css('height',216.5);
+        }
+
+        if(gserv_tag == 1) {
+            refresh_serv();
+        } else {
+            modify_refresh_serv(param[2]);
+            $('#ser_name').val(param[0]);
+            $("#ser_name").attr('disabled','disabled');
+            if(param[1] == 'on')
+                $('input:radio[name="sg_sha"]').get(0).checked = true;
+            else
+                $('input:radio[name="sg_sha"]').get(1).checked = true;
+        }
+        $('#addServGroup').click(function() {
+            sel_group(gserv_tag);
+        });
+    })
+</script>

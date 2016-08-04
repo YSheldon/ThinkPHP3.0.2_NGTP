@@ -1,0 +1,72 @@
+<form id="route_add">
+    <table class="ngtos_form_table">
+        <tr>
+            <th colspan="2">{$Think.lang.BASIC_CONFIG}</th>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.DST_ADDR_NETWORK_PR}</td>
+            <td><input type="text" class="easyui-textbox" id='add_dst' data-options="required:true,validType:'ipFourOripSix'"> / <input type="text" class="easyui-textbox" id='add_masks' data-options="width:78,required:true"></td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.GATEWAY}</td>
+            <td>
+                <div class="big_div">
+                    <div class="big_note"></div>
+                    <input type="text" class="easyui-textbox input_length" data-options="validType:'ipSixPre'" id='add_gw' onblur="checkNote(this, true)" onfocus="checkNote(this)" onkeyup="checkNote(this)" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.INTERFACE}</td>
+            <td>
+                <input class="input_length" id='add_dev' >
+                <span class="form_comment">[{$Think.lang.IF_GW_MUST_SELECT_ONE}]</span>
+            </td>
+        </tr>
+        <tr>
+            <th colspan="2">{$Think.lang.SENIOR_CONFIG}</th>
+        </tr>
+        <if condition=" $switch eq 'on' ">
+        <tr>
+            <td >{$Think.lang.BELONG_VIRTUAL_ROUTER}</td>
+            <td id='vr_id1'><select class="ngtos_input" id='add_vr_id'>
+            </select></td>
+        </tr>
+        </if>
+        <tr>
+            <td class="tdlabel">{$Think.lang.MEASUREMENT}</td>
+            <td><input type="text" class="easyui-textbox input_length" id='add_metric' title="[ 0-65535 ]  IPv4缺省值0; IPv6缺省值1024"></td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id="addR">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('route_add_window')">
+    </div>
+</form>
+<script>
+var switch_tag = "{$switch}";
+    $(function(){
+        //获取所有的接口
+        $("#add_dev").combobox({
+            url: "?c=Network/Route&a=comboBox",
+            queryParams:{
+                mod:'network interfaces',
+                textKey:'dev'
+            },
+            valueField: 'dev',
+            textField: 'dev',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple: false,
+            editable: false
+        });
+        
+        $('#addR').click(function() {
+            var add = $('#route_add').form('validate');
+            if (add) {
+                if(oper==0)
+                    addRoute();
+            }
+        });
+    });
+</script>

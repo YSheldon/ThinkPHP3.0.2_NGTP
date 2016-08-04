@@ -1,0 +1,166 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<style>
+    .datagrid-toolbar > table{margin-top:0px;}
+    .datagrid-toolbar > table td{border-right:none;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/schedule.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=Resource/Time&a=time_info&tabs=loop">
+        <li>
+            {$Think.lang.CIRCULATE_TIME}
+        </li>
+    </a>
+    <a href="?c=Resource/Time&a=time_info&tabs=sig">
+        <li>
+            {$Think.lang.SINGLE_TIME}
+        </li>
+    </a>
+    <a href="?c=Resource/Time&a=time_info&tabs=group">
+        <li id="ipv_4">
+            {$Think.lang.TIME_GROUP}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table>
+<div id="dlg-toolbar" style="padding:2px 0">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true" onClick="add_time_group('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+                <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" onClick="editTimeGroRow('{$Think.lang.EDIT}');">{$Think.lang.EDIT}</a>
+                <a href="#" class="easyui-linkbutton" id='icon_del' data-options="iconCls:'icon-delete',plain:true" onClick="delete_group_check()">{$Think.lang.DELETE}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_clear" data-options="iconCls:'icon-clear',plain:true" onClick="clear_group_item()">{$Think.lang.CLEAR}</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    var grtag = 2;
+    var circle_tag;
+    var sig_tag;
+    var time_tag;
+    var param = [];
+    $(function() {
+        $('#tt').treegrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            rownumbers: false,
+            remoteSort: false,
+            sortName: 'id',
+            url: '?s=Home/Resource/Time&grid=tree',
+            idField: 'id',
+            treeField: 'name',
+            autoRowHeight: true,
+            animate: false,
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'id', title: 'ID', width: 10, sortable: true},
+                    {field: 'name', title: $LANG.NAME, width: 360, sortable: true},
+                    {field: 'eff_time', title: $LANG.EFFECT_TIME, width: 600,
+                        formatter: function(value, rowData, rowIndex) {
+                            var s = "";
+                            if (rowData.type == null)
+                                s = "";
+                            else if (rowData.type == "year")
+                                s = rowData.start + " " + $LANG.TO + " " + rowData.stop;
+                            else {
+                                var value = rowData.week__mon_year;
+                                if (rowData.type == "weekcyc") {
+                                    for (var i = 0; i < value.length; i++) {
+                                        if (value.charAt(i) == 1)
+                                            s += $LANG.MONDAY + " ";
+                                        else if (value.charAt(i) == 2)
+                                            s += $LANG.TUESDAY + " ";
+                                        else if (value.charAt(i) == 3)
+                                            s += $LANG.WEDNESDAY + " ";
+                                        else if (value.charAt(i) == 4)
+                                            s += $LANG.THURSDAY + " ";
+                                        else if (value.charAt(i) == 5)
+                                            s += $LANG.FRIDAY + " ";
+                                        else if (value.charAt(i) == 6)
+                                            s += $LANG.SATURDAY + " ";
+                                        else if (value.charAt(i) == 7)
+                                            s += $LANG.SUNDAY + " ";
+                                    }
+                                    s += rowData.start + "- " + rowData.stop;
+                                } else
+                                    s = value + $LANG.DAYTIME + " " + rowData.start + "- " + rowData.stop;
+                            }
+                            return s;
+                        }
+                    },
+                    {field: 'shared', title: $LANG.SHARE, width: 200,
+                        formatter: function(value, rowData, rowIndex) {
+                            if (rowData.shared == "on")
+                                return $LANG.YES;
+                            else
+                                return $LANG.NO;
+                        }
+                    }
+                ]],
+            singleSelect: false,
+            checkOnSelect: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar",
+            onCheck: setTimeGroToolBar,
+            onUncheck: setTimeGroToolBar,
+            onClickRow: setTimeGroToolBar,
+            onCheckAll: setTimeGroToolBar,
+            onUncheckAll: setTimeGroToolBar,
+            onSelect: setTimeGroToolBar,
+            onUnselect: setTimeGroToolBar,
+            onBeforeExpand: before_expand_action,
+            onExpand: expand_action,
+            onDblClickRow: function(row) {
+                if (row.type == null)
+                    if(!isShared() || (isShared() && row.shared != "on")){
+                        edit_group_name(row.name, row.member, row.shared, $LANG.EDIT);
+
+                    }else if (row.type == "year")
+                        if(!isShared() || (isShared() && row.shared != "on")){
+                            edit_sigle_time(row.name, row.start, row.stop, row.shared, $LANG.SINGLE_TIME_OBJ);
+                        } else
+                            if(!isShared() || (isShared() && row.shared != "on")){
+                                edit_circle_time(row.name, row.type, row.week__mon_year, row.start, row.stop, row.shared, $LANG.CIRCULATE_TIME_OBJ);
+                            }
+            },
+            onLoadSuccess: function(data) {
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_del').linkbutton('disable');
+            }
+        });
+        $('#tt').treegrid('hideColumn', 'id');
+        var p = $('#tt').treegrid('getPager');
+        $(p).pagination({
+            onBeforeRefresh: function() {
+                $('#tt').treegrid('options').url = '?s=Home/Resource/Time&grid=tree';
+            }
+        });
+        if (getPrivilege("define") == false) {
+           $('#icon_add').linkbutton('disable');
+           $('#icon_clear').linkbutton('disable');
+        }
+    });
+    function before_expand_action(row) {
+        if (row.member != '')
+            $('#tt').treegrid('options').url = '?s=Home/Resource/Time&grid=tree&name=' + encodeURI(row.member);
+    }
+    function expand_action() {
+        $('#tt').treegrid('options').url = '?s=Home/Resource/Time&grid=tree';
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

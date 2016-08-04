@@ -1,0 +1,37 @@
+<div>
+<form id="addbang_form">
+    <table class="ngtos_form_table">
+        <tr><td class="tdlabel">{$Think.lang.NAME}</td>
+            <td><input type="text" id="name" name="name" class="easyui-textbox input_length" data-options="required:true,validType:'eSymbols'"></td>
+        </tr>
+        <tr><td class="tdlabel">{$Think.lang.HOST_ADDR}</td>
+            <td><input type="text" id="ipaddr" name="ipaddr" class="easyui-textbox input_length" data-options="required:true,"></td>
+        </tr>
+        <tr><td class="tdlabel">DHCP{$Think.lang.UNIQUE_IDENTIFIER}</td>
+            <td><input type="text" id="duid" name="duid" class="easyui-textbox input_length" data-options="required:true,"></td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}"  id="addrBang">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_addrrBang')">
+    </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        if (dhcpPool_tag == 1) {
+            $("#name").removeAttr('disabled');
+        } else {
+            $("#name").val(param[0]);
+            $("#ipaddr").val(param[1]);
+            $("#duid").val(param[2]);
+            $("#name").attr('disabled','true');
+        }
+        $('#addrBang').click(function() {
+            var addband = $('#addbang_form').form('validate');
+            if (addband) {
+                addAddrBangSubmit(dhcpPool_tag);
+            }
+        })
+    });
+</script>

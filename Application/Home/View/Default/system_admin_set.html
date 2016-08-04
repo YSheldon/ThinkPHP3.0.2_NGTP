@@ -1,0 +1,215 @@
+<include file='Index:main'/>
+<style>
+    #center{margin:25px 0 0 5px;}
+</style>
+    <ul id="ipv" class="resp-tabs-list hor_1"> 
+        <a href="?c=System/Admin&a=admin_show">
+            <li>
+                {$Think.lang.ADMIN}
+            </li>
+        </a>
+        <if condition=" ($pri neq '0')">
+            <a href="?c=System/Admin&a=admin_show&tab=1">
+                <li>
+                    {$Think.lang.MANAGE_PERMISSION}
+                </li>
+            </a>
+        </if>
+        <if condition="$device eq '1'">         
+            <a href="?c=System/Admin&a=admin_show&tab=2">
+                <li style="background-color: #f5f5f5;">
+                    {$Think.lang.SET}
+                </li>
+            </a>
+        </if>
+    </ul>
+    <div style="border-top:1px solid #000;margin-top:45px;"></div>
+    <if condition=" ($admin neq '0') OR ($device eq '1')">
+            <div class="ngtos_form">
+                <form id="parameter_form">
+                    <table class="ngtos_form_table">
+                        <tr>
+                            <td class="tdlabel">{$Think.lang.PWD_COMPLEX}</td>
+                            <td>
+                                <input type="radio" name='password-complexity' value='high' id='password_high'>
+                                <label for="password_high">{$Think.lang.HIGH}</label>
+                                <input type="radio" name='password-complexity' value='medium' id='password_medium' style="margin-left:30px;">
+                                <label for="password_medium">{$Think.lang.LN}</label>
+                                <input type="radio" name='password-complexity' value='low' id='password_low' style="margin-left:30px;">
+                                <label for="password_low">{$Think.lang.LOW}</label>
+                                <img src="{$Think.config.NG_PATH}Public/images/icon/icon_warm.png" title='{$Think.lang.PWD_STRENGTH_DESC_ALL}' style="cursor: pointer; margin-left: 20px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">{$Think.lang.FIRST_IS_FORCED_MODIFY_PWD}</td>
+                            <td>
+                                <input type="checkbox" id='first_login'>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">{$Think.lang.ACCEPT_MAX_LAND_FAIL_TIME}</td>
+                            <td>
+                                <input class="easyui-textbox ngtos_input" name='maxnum-auth-fail' id='maxnum_auth_fail' data-options="validType:'range[3,100]',required:true">
+                                &nbsp;&nbsp;&nbsp;{$Think.lang.RANGE}:3-100
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">{$Think.lang.ACCOUNT_LOCK_TIME}</td>
+                            <td>
+                                <input class="ngtos_input easyui-textbox" name='account-locked-time' id='account_locked_time' data-options="validType:'range[30,3600]',required:true">
+                                &nbsp;&nbsp;&nbsp;{$Think.lang.RANGE}:30-3600秒
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">{$Think.lang.ADMIN_MAX_NUMBER}</td>
+                            <td>
+                                <input class="ngtos_input easyui-textbox" name='maxnum-admin-online' id='maxnum_admin_online' data-options="validType:'range[1,5000]',required:true">
+                                &nbsp;&nbsp;&nbsp;{$Think.lang.RANGE}:1-5000
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">{$Think.lang.SAME_ONE_ADMIN_MAX_NUMBER}</td>
+                            <td>
+                                <input class="ngtos_input easyui-textbox" name='maxnum-same-admin-online' id='maxnum_same_admin_online' data-options="validType:'range[1,5000]',required:true">
+                                &nbsp;&nbsp;&nbsp;{$Think.lang.RANGE}:1-5000
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">webui{$Think.lang.WAY_LAND_MAX_CONCURRENT_NUMBER}</td>
+                            <td>
+                                <input class="ngtos_input easyui-textbox" name='maxnum_type_webui' id='maxnum_type_webui' value="{$maxnum_type_webui}" data-options="validType:'range[0,5000]',required:true">
+                                &nbsp;&nbsp;&nbsp;0-5000,{$Think.lang.IS_NOT_LIMITED}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">ssh{$Think.lang.WAY_LAND_MAX_CONCURRENT_NUMBER}</td>
+                            <td>
+                                <input class="ngtos_input easyui-textbox" name='maxnum_type_ssh' id='maxnum_type_ssh' value="{$maxnum_type_ssh}" data-options="validType:'range[0,5000]',required:true">
+                                &nbsp;&nbsp;&nbsp;0-5000,{$Think.lang.IS_NOT_LIMITED}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">telnet{$Think.lang.WAY_LAND_MAX_CONCURRENT_NUMBER}</td>
+                            <td>
+                                <input class="ngtos_input easyui-textbox" name='maxnum_type_telnet' id='maxnum_type_telnet' value="{$maxnum_type_telnet}" data-options="validType:'range[0,5000]',required:true">
+                                &nbsp;&nbsp;&nbsp;0-5000,{$Think.lang.IS_NOT_LIMITED}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">{$Think.lang.PWD_EXPIRE}</td>
+                            <td>
+                                <input class="ngtos_input easyui-textbox" name='maxnum_type_passward' id='maxnum_type_passward' value="{$passwd_period}" data-options="validType:'range[1,7]',required:true">
+                                &nbsp;&nbsp;&nbsp;1-7{$Think.lang.DAY}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel">{$Think.lang.AUTH_WAY}</td>
+                            <td>
+                                <select id="auth_method" name="auth_method">
+                                    <option value="1">{$Think.lang.LOCAL_AUTH}</option>
+                                    <option value="2">{$Think.lang.REMOTE_AUTH}</option>
+                                </select>&nbsp;&nbsp;
+                               <span id="span1" style="display:none"><b>{$Think.lang.SANS_NATIVE}</b>&nbsp;<input type="checkbox" checked="checked" id="shift-local-auth"></span>&nbsp;&nbsp;
+                                <input id="server_name" class="ngtos_input" value="" name="server_name" style="display: none;">
+                                <span id="span" style="color: rgb(255, 0, 0); display: none;"> * {$Think.lang.AUTH_SERVER}{$Think.lang.NAME}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdlabel"></td>
+                            <td>
+                                <div class="btn_config">
+                                    <input name="add_new" type="button" title="" value=" {$Think.lang.APPLY} " class="ngtos_button_large confirmenable" onClick="return formAdminSubmit();"/>
+                                    <input name="add_new" type="button" title="" value=" {$Think.lang.RESET} " class="ngtos_button_large" onClick="resetAdminDefault();"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+    </if>
+<script src="{$Think.config.NG_PATH}Public/modules/system/admin.js" type="text/javascript"></script>
+<script>
+    // var theman = "{$threeman}";
+    // $('#easyui_tab').tabs({
+    //     selected: (theman == 'disable')?1:2, //tab的位置，从0开始第几个
+    //     border: false,
+    //     onSelect: function(title, index) {
+    //         if (index == 0) {   //点击tab标签跳转的页面
+    //             location.href = '?c=System/Admin&a=admin_show';
+    //         } else if (index == 1 && theman == 'enable') {   //点击tab标签跳转的页面
+    //             location.href = '?c=System/Admin&a=admin_show&tab=1';
+    //         } else if (theman == 'disable' && index == 0) {
+    //             location.href = '?c=System/Admin&a=admin_show&tab=2';
+    //         }
+    //     }
+    // });
+    var password_complexity = "{$password_complexity}";
+    //var anti_crack = "{$anti_crack}";
+    var maxnum_auth_fail = "{$maxnum_auth_fail}";
+    var account_locked_time = "{$account_locked_time}";
+    var maxnum_admin_online = "{$maxnum_admin_online}";
+    var first_login = "{$first_login}";
+    var maxnum_type_webui = "{$maxnum_type_webui}";
+    var maxnum_type_ssh = "{$maxnum_type_ssh}";
+    var maxnum_type_telnet = "{$maxnum_type_telnet}";
+    var first_login = "{$first_login}";
+    var maxnum_same_admin_online = "{$maxnum_same_admin_online}";
+    var threeman = "{$threeman}";
+    var auth_method = "{$auth_method}";
+    var server_name = "{$server_name}";
+    var shift_local_auth = "{$shift_local_auth}";
+    $(document).ready(function() {
+        $('#auth_method').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 80,
+            onChange: admin_auth,
+            multiple: false,
+            editable: false
+        });
+        if (password_complexity) {
+            if (password_complexity == 'high')
+                $('#password_high')[0].checked = true;
+            else if (password_complexity == 'medium')
+                $('#password_medium')[0].checked = true;
+            else if (password_complexity == 'low')
+                $('#password_low')[0].checked = true;
+        }
+        /*
+        if (anti_crack && anti_crack == 'on') {
+            $('#anti_crack')[0].checked = true;
+        } else if (anti_crack && anti_crack == 'off') {
+            $('#anti_crack')[0].checked = false;
+        }*/
+
+        if (first_login && first_login == 'yes') {
+            $('#first_login')[0].checked = true;
+        } else if (first_login && first_login == 'no') {
+            $('#first_login')[0].checked = false;
+        }
+
+//        $('#maxnum_auth_fail').val(maxnum_auth_fail);
+        $('#maxnum_auth_fail').textbox('setValue',maxnum_auth_fail);
+        $('#account_locked_time').textbox('setValue',account_locked_time);
+        $('#maxnum_admin_online').textbox('setValue',maxnum_admin_online);
+        $('#maxnum_same_admin_online').textbox('setValue',maxnum_same_admin_online);
+//        $('#maxnum_type_webui').textbox('setValue',maxnum_type_webui);
+        if(auth_method == 'external') {
+            $("#auth_method").combobox("setValue",'2');
+            $('#server_name').show();
+            $('#span').show();
+            $('#span1').show();
+            if(shift_local_auth=="off")
+                    $('#shift-local-auth')[0].checked = false;
+            else
+                    $('#shift-local-auth')[0].checked = true;
+            if(server_name!='Array')
+                    $('#server_name').val(server_name);
+        }
+    });
+
+</script>
+</div>
+</div>
+</body>
+</html>

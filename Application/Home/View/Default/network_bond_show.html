@@ -1,0 +1,215 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/bond.js"></script>
+<style>
+    .select_margin{margin-left:4px;float:left;}
+    .input_margin{margin-left:4px;margin-top:20px;float:left;}
+    .select{padding:0 0 0 2px;height:200px;width:180px;}
+</style>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false">
+    <table id="tt"></table>
+</div>
+
+</body>
+</html>
+<script>
+    var vsys ="{$vsys}";
+    var param = [];
+    $(function() {
+        if (getPrivilege("network") != false && vsys!=1) {
+             $('#tt').datagrid({
+             toolbar: [{
+             id : 'icon-add',
+             text: $LANG.ADD,
+             iconCls: 'icon-add',
+             handler: add_bond_row
+             }, {
+             id: 'icon-edit',
+             text: $LANG.EDIT,
+             iconCls: 'icon-edit',
+             handler: edit_bond_row
+             }, {
+             id: 'icon-attr',
+             text: $LANG.ATTRIBUTE,
+             iconCls: 'icon-set',
+             handler: attr_bond_row
+             }, {
+             id: 'icon-delete',
+             text: $LANG.DELETE,
+             iconCls: 'icon-delete',
+             handler: delete_bond_row
+             }, {
+             id: 'icon-clear',
+             text: $LANG.CLEAR,
+             iconCls: 'icon-clear',
+             handler: clear_bond_row
+             }]
+             });
+             } else if(getPrivilege("network") == false && vsys==1) {
+             } else {
+             $('#tt').datagrid({
+             toolbar: [{
+             id: 'icon-edit',
+             text: $LANG.EDIT,
+             iconCls: 'icon-edit',
+             handler: edit_bond_row
+             },{
+             id: 'icon-attr',
+             text: $LANG.ATTRIBUTE,
+             iconCls: 'icon-set',
+             handler: attr_bond_row
+             }]
+             });
+             }
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            nowrap: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'bond_name',
+//            url: '?c=Network/Bond&a=showJsondata',
+            url: '?c=Network/Bond',
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'bond_name', title: $LANG.NAME,width: 60,sortable: true},
+                    {field: 'ip', title: $LANG.ADDRESS + "/" + $LANG.MASK,width: 250,
+                        formatter: function(value, row) {
+                            return format_ip(row.ip4, row.ip6);
+                        }
+                    },
+                    {field: 'status', title: $LANG.STATE,width:40,sortable: true,
+                        formatter: function(value) {
+                            if (value == "enable") {
+                                return $LANG.START;
+                            } else {
+                                return $LANG.STOP;
+                            }
+                        }
+                    },
+                    {field: 'mode', title: $LANG.MODE,width:40,sortable: true,
+                        formatter: function(value) {
+                            if (value == "routing") {
+                                    return $LANG.ROUTE;
+                            } else if(value == 'virtualline'){
+                                    return $LANG.VLINE;
+                            }else {
+                                return $LANG.NETWORK_SWITCH;
+                            }
+                        }
+                    },
+                    {field: 'load_balance', title: $LANG.LOAD_ALGORITHM, width: 150,
+                        formatter: function(value) {
+                            return get_balance_name(value);
+                        }
+                    },
+                    {field: 'slave_name', title: $LANG.PHYSICS_IF, width: 150,
+                        formatter:function(value){
+                            if(typeof(value) == 'string'){
+                                var returnVal = '';
+                                var val = [];
+                                var r = 1;
+                                val = value.split(' ');
+                                for(var i = 0;i<val.length;i++){
+                                    returnVal += val[i]+' ';
+                                    if(r%6 == 0){
+                                        returnVal += '<br>';
+                                    }
+                                    r++;
+                                }
+                                return returnVal;
+
+                            }
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onClickRow: set_bond_toolbar,
+            onCheck: set_bond_toolbar,
+            onUncheck: set_bond_toolbar,
+            onCheckAll: set_bond_toolbar,
+            onUncheckAll: set_bond_toolbar,
+            onSelect: set_bond_toolbar,
+            onUnselect: set_bond_toolbar,
+            onDblClickRow: function(index, row) {
+                if (getPrivilege("network") != false) {
+                    edit_bond_row(row.bond_id, row.load_balance, row.slave_name);
+                }
+            },
+            onLoadSuccess: function() {
+                set_bond_toolbar();
+                if($('.tagvif_tip').length > 0) {
+                    $('.tagvif_tip').tooltip({ position: 'bottom'});
+                    $('.tagvif_tip').mouseover(function(){$(this).tooltip('show');});
+                }
+            },
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+        function selectToolbar(){
+            if (getPrivilege("network") != false && vsys!=1){
+                return '#toolbar1'
+            }
+        }
+/*        if (getPrivilege("network") != false && vsys!=1) {
+            $('#tt').datagrid({
+                toolbar: [{
+                    id : 'icon-add',
+                    text: $LANG.ADD,
+                    iconCls: 'icon-add',
+                    handler: add_bond_row
+                }, {
+                    id: 'icon-edit',
+                    text: $LANG.EDIT,
+                    iconCls: 'icon-edit',
+                    handler: edit_bond_row
+                }, {
+                    id: 'icon-attr',
+                    text: $LANG.ATTRIBUTE,
+                    iconCls: 'icon-set',
+                    handler: attr_bond_row
+                }, {
+                    id: 'icon-delete',
+                    text: $LANG.DELETE,
+                    iconCls: 'icon-delete',
+                    handler: delete_bond_row
+                }, {
+                    id: 'icon-clear',
+                    text: $LANG.CLEAR,
+                    iconCls: 'icon-clear',
+                    handler: clear_bond_row
+                }]
+            });
+        } else if(getPrivilege("network") == false && vsys==1) {
+        } else {
+            $('#tt').datagrid({
+                toolbar: [{
+                        id: 'icon-edit',
+                        text: $LANG.EDIT,
+                        iconCls: 'icon-edit',
+                        handler: edit_bond_row
+                    },{
+                        id: 'icon-attr',
+                        text: $LANG.ATTRIBUTE,
+                        iconCls: 'icon-set',
+                        handler: attr_bond_row
+                    }
+                ]
+            });
+        }*/
+    });
+</script>

@@ -1,0 +1,59 @@
+<div>
+<form id="single_time_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td width="150px" class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td width="350px">
+                <input type="text" id="sig_time_name" name="sig_time_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','eSymbols']">
+                <span class="form_comment">{$Think.lang.MAX_CHAR30}</span>
+            </td>
+        </tr>
+        <tr id="sig_vshare" style="display:none">
+            <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+            <td width="450px">
+                <input type="radio" name="sig_sha" value="1" id="share_on">
+                <label for="share_on">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="sig_sha" value="0" id="share_off" checked >
+                <label for="share_off">{$Think.lang.DENY}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.START_TIME}</td>
+            <td>
+                <input id="st_date" name="sdate" class="easyui-datebox" data-options="required:true,editable:false">&nbsp;
+                <input id="sig_st_time" name="stime"  type="text" class="easyui-timespinner" data-options="required:true,min:'00:00',value:'00:00:00',showSeconds:true,width:120,validType:'time'">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.END_TIME}</td>
+            <td>
+                <input id="end_date" name="edate" class="easyui-datebox" data-options="required:true,editable:false">&nbsp;
+                <input id="sig_end_time" name="etime"  type="text" class="easyui-timespinner" data-options="required:true,min:'00:00',value:'23:59:59',showSeconds:true,width:120,validType:'time'">
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addSigTime'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('single_time_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function(){
+        if(!isShared())
+            $('#sig_vshare').css("display","");
+        else
+            $('#sig_vshare').css("display","none");
+        if(sig_tag == 2) {
+            $("#sig_time_name").val(param[0]);
+            $("#sig_time_name").attr('disabled','disabled');
+            if(param[1] == 'on')
+                $('input:radio[name="sig_sha"]').get(0).checked = true;
+            else
+                $('input:radio[name="sig_sha"]').get(1).checked = true;
+        }
+        $('#addSigTime').click(function() {
+            sigle_submit(sig_tag, grtag);
+        });
+    })
+</script>

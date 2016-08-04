@@ -1,0 +1,232 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css" type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/policy/policy.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/policy/nat.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/address.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/region.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/service.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/schedule.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/vlan.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/authentication.js" type="text/javascript"></script>
+<table id="tt"></table>
+<!-- 菜单栏-->
+<div id="tb">
+    <a href="###" onClick="addNat();" class="easyui-linkbutton" iconCls="icon-add" plain="true">
+        {$Think.lang.ADD}
+    </a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-edit" id='icon_edit' plain="true" 
+       onClick="editSelectNat();">{$Think.lang.EDIT}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-delete" id='icon_delete' plain="true" 
+       onClick="delNatRow();">{$Think.lang.DELETE}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onClick="clearNat();">
+        {$Think.lang.CLEAR}
+    </a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-clone" id='icon_insert' plain="true" 
+       onClick="insertRow();">
+       {$Think.lang.CLONE}
+    </a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-move" id='icon_move' plain="true" 
+       onClick="moveSelectRow();">
+        {$Think.lang.MOVE}
+    </a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-enable" id='icon_enable' plain="true" 
+       onClick="enableNatEdit('yes');">
+        {$Think.lang.ENABLE}
+    </a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-disable" id='icon_disable' plain="true" 
+       onClick="enableNatEdit('no');">
+        {$Think.lang.DISABLE}
+    </a>
+    <span class="show_count">
+        <input id='show_hits' type="checkbox" style="margin-left:10px;" onClick="showHits();">
+        <label>{$Think.lang.SHOW_HITS}</label>
+    </span>
+</div>
+<!--添加NAT-->
+<div id='nat_admin1' style="width:550px;display:none"> </div>
+<div id='nat_move' style="width:500px; display:none"> </div>
+<!--20140910将“新建”挪到“选择”中-->
+<div id='area_div' style="width:500px; display:none;"></div>
+<div id='addr_div' style="width:550px; display:none;"></div>
+<div id='addrGroup_div' style="width:500px; display:none;"></div>
+<div id='service_div' style="width:500px; display:none;"></div>
+<div id='service_group_div' style="width:500px; display:none;"></div>
+<div id='time_group_div' style="width:550px; display:none;"></div>
+<div id='sig_cir_div' style="width:550px; display:none;"></div>
+<!--地址对象单选新建-->
+<div id='add_login_addr' style="width:550px; display:none;"></div>
+<!--公用添加对象弹出框-->
+<div id='object_public' style="width:550px; display:none;"></div>
+</section>
+<script>
+    var ip_num = 0;
+    var ip_init_num = 0;
+    var mac_num = 0;
+    var switch_php = "{$switch}";
+    var grtag = 9;
+    var addr_tag = 1;
+    var gaddr_tag = 1; //新建地址对象时表明是“添加”（与对象中的对象编辑区分）
+    var region_tag = 1; //新建区域对象时表明是“添加”（与对象中的对象编辑区分）
+    var time_tag = 1;//新建时间组对象时表明是“添加”（与对象中的对象编辑区分）
+    var circle_tag = 1;//新建时间对象时表明是“添加”（与对象中的对象编辑区分）
+    var group_node = "/";
+    var allnode = "";
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            rownumbers: false,
+            remoteSort: true,
+            collapsible: true,
+            autoRowHeight: true,
+            queryParams: {
+                mod:'nat policy_webui'
+            },
+            url: '?c=Policy/Nat&a=datagridShow',
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'nat_id', title: $LANG.ID, width: 50, sortable: false, rowspan: 2, resizable: true},
+                    {field: 'type', title: $LANG.TYPE, width: 80, sortable: true, rowspan: 2, resizable: true,
+                        formatter: function(value) {
+                            if (value == '')
+                                return $LANG.NO_TRANSFORM;
+                            else if (value == 'duplex nat')
+                                return $LANG.BOTH_TRANSFORM;
+                            else if (value == 'dst nat')
+                                return $LANG.DST_TRANSFORM;
+                            else if (value == 'src nat')
+                                return $LANG.SRC_TRANSFORM;
+                            else if(value == 'src one-to-one nat')
+                                return $LANG.O_T_O_SOURSE_NAT;
+                            else if(value == 'dst one-to-one nat')
+                                return $LANG.O_T_O_PURPOSE_NAT;
+                            else if(value == 'duplex one-to-one nat')
+                                return $LANG.O_T_O_BID_NAT;
+                        }
+                    },
+                    {field: 'hit_session', title: $LANG.STATISTIC, width: 100, hidden: true, rowspan: 2},
+                    {title: $LANG.SRC, width: 320, colspan: 5},
+                    {title: $LANG.DST, width: 240, colspan: 3},
+                    {field: 'orig_service', title: $LANG.SERVICE, width: 100, rowspan: 2,
+                        formatter: function(value, row) {
+                            if (row.orig_service)
+//                                return valueRowLine(value,' ');
+                                return valueRowLineTooltip(value, ' ', 'service');
+                            /*源端口挪到源下面*/
+//                            if(row.orig_sport)
+//                                t+='源端口：'+row.orig_sport+'<br>';
+                        }
+                    },
+                    {field: 'zh', title: $LANG.TRANSFORM, width: 140, rowspan: 2,
+                        formatter: function(value, row) {
+                            var t = '';
+                            if (row.trans_src)
+                                t += $LANG.SRC + '：' + row.trans_src + '<br>';
+                            if (row.trans_dst)
+                                t += $LANG.DST + '：' + row.trans_dst + '<br>';
+                            if(row.trans_service)
+                                t += $LANG.DST_TRANSFORM + ':' + row.trans_service + '<br>';
+                            if ((row.type == 'src nat') || (row.type == 'duplex nat')){
+                                var pat =  row.pat=='yes' ? $LANG.NO : $LANG.YES;
+                                var sticky =  row.sticky=='yes' ? $LANG.ON : $LANG.OFF;
+                                t += $LANG.SRC_PORT_FIXED + '：' + pat + '<br>';
+                                t += $LANG.STICKY_NAT + '：' + sticky + '<br>';
+                            }
+                            return t;
+                        }
+                    },
+                    {field: 'vr_name', title: $LANG.VSYS, width: 60, rowspan: 2}
+                ], [
+                    {field: 'orig_src', title: $LANG.ADDRESS, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ' ', 'address');
+                        }
+                    },
+                    {field: 'svlan', title: $LANG.VLAN, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLine(value, ' ');
+                        }
+                    },
+                    {field: 'srcarea', title: $LANG.REGION, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ' ', 'area');
+                        }
+                    },
+                    {field: 'orig_sport', title: $LANG.PORT, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ' ', 'service');
+                        }
+                    },
+                {
+                    field:'users',title:$LANG.USER,width:80,resizable:true,
+                    formatter: function(value, row) {
+                        return valueRowLineTooltip(value, ' ', 'user');
+                    }
+                    },
+                    {field: 'orig_dst', title: $LANG.ADDRESS, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ' ', 'address');
+                        }
+                    },
+                    {field: 'dvlan', title: $LANG.VLAN, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLine(value, ' ');
+                        }
+                    },
+                    {field: 'dstarea', title: $LANG.REGION, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ' ', 'area');
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 10,
+            pageList: [10, 20, 50],
+            loadMsg: $LANG.WAITING,
+            toolbar: '#tb',
+            checkOnSelect: true,
+            selectOnCheck: true,
+            onCheck: natSetToolBar,
+            onUncheck: natSetToolBar,
+            onClickRow: natSetToolBar,
+            onCheckAll: natSetToolBar,
+            onUncheckAll: natSetToolBar,
+            onSelect: natSetToolBar,
+            onUnselect: natSetToolBar,
+            rowStyler: function(index, row) {
+                if (row.enable != 'yes')
+                    return 'background-color:#d5d5d5;';
+            },
+            onDblClickRow: function(index, row) {				//当用户双击一行时触发。
+                datagirdDbclick('tt', index);
+                editrow(0, row.nat_id, row.orig_src, row.orig_dst, row.orig_service, row.trans_src, row.trans_dst,
+                        row.trans_service, row.type, row.pat, row.enable, row.sticky, row.vr_id, row.srcarea, row.dstarea,
+                        row.orig_sport, row.vr_name, row.svlan, row.dvlan,row.users);
+            },
+            onLoadSuccess: function(data) {
+                if (switch_php == 'off')
+                    $('#tt').datagrid('hideColumn', 'vr_name');
+                if (typeof ($.cookie('nat_hits')) != 'undefined' && $.cookie('nat_hits') == 1) {
+                    $('#show_hits')[0].checked = true;
+                    $('#tt').datagrid('showColumn', 'hit_session');
+                } else
+                    $('#tt').datagrid('hideColumn', 'hit_session');
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_delete').linkbutton('disable');
+                $('#icon_insert').linkbutton('disable');
+                $('#icon_move').linkbutton('disable');
+                $('#icon_enable').linkbutton('disable');
+                $('#icon_disable').linkbutton('disable');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

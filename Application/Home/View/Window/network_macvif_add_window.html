@@ -1,0 +1,71 @@
+<form id="macvif_add">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel">{$Think.lang.INTERFACE}</td>
+            <td>
+                <input name="interface" id="interface_cid_pop" class="input_length">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">
+                <input type="radio" name="type" id="single_cid" checked="checked" onClick="macvif_change('single_cid')" class="radio_txt_middle">
+                <label for="single_cid">{$Think.lang.ADD_SINGLE_SUBIF}</label>
+            </td>
+            <td>                        
+                <input type="text" id="id_cid" name="id" class='easyui-textbox input_length'><span class="form_comment">[0-31]</span>
+            </td>
+        </tr>
+        <tr>	
+            <td class="tdlabel">
+                <input type="radio" name="type" id="range_cid" onClick="macvif_change('range_cid')" class="radio_txt_middle">
+                <label for="range_cid">{$Think.lang.ADD_SUBIF_RANGE}</label>
+            </td>
+            <td>                        
+                <input type="text" name="range_start" id="range_start_cid" class='easyui-textbox' style="width:105.5px;">&nbsp;-
+                <input type="text" name="range_end" id="range_end_cid" class='easyui-textbox' style="width:105.5px;"><span class="form_comment">[0-31]</span>
+            </td>
+        </tr>				
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="addMacvifSubmit();">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_page')">
+    </div>
+</form>
+<script>
+    $(function() {
+        //获取所有物理接口
+        //getPhysicsInterface("interface_cid_pop");        
+        $("#interface_cid_pop").combobox({
+            url: "?c=Network/Macvif&a=comboBox",
+            queryParams:{
+                mod:'network interfaces',
+                parKey:'__NA__',
+                param:'eth-no-mnp',
+                select:'true',
+                textKey:'dev'
+            },
+            valueField: 'dev',
+            textField: 'dev',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple: false,
+            editable: false
+        });
+
+        $('#id_cid').textbox({
+            required: true,
+            validType: 'range[0,31]'
+        });
+
+        $('#range_start_cid').textbox({
+            required: true,
+            validType: ['range[0,31]', 'lessEquals[$(\'#range_end_cid\').val()]']
+        });
+
+        $('#range_end_cid').textbox({
+            required: true,
+            validType: ['range[0,31]', 'greaterEquals[$(\'#range_start_cid\').val()]']
+        });
+
+    });
+</script>

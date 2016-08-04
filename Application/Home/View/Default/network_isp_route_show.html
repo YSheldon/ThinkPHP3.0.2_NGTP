@@ -1,0 +1,180 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/resource_region.css" 
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/ispRoute.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/plugins/easyui/extension/datagrid-detailview.js" 
+        type="text/javascript">  
+</script>
+
+<div id="dlg-toolbar" style="padding:2px 0">
+    <div>
+        <a href="#" class="easyui-menubutton" id="icon_add" menu="#mm1" data-options="iconCls:'icon-add',plain:true">{$Think.lang.ADD}</a>
+        <a href="#" class="easyui-linkbutton" id='icon_del' data-options="iconCls:'icon-delete',plain:true" onClick="deleteIspRoute()">{$Think.lang.DELETE}</a>
+        <a href="#" class="easyui-linkbutton" id="icon_clear" data-options="iconCls:'icon-clear',plain:true" onClick="clearIspRoute()">{$Think.lang.CLEAR}</a>
+        <a href="#" class="easyui-linkbutton" id ="icon_up" data-options="iconCls:'icon-up',plain:true" 
+           onClick="ispImport()" style="border:none;">
+        {$Think.lang.UPDATE_ISP}
+        </a>
+    </div>
+    <div id="mm1" style="width:120px;">
+        <div onClick="addIspRoute('{$Think.lang.ROUTE}');">{$Think.lang.ROUTE}</div>
+        <div onClick="addIspAddr('{$Think.lang.ADDRESS_ISP}');">{$Think.lang.ADDRESS_ISP}</div>
+    </div>
+</div>
+<table id="tt"></table>
+
+<script>
+    
+    var vsys_user = "{$vsys_user}";   //判断当前是不是虚系统用户
+    $(function() {
+        if(vsys_user){
+            $('#icon_up').hide();
+        }
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            nowrap: true,
+            autoRowHeight: true,
+            animate: false,
+            remoteSort: false,
+            rownumbers: false,
+            sortName: 'isp_name',
+            //idField: 'isp_name',
+            treeField: 'isp_name',
+            url: '?c=Network/IspRoute&mod=isp_route_all',
+//            queryParams:{
+//                mod:'network isp_route_all'
+//            },
+            view: detailview,
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'isp_name', title: $LANG.NAME, width: 150, sortable: true,
+                        formatter:function(rows){
+                            //创建一个数组，存放ISP名称
+                            var arr = {
+                                        'CHINANET': $LANG.CHINANET,
+                                        'UNICOM': $LANG.UNICOM,
+                                        'CMNET' : $LANG.CMNET,
+                                        'CERNET': $LANG.CERNET,
+                                        'CRTC' : $LANG.CRTC,
+                                        'CNCGROUP' : $LANG.CNCGROUP,
+                                        'GWBN' : $LANG.GWBN,
+                                        'CSTN' : $LANG.CSTN,
+                                        'BCN' : $LANG.BCN,
+                                        'GeHua' : $LANG.GEHUA,
+                                        'Topway' : $LANG.TOPWAY,
+                                        'ZHONG-BANG-YA-TONG' : $LANG.ZHONG_BANG_YA_TONG,
+                                        'FOUNDERBN' : $LANG.FOUNDERBN,
+                                        'WASU' : $LANG.WASU,
+                                        'GZPRBNET' : $LANG.GZPRBNET,
+                                        'HTXX' : $LANG.HTXX,
+                                        'eTrunk' : $LANG.ETRUNK,
+                                        'WSN' : $LANG.WSN,
+                                        'CHINAGBN' : $LANG.CHINAGBN,
+                                        'EASTERNFIBERNET' : $LANG.EASTERNFIBERNET,
+                                        'LiaoHe-HuaYu' : $LANG.LIAOHE_HUAYU,
+                                        'CTN' : $LANG.CTN
+                        };
+                         //遍历数组中的键，如果当前键与ISP对应的英文名称相同，则返回当前数组对应的名称
+                        for( var key in arr){
+                            if(rows == key){
+                                return arr[key];
+                            }
+                        }
+
+                    }
+                    },
+                    {field: 'isp_gw', title: $LANG.GATEWAY, width: 250, formatter: function(val) {
+                            if (val == 'NULL') {
+                                return '';
+                            } else {
+                                return val;
+                            }
+                        }},
+                    {field: 'isp_dev', title: $LANG.OUT_INTERFACE, width: 250, formatter: function(val) {
+                            if (val == 'NULL') {
+                                return '';
+                            } else {
+                                return val;
+                            }
+                        }}
+                ]],
+            checkOnSelect: true,
+            singleSelect: false,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar",
+            onCheck: setIspRouteToolBar,
+            onUncheck: setIspRouteToolBar,
+            onClickRow: setIspRouteToolBar,
+            onCheckAll: setIspRouteToolBar,
+            onUncheckAll: setIspRouteToolBar,
+            onSelect: setIspRouteToolBar,
+            onUnselect: setIspRouteToolBar,
+            detailFormatter: function(indexRelease) {       //对“+”的详细设置
+                return '<div style="padding:2px"><table id="ddv-' + indexRelease + '"></table></div>';
+            },
+            onExpandRow: function(indexRelease, rowRelease) {   //当“+”点击后展开发生的事件
+                $('#ddv-' + indexRelease).datagrid({
+                    url: '?c=Network/IspRoute&a=ispRouteSingleDetails&isp=' + rowRelease.isp_name + '&gw=' + rowRelease.isp_gw + '&dev=' + rowRelease.isp_dev,
+                    fitColumns: true,
+                    singleSelect: true,
+                    rownumbers: true,
+                    autoRowHeight: true,
+                    height: 'auto',
+                    columns: [[
+                        {field: 'isp_dst', title: $LANG.DST_ADDR, width: 40, resizable: true},
+                        {field: 'isp_gw', title: $LANG.GATEWAY, width: 40, resizable: true,
+                            formatter: function(val) {
+                                if (val == '0.0.0.0') {
+                                    return '';
+                                } else {
+                                    return val;
+                                }
+                            }},
+                        {field: 'isp_flag', title: $LANG.FLAG, width: 40, resizable: true},
+                        {field: 'isp_dev', title: $LANG.OUT_INTERFACE, width: 40, resizable: true,
+                            formatter: function(val) {
+                                if (val == 'NULL') {
+                                    return '';
+                                } else {
+                                    return val;
+                                }
+                            }}
+                    ]],
+                    onResize: function() {
+                        $('#tt').datagrid('fixDetailRowHeight', indexRelease);
+                    },
+                    onLoadSuccess: function() {
+                        setTimeout(function() {
+                            $('#tt').datagrid('fixDetailRowHeight', indexRelease);
+                        }, 0);
+                    },
+                    pagination: true,
+                    pageSize: 10,
+                    pageList: [10, 20, 50, 100],
+                    loadMsg: $LANG.WAITING
+                });
+                $('#tt').datagrid('fixDetailRowHeight', indexRelease);
+            },
+            onLoadSuccess: function(data) {
+                $('#icon_del').linkbutton('disable');
+            }
+        });
+        if (getPrivilege("network") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+            $('#icon_up').linkbutton('disable');
+        }
+    });
+</script>
+
+</body>
+</html>

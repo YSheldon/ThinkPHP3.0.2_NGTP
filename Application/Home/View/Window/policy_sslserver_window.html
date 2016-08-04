@@ -1,0 +1,164 @@
+<div>
+    <form id="sslsForm">
+        <table class="ngtos_form_table">
+            <tr id='server'>
+                <td class="tdlabel">ID</td>
+                <td>
+                    <input id="id" type="text" name="id" class="easyui-textbox input_length">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.NAME}</td>
+                <td>
+                    <input id="name" type="text" name="name" class="easyui-textbox input_length" data-options="required:true">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.DOMAIN_NAME}</td>
+                <td>
+                    <input id="proxy_name" type="text" name="proxy_name" class="easyui-textbox input_length">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.SERVER_CERTIFICATE_SWITCH}</td>
+                <td>
+                    <input type="radio" name="proxy_verify" id="proxy_enable" value="enable" checked/>
+                    <label for="proxy_enable">{$Think.lang.ENABLE}</label>
+                    <input type="radio" name="proxy_verify" id="proxy_disable" value="disable" />
+                    <label for="proxy_disable">{$Think.lang.STOP}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.CERTIFICATE_TRANSMISSION_SWITCH}</td>
+                <td>
+                    <input type="radio" name="proxy_ssl_cert_trans" id="shutdown_enable" value="enable" checked/>
+                    <label for="shutdown_enable">{$Think.lang.ENABLE}</label>
+                    <input type="radio" name="proxy_ssl_cert_trans" id="shutdown_disable" value="disable" />
+                    <label for="shutdown_disable">{$Think.lang.STOP}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.CERTIFICATE_FILE}</td>
+                <td>
+                    <select id="proxy_cert" name="proxy_cert"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.KEY}</td>
+                <td>
+                    <select id="proxy_cert_key" name="proxy_cert_key"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.VERIFY_CA_CERTIFICATE}</td>
+                <td>
+                    <select id="proxy_trusted_cert" name="proxy_trusted_cert"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.CERTIFICATE_REVOCATION_LIST}</td>
+                <td>
+                    <select id="proxy_crl" name="proxy_crl"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.VERIFY_CERTIFICATE_DEPTH}</td>
+                <td>
+                    <input type="text" id='proxy_verify_depth' name="proxy_verify_depth" class="easyui-textbox input_length" data-options="validType:'range[0,20]'"/><span class="form_comment">[1-20]</span>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('ssl_server_window')">
+    </div>
+</div>
+<script>
+$(function(){
+    //获取证书文件列表
+    $('#proxy_cert').combobox({
+        url: '?c=Policy/SSL&a=getComBox&link=0',
+        width:220,
+        panelHeight: 'auto',
+        panelMaxHeight: 198,
+        multiple:false,
+        editable:false,
+        valueField:'name',
+        textField:'name'
+    });
+
+    //获取秘钥列表
+    $('#proxy_cert_key').combobox({
+        url: '?c=Policy/SSL&a=getComBox&link=1',
+        width:220,
+        panelHeight: 'auto',
+        panelMaxHeight: 198,
+        multiple:false,
+        editable:false,
+        valueField:'name',
+        textField:'name'
+    });
+
+    //获取CA证书列表
+    $('#proxy_trusted_cert').combobox({
+        url: '?c=Policy/SSL&a=getComBox&link=2',
+        width:220,
+        panelHeight: 'auto',
+        panelMaxHeight: 198,
+        multiple:false,
+        editable:false,
+        valueField:'name',
+        textField:'name'
+    });
+
+    //证书撤销列表
+    $('#proxy_crl').combobox({
+        url: '?c=Policy/SSL&a=getCombox&link=3',
+        width:220,
+        panelHeight: 'auto',
+        panelMaxHeight: 198,
+        multiple:false,
+        editable:false,
+        valueField:'name',
+        textField:'name'
+    });
+
+    if(tagssls == 1) {
+        $("#server").hide();
+        $("#proxy_verify_depth").val('1');
+    } else if(tagssls == 2 ) {
+        $("#server").show();
+        $('#id').val(param[8]);
+        $('#name').val(param[0]);
+        $("#id").attr('disabled','true');
+        $("#name").attr('disabled','true');
+        $('#proxy_cert').combobox('setValue',param[1]);
+        $('#proxy_cert_key').combobox('setValue',param[2]);
+        $('#proxy_name').val(param[3]);
+        $('#proxy_trusted_cert').combobox('setValue',param[4]);
+
+        if(param[5] == 'on') {
+            $("input[name='proxy_verify'][id='proxy_enable']").attr("checked",true);
+        } else {
+            $("input[name='proxy_verify'][id='proxy_disable']").attr("checked",true);
+        }
+
+        if(param[7] == 'on') {
+            $("input[name='proxy_ssl_cert_trans'][id='shutdown_enable']").attr("checked",true);
+        } else {
+            $("input[name='proxy_ssl_cert_trans'][id='shutdown_disable']").attr("checked",true);
+        }
+
+        $('#proxy_crl').combobox('setValue',param[9]);
+        $('#proxy_verify_depth').val(param[6]);
+    }
+
+    $('#confirm_button').click(function() {
+        var isValid = $('#sslsForm').form('validate');
+        if(isValid){
+            addSslServerProfile(tagssls);
+        }
+    });
+});
+</script>

@@ -1,0 +1,170 @@
+<include file='Index:main'/>
+<link rel="stylesheet" type="text/css" href="{$Think.config.NG_PATH}Public/css/yngtos/server_protal.css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/auth_server.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/address.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/schedule.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="dlg-toolbar" class="table-wrap flotRight">
+    <!-- 标题栏： -->
+    <div class="datagrid-toolbar">
+        <div class="tools-lft">
+            <div class="btn-anchor">
+                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onClick="add_server('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" onClick="editServerRow();">{$Think.lang. EDIT}</a>   
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="#" class="easyui-linkbutton" id="icon_del" data-options="iconCls:'icon-delete',plain:true" onClick="del_server()">{$Think.lang. DELETE}</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-enable',plain:true" onClick="conf_item('{$Think.lang.GLOBAL_AUTH_ATTR_SET}')">{$Think.lang.GLOBAL_AUTH_ATTR_SET}</a>
+            </div>
+            <div id="searchs" class="btn-anchor disabled">
+                <span id="searchs_1">{$Think.lang.SERVER_NAME}：</span>
+                <span class="rgt_search">
+                    <input class="searchbox-text searchbox-prompt" type="text" value="{$Think.lang.INPUT_SEARCH}" id="searchServName" onkeyup="freshServItem($(this).val())">
+                    <span class="search-icon" onclick="searchServ()" style="cursor:pointer;"></span>
+                </span>
+            </div>
+        </div>
+    </div>                  
+</div>
+
+<div id="loding" style="width:65px; display:none;position:absolute;margin:0 auto;">
+    <div class="ngtos_datagrid_pop" width="65px">
+        <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif">
+    </div>
+</div>
+<script>
+    var ip_init_num;
+    var sms_tag = 0;
+    var time_tag = 1;
+    var addr_tag = 1;
+    var grtag = 3;
+    var user_server = [];
+    var server_add_tag;
+    var server_type_tag;
+    var param = [];
+    $('#searchServName').focus(function() {
+        if ($(this).val() == $LANG.INPUT_SEARCH) {
+            $(this).val("");
+            $(this).removeClass("searchbox-prompt");
+        }
+    })
+    $('#searchServName').blur(function() {
+        if ($(this).val() == "") {
+            $(this).val($LANG.INPUT_SEARCH);
+            $(this).addClass("searchbox-prompt");
+        }
+    })
+
+    $(function() {
+        whole_conf();
+        $('#tt').datagrid({
+            fitColumns: true,
+            nowrap: true,
+            striped: true,
+            //sortName: 'name',                         //当数据表格初始化时以哪一列来排序。
+            sortOrder: 'asc', //定义排序顺序，可以是'asc'或者'desc'（正序或者倒序）。
+            queryParams: {
+                mod: 'user auth server',
+                skey:'server_name'      //搜索时对比的key
+            },
+            url: '?c=Auth/Server&a=datagridShow',
+            fit: true,
+            border: false,
+            remoteSort: false, //定义是否通过远程服务器对数据排序。
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'server_name', title: $LANG.SERVER_NAME, width: 300, sortable: true},
+                    //{field: 'des', title: $LANG.DESCRIPTION, width: 300, sortable: true},
+                    {field: 'protocol', title: $LANG.TYPE, width: 300, sortable: true,
+                        formatter: function(value, rowData, rowIndex) {
+                            if (value != "" && value != null) {
+                                if (value.indexOf("radius") >= 0)
+                                    var s = $LANG.RADIUS_SERVER;
+                                else if (value.indexOf("ldap") >= 0)
+                                    var s = $LANG.LDAP_SERVER;
+                                else if (value.indexOf("tacacs") >= 0)
+                                    var s = $LANG.TACACS_SERVER;
+                                else
+                                    var s = $LANG.LOCAL_SERVER;
+                                return s;
+                            }
+                        }
+                    },
+                    {field: 'sync', title: $LANG.SYNC, width: 300, sortable: true,
+                        formatter: function(value, rowData, rowIndex) {
+                            if (rowData.protocol != "" && rowData.protocol != null) {
+                                if (rowData.protocol.indexOf("ldap") >= 0)
+                                    return '<a href="###" onClick="sync_attr(&quot;' + rowData.server_name + '&quot;,&quot;' + $LANG.LDAP_SYNC + '&quot;);"><img src="'+NG_PATH+'Public/images/icon/icon_sync.png" title="' + $LANG.SYNC + '" style="vertical-align:middle"></a>';
+
+                            }
+                        }
+                    },
+                    {field: 'oper', title: $LANG.AUTH_ATTR, width: 400,
+                        formatter: function(value, rowData, rowIndex) {
+                            if (rowData.protocol != "" && rowData.protocol != null) {
+                                if (rowData.protocol.indexOf("radius") >= 0)
+                                    return '<a href="###" onClick="whole_attr(&quot;' + rowData.server_name + '&quot;,&quot;' + $LANG.AUTH_ATTR_SET + '&quot;);"><img src="'+NG_PATH+'Public/images/icon/auth.png" title="' + $LANG.AUTH_ATTR + '" style="vertical-align:middle"></a>';
+                                else if (rowData.protocol.indexOf("ldap") >= 0)
+                                    return '<a href="###" onClick="whole_attr(&quot;' + rowData.server_name + '&quot;,&quot;' + $LANG.AUTH_ATTR_SET + '&quot;);"><img src="'+NG_PATH+'Public/images/icon/auth.png" title="' + $LANG.AUTH_ATTR + '" style="vertical-align:middle"></a>';
+                                else if (rowData.protocol.indexOf("tacacs") >= 0)
+                                    return '<a href="###" onClick="whole_attr(&quot;' + rowData.server_name + '&quot;,&quot;' + $LANG.AUTH_ATTR_SET + '&quot;);"><img src="'+NG_PATH+'Public/images/icon/auth.png" title="' + $LANG.AUTH_ATTR + '" style="vertical-align:middle"></a>';
+                                else
+                                    return '<a href="###" onClick="local_attr(&quot;' + rowData.server_name + '&quot;,&quot;' + $LANG.AUTH_ATTR_SET + '&quot;);"><img src="'+NG_PATH+'Public/images/icon/auth.png" title="' + $LANG.AUTH_ATTR + '" style="vertical-align:middle"></a>';
+                            }
+                        }
+                    }
+                ]],
+            onDblClickRow: function(rowindex, rowData) {
+                if (rowData.protocol.indexOf("radius") >= 0)
+                    radius_edit_serve(rowData.server_name, rowData.host, rowData.port, rowData.radius_authmode, rowData.radius_sharesecret, rowData.radius_clientip, rowData.timeout, rowData.radius_retry_times, rowData.charset, rowData.auto_addr_user, rowData.radius_useaccount, rowData.radius_attr_separator, $LANG.EDIT);
+                else if (rowData.protocol.indexOf("ldap") >= 0)
+                    ldap_edit_serve(rowData.server_name, rowData.host, rowData.port, rowData.ldap_dn, rowData.ldap_subtype, rowData.ldap_usequeryaccount, rowData.ldap_queryname, rowData.ldap_querypasswd, rowData.ldap_filterinfo, rowData.ldap_scope, rowData.timeout, rowData.charset, rowData.auto_addr_user, rowData.ldap_attr_seperator, rowData.ldap_attr_group, rowData.ldap_attr_username, $LANG.EDIT);
+                else if (rowData.protocol.indexOf("tacacs") >= 0)
+                    tacas_edit_serve(rowData.server_name, rowData.host, rowData.port, rowData.tacas_mode, rowData.tacas_key, rowData.timeout, rowData.charset, rowData.auto_addr_user, $LANG.EDIT);
+                else
+                    local_edit_serve(rowData.server_name, rowData.host, rowData.port, $LANG.EDIT);
+            },
+            pagination: true, //设置true将在数据表格底部显示分页工具栏。
+            pageSize: 20, //当设置分页属性时，初始化每页记录数。
+            pageList: [20, 50, 100], //当设置分页属性时，初始化每页记录数列表。
+            rownumbers: true, //设置为true将显示行数。
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar",
+            checkOnSelect: true,
+            selectOnCheck: true,
+            onLoadSuccess: function(data) {
+                $('#tt').datagrid('fixRownumber');
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_del').linkbutton('disable');
+            },
+            onCheck: setServerToolBar,
+            onUncheck: setServerToolBar,
+            onClickRow: setServerToolBar,
+            onCheckAll: setServerToolBar,
+            onUncheckAll: setServerToolBar,
+            onSelect: setServerToolBar,
+            onUnselect: setServerToolBar
+        });
+
+        $.getJSON(
+            "?c=Auth/User&a=userAndGroup",
+            function(data) {
+                $(data.rows).each(function(key, value) {
+                    if (value.gTag == undefined) {
+                        var s = {name: value.name, server: value.auth_server};
+                        user_server.push(s);
+                    }
+                })
+            });
+    });
+</script>
+</body>
+</html>

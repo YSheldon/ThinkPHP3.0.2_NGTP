@@ -1,0 +1,24 @@
+<div>
+    <form id="ha_form">
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.LINK}ID</td>
+                <td><input type="text" name="link" id="link" class='easyui-textbox global_input' style="width:200px" data-options="required:true,validType:'range[0,9]'"></td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.VSYS_NAME}</td>
+                <td><input type="text" name="vsys_name" id="vsys_name" class='easyui-textbox global_input' style="width:200px" data-options="validType:'eSymbols'"></td>
+            </tr>
+        </table>
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="submitGroupHaLink();">
+            <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_page')">
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+//        //获取所有物理、vlan、bond接口
+//        add_ha_group_init("prif_add");
+    });
+</script>

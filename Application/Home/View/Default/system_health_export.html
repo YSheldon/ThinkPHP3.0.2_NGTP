@@ -1,0 +1,77 @@
+<include file='Index:main'/>
+<div class="ngtos_form">
+    <div id="healthInfo" class="ngtos_form_table">
+        <form action="?c=System/Upload&a=healthDownload" name="system_upload_reboot" method="post">
+            <div style="position:absolute;top:20px;margin-left:10px">
+                <img src="{$Think.config.NG_PATH}Public/images/image/alert.jpg" width="60px" height="60px">
+            </div>
+            <div style="position:absolute;top:30px;margin-left:100px">
+                {$Think.lang.NAME}： tos_health_record{$SESSIONID}<br><br>
+                {$Think.lang.SOURCE}：{$REMOTE_ADDR}<br><br>
+                <input type="button" class="ngtos_button_large confirmenable" value="{$Think.lang.SAVE}" onClick="export_health();">&nbsp;&nbsp;
+            </div>
+        </form>	
+    </div>
+</div>
+<div id="window_cover" class="easyui-window" style="width:200px;height:100px;z-index:10000;" 
+     data-options="collapsible: false, minimizable: false, maximizable: false, noheader: true,border:false, shadow:false, closed:true">
+    <div class="waitMsgDiv" style="margin:40px 0px 0px 40px;position: absolute;z-index: 111;">
+        <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif" style="margin-left: 10px">&nbsp;&nbsp;{$Think.lang.CONFIG_ING}
+    </div>
+</div>
+<script>
+    /*$(function() {
+        parent.leaveTag = 0;
+    })*/
+
+    function export_health() {
+        $('#window_cover').window('open');
+        $.ajax({
+            url: "?c=System/Upload&a=callFun",
+            data:{
+                fun:'simpleHandle',
+                mod:'system health',
+                param:'tos_health_record'+"{$SESSIONID}",
+                act:'export',
+                parKey:'__NA__'
+
+            },
+            type: 'post',
+            async: false,
+            success: function(data) {
+                if (data != 0) {
+                    alert($LANG.GET_INFO_FAIL);
+                    $('#window_cover').window('close');
+                } else {
+                    //parent.leaveTag = 1;
+                    document.forms[0].submit();
+                    $('#window_cover').window('close');
+                }
+            }
+        });
+        $.ajax({
+            url: "?c=System/Upload&a=healthDelete",
+            type: 'POST',
+            async: false,
+            success: function(data) {
+            }
+        });
+    }
+
+    /*window.onbeforeunload = function() {
+        if (parent.leaveTag == 0) {
+            $.ajax({
+                url: "?c=System/Upload&a=healthDelete",
+                type: 'POST',
+                async: false,
+                success: function(data) {
+                }
+            });
+        } else
+            parent.leaveTag = 0;
+    }*/
+</script>
+</div>
+</div>
+</body>
+</html>

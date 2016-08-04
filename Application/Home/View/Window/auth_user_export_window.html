@@ -1,0 +1,47 @@
+<form action="" method="post" enctype="multipart/form-data" name="export_file_info" id="export_user_form">
+    <input type="hidden" name="hid_export_name">
+    <input type="hidden" name="hid_export_type">
+    <input type="hidden" name="hid_export_group">
+    <input type="hidden" name="hid_export_child">
+    <div>
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.EXPORT_FILENAME}</td>
+                <td>
+                    <input type="text" name="export_name" id="export_name" class="easyui-textbox" data-options="required:true,width:156">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.EXPORT_TYPE}</td>
+                <td>
+                    <input type="radio" name="export_type" id="export_type1" value="txt" checked>
+                    <label for="export_type1">TXT</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="export_type" id="export_type2" value="csv">
+                    <label for="export_type2">CSV</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.EXPORT_CONTENT}</td>
+                <td>
+                    <input type="radio" name="export_cont" id="export_cont1" value="1" checked>
+                    <label for="export_cont1">{$Think.lang.ALL_GROUP_ALL_USER}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="export_cont" id="export_cont2" value="2">
+                    <label for="export_cont2">{$Think.lang.GROUP_ALL_USER}</label>
+                </td>
+            </tr>
+        </table>
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" id="exportUser" value="{$Think.lang.CONFIRM}">
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('export_user_div')">
+        </div>
+    </div>
+</form>
+<script>
+    $(function() {
+        $('#exportUser').click(function() {
+            module_export();
+        });
+        $('input:radio[name="export_type"]').get(0).checked = true;
+        $('input:radio[name="export_cont"]').get(0).checked = true;
+    })
+</script>

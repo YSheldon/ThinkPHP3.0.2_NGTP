@@ -1,0 +1,265 @@
+<div>
+    <!--<form action="" name="policy_interview_control_form" method="post" id='form1'>-->
+    <div style="height:500px;max-height: 500px;overflow-y: auto;">
+        <table class="ngtos_form_pop padding_min">
+            <tr style="height: 10px"></tr>
+            <tr>
+                <td class="tdlabel_net" style="width:28%;">{$Think.lang.MODE}</td>
+                <td width="72%">
+                    <input type="radio" name="mode" id='mode1' onClick="chooseModeMap64(1);" checked="checked" value='1'>
+                    <label for="mode1">{$Think.lang.STATIC_TRANSFE}</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="mode" id='mode2' onClick="chooseModeMap64(2);" value='2'>
+                    <label for="mode2">{$Think.lang.PREFIX_TRANSLATION}</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<!--                    <input type="radio" name="mode" id='mode2' onClick="chooseMode(2);" value="2">
+                    <label for="mode2">{$Think.lang.DST_TRANSFORM}</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--                    <input type="radio" name="mode" id='mode3' onClick="chooseModeMap64(3);" value="3">
+                    <label for="mode3">{$Think.lang.BOTH_TRANSFORM}</label>-->
+<!--                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="mode" id='mode4' onClick="chooseMode(4);" value="4">
+                    <label for="mode4">{$Think.lang.NO_TRANSFORM}</label>-->
+                </td>
+            </tr>
+            <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.SRC}</b></td></tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.ADDRESS}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_orig_src' name='src'>
+                    <a href="###" onClick="show_dst_map64('add_orig_src','host','show','define group_address')" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr class="otherTr1">
+                <td class="tdlabel_net">{$Think.lang.VLAN}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_srcvlan'  name='srcarea'>
+                    <a href="###" onClick="show_dst_map64('add_srcvlan','network vlan','show','');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr class="otherTr1">
+                <td class="tdlabel_net">{$Think.lang.REGION}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_srcarea'  name='srcarea'>
+                    <a href="###" onClick="show_dst_map64('add_srcarea','define area','show','');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr class="otherTr1">
+                <td class="tdlabel_net">{$Think.lang.PORT}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_orig_sport'  name='srcarea'>
+                    <a href="###" onClick="show_dst_map64('add_orig_sport','service','show','define group_service');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr><td colspan="2" class="window_subtitle"><b >{$Think.lang.DST}</b></td></tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.ADDRESS}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_orig_dst' name='dst' >
+                    <a href="###" onClick="show_dst_map64('add_orig_dst','host','show','define group_address','dst_address');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr class="otherTr2" id='dst_vlan'>
+                <td class="tdlabel_net">{$Think.lang.VLAN}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_dstvlan'  name='srcarea'>
+                    <a href="###" onClick="show_dst_map64('add_dstvlan','network vlan','show','');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr class="otherTr2" id='dst_area'>
+                <td class="tdlabel_net">{$Think.lang.REGION}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_dstarea' name='dstarea' >
+                    <a href="###" onClick="show_dst_map64('add_dstarea','define area','show','');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.PORT}</td>
+                <td>
+                    <input class="easyui-textbox input_length" id='add_orig_service' name='dservice' >
+                    <a href="###" onClick="show_dst_map64('add_orig_service','service','show','define group_service');" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.CONFIG}</b></td></tr>
+
+
+            <tr id='org_tr' class="org_tr">
+                <td class="tdlabel_net">{$Think.lang.SRC_ADDR_TRANSFORM}</td>
+                <td>
+                    <select id='add_trans_src' class="combobox_len"></select>
+                </td>
+            </tr>
+            <tr class="org_tr">
+                <td class="tdlabel_net">{$Think.lang.SRC_PORT_NO_TRANSFORM}</td>
+                <td>
+                    <input type="checkbox" id='add_pat'>
+                    <label for="add_pat">{$Think.lang.SRC_PORT_FIXED}</label>
+                </td>
+            </tr>
+
+            <tr id='trans_tr' class="trans_tr">
+                <td class="tdlabel_net">{$Think.lang.DST_ADDR_TRANSFORM}</td>
+                <td>
+                    <select id='add_trans_dst' class="combobox_len"></select>
+                </td>
+            </tr>
+<!--            <tr class="trans_tr" style="display: none">
+                <td class="tdlabel_net">{$Think.lang.DST_PORT_TRANSFORM}</td>
+                <td>
+                    <select id='add_trans_service' class="combobox_len"></select>
+                </td>
+            </tr>-->
+            <if condition="$switch eq 'on'">
+                <tr id='vr_tr'>
+                    <td class="tdlabel_net">{$Think.lang.BELONG_VR}</td>
+                    <td colspan="3">
+                        <select class="easyui-combobox combobox_len" data-options="panelHeight:'auto',panelMaxHeight:198" id='add_vr_id' name='comment'></select>
+                    </td>
+                </tr>
+            </if>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.POLICY_ON_OFF}</td>
+                <td>
+                    <input type="radio" name='nat_switch' id='nat_enable' value="1" checked>
+                    <label for="nat_enable">{$Think.lang.ENABLE}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name='nat_switch' id='nat_disable' value="0">
+                    <label for="nat_disable">{$Think.lang.DISABLE}</label>
+                </td>
+            </tr>
+
+            <tr id='sticky_tr'>
+                <td class="tdlabel_net">{$Think.lang.STICKY_NAT_ON_OFF}</td>
+                <td>
+                    <input type="radio" name='sticky_switch' id='sticky_enable' value="1" checked>
+                    <label for="sticky_enable">{$Think.lang.ON}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name='sticky_switch' id='sticky_disable' value="0">
+                    <label for="sticky_disable">{$Think.lang.OFF}</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Think.lang.SRC_IP_TRANSFORM_EQUAL}
+                </td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addNat'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('nat_admin1')">
+    </div>
+    <!--</form>-->
+</div>
+<script>
+    var switch_php = "{$switch}";
+    $(function() {
+        $('#addNat').click(function() {
+            if(isClone=='1') {
+                submitAllMap64(switch_php);
+            } else {
+                submitAllMap64(switch_php,natParam[0]);
+            }
+        });
+
+        if(switch_php=='on') {
+            $.ajax({
+                url: "?c=Policy/Map64&a=callFun",
+                type: 'POST',
+                dataType:'json',
+                data:{
+                    fun:'dataShow',
+                    mod:'network vr'
+                },
+                async:false,
+                success: function(data) {
+                    if(data.rows > 0) {
+                        $.each(data.rows,function() {
+                            $('#add_vr_id')[0].add(new Option(this.vr_name,this.vr_id));
+                        });
+                        $('#add_vr_id')[0].value=natParam[11];
+                    }
+                }
+            });
+        }
+        trans_dst_combo_reflesh();
+        trans_src_combo_reflesh();
+        //转换后的目的端口获取
+        trans_service_combo_reflesh();
+
+        if(natParam[0] != '') {
+            if(natParam[7]=='nat64 by addr') {
+                $('#mode1')[0].checked=true;
+                chooseModeMap64(1);
+                $('#add_dstvlan')[0].value=$.trim(natParam[17]);
+                $('#add_dstarea')[0].value=$.trim(natParam[13]);
+            } else if(natParam[7]=='nat64 by prefix') {
+                $('#mode2')[0].checked=true;
+                chooseModeMap64(2);
+            }
+
+            $('#add_srcarea')[0].value= $.trim(natParam[12]);
+
+            $('#add_srcarea')[0].value=$.trim(natParam[12]);
+            $('#add_dstarea')[0].value=$.trim(natParam[13]);
+
+            $('#add_orig_sport')[0].value=$.trim(natParam[14]);
+
+            $('#add_orig_src')[0].value=$.trim(natParam[1]);
+            $('#add_orig_dst')[0].value=$.trim(natParam[2]);
+            $('#add_orig_service')[0].value=$.trim(natParam[3]);
+
+            $('#add_srcvlan')[0].value=$.trim(natParam[16]);
+
+            if(natParam[8]=='no') {
+                $('#add_pat')[0].checked=true;
+            } else {
+                $('#add_pat')[0].checked=false;
+            }
+            if(natParam[9]=='yes') {
+                $('#nat_enable')[0].checked=true;
+            } else {
+                $('#nat_disable')[0].checked=true;
+            }
+
+            if(natParam[10]=='yes') {
+                $('#sticky_enable')[0].checked=true;
+            } else {
+                $('#sticky_disable')[0].checked=true;
+            }
+
+            $.ajaxSettings.async = false;
+            $.getJSON(
+                    "?c=Resource/Address&a=getAddressId&name="+$.trim(encodeURI(natParam[4])),
+                    function(data){
+                        if(data.rows) {
+                            var addr_id='';
+                            $(data.rows).each(function(key,value){
+                                addr_id = value.id;
+                            })
+                            $('#add_trans_src').combotree('setValue',addr_id);
+                        }
+                    });
+
+            $.getJSON(
+                    "?c=Resource/Address&a=getAddressId&name="+$.trim(encodeURI(natParam[5])),
+                    function(data){
+                        if(data.rows) {
+                            var addr_id='';
+                            $(data.rows).each(function(key,value){
+                                addr_id = value.id;
+                            })
+                            $('#add_trans_dst').combotree('setValue',addr_id);
+                        }
+                    });
+
+            $.getJSON(
+                    "?c=Resource/Service&a=getServiceId&name="+$.trim(encodeURI(natParam[6])),
+                    function(data){
+                        if(data.rows) {
+                            var addr_id='';
+                            $(data.rows).each(function(key,value){
+                                addr_id = value.id;
+                            })
+                            $('#add_trans_service').combotree('setValue',addr_id);
+                        }
+                    });
+            $.ajaxSettings.async = true;
+        }
+    });
+</script>

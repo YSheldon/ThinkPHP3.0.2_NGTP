@@ -1,0 +1,37 @@
+<!--导出   弹出框-->
+<div id='admin1'>
+    <form id="config_form" >
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.EXPORT_TYPE}</td>
+                <td class="tdlabel_net operation">{$Think.lang.OPERATION}</td>
+                <td class="tdlabel_net"></td>
+            </tr>
+            <tr id="tr3">
+                <td class="tdlabel_net">{$Think.lang.BEFORE_DERIVATION}</td>
+                <td class="tdlabel_net"><a href='#' onclick="export_file(0)" class="export">{$Think.lang.EXPORT}</a></td>
+                <td class="tdlabel_net"></td>
+            </tr>
+            <tr id="tr4">
+                <td class="tdlabel_net">{$Think.lang.ALL_DERIVATION}</td>
+                <td class="tdlabel_net"><a href='#' onclick="export_file(1)" class="export">{$Think.lang.EXPORT}</a></td>
+                <td class="tdlabel_net"></td>
+            </tr>
+        </table>    
+    </form>
+</div>
+<script> 
+    $(function() {
+        var sel_row = $('#dg').datagrid('getChecked');
+        if(sel_row.length < 1){
+            $("#tr3").hide();
+            $("#tr4").show();
+        }else if(sel_row.length > 1){
+            $("#tr3").hide();
+            $("#tr4").show()
+        }else{
+            $("#tr3").show();
+            $("#tr4").hide()
+        }
+    })
+</script>

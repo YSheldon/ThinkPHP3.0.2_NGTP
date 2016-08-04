@@ -1,0 +1,72 @@
+<div>
+    <form id="ftpForm">
+        <table class="ngtos_form_table">
+            <tr id="ftpId">
+                <td class="tdlabel">id</td>
+                <td>
+                    <input type="text" id="id" name="id" class="easyui-textbox input_length">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.NAME}</td>
+                <td>
+                    <input type="text" id='name' name="name" class="easyui-textbox input_length" data-options="required:true"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.EXPECT_BUFFER}</td>
+                <td>
+                    <input type="text" id='expect_buffer' name="expect_buffer" class="easyui-textbox input_length" data-options="required:true,validType:'range[512,4194304]'"/>B
+                    <span class="form_comment">[512B-4,194,304B(4M)]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.EXPECT_TIMER}</td>
+                <td>
+                    <input type="text" id='expect_timer' name="expect_timer" class="easyui-textbox input_length" data-options="required:true,validType:'range[30,86400]'"/>s
+                    <span class="form_comment">[30s-86400s(1day)]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.UPSTREAM_DATA_MODE}</td>
+                <td>
+                    <select id="upstream_data_mode" name="upstream_data_mode" class="easyui-combobox combobox_len" data-options=" panelHeight:'auto',panelMaxHeight:198">
+						<option value="auto">{$Think.lang.MODE_AUTO}</option>
+                        <option value="pasv">{$Think.lang.MODE_PASV}</option>
+                        <option value="port">{$Think.lang.MODE_PORT}</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('ftp_window_div')">
+    </div>
+</div>
+<script>
+    $(function() {
+        if(tagftp == 1) {
+            $("#ftpId").hide();
+            $('#expect_buffer').val("4096");
+            $('#expect_timer').val("60");
+        } else if(tagftp == 2 ) {
+            $('#id').val(param[0]);
+            $('#name').val(param[1]);
+            $("#ftpId").show();
+            $("#id").attr('disabled','true');
+            $("#name").attr('disabled','true');
+
+            $('#expect_buffer').val(param[2]);
+            $('#expect_timer').val(param[3]);
+            $('#upstream_data_mode').val(param[4]);
+        }
+
+        $('#confirm_button').click(function() {
+            var isValid = $('#ftpForm').form('validate');
+            if(isValid) {
+                addFtpProfile(tagftp);
+            }
+        });
+    })
+</script>

@@ -1,0 +1,77 @@
+<form id="bond_add">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ID}</td>
+            <td>
+                <input class="combobox_len"  name="id_add" id="id_add">
+                    <!--<option value="">-选择ID-</option>-->&nbsp;<span style="color:red">*</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.LOAD_ALGORITHM}</td>
+            <td>
+            <select class="combobox_len" name="load_add"  id="load_add">
+                    <option value="">-{$Think.lang.SELECT_LOAD_ALGORITHM}-</option>
+                    <option value="src-mac">{$Think.lang.ACCORDING_SOURCE_MAC_AB}</option>
+                    <option value="dst-mac">{$Think.lang.ACCORDING_PURPOSE_MAC_AB}</option>
+                    <option value="src-dst-mac">{$Think.lang.ACCORDING_SOURCE_ADMA}</option>
+                    <option value="src-ip">{$Think.lang.ACCORDING_SOURCE_IAEQ}</option>
+                    <option value="dst-ip">{$Think.lang.ACCORDING_PURPOSE_IAE}</option>
+                    <option value="src-dst-ip">{$Think.lang.ACCORDING_SOURCE_ADIA}</option>
+                    <option value="src-port">{$Think.lang.ACCORDING_SOURCE_TUPEQ}</option>
+                    <option value="dst-port">{$Think.lang.ACCORDING_PURPOSE_TUPE}</option>
+                    <option value="src-dst-port">{$Think.lang.ACCORDING_SOURCE_DCUP}</option>
+                    <option value="quinary">{$Think.lang.ACCORDING_FIVE_TUPLE_EQUILIBRUM}</option>
+                    <option value="per-packet">{$Think.lang.ACCORDING_SEND_POTR}</option>&nbsp;<span style="color:red">*</span>
+                </select>
+            </td>
+        </tr>
+        <tr>	
+            <td colspan="4">
+                <span class="select_margin" style="margin-left:80px;">
+                    <div class="tdlabel_net">{$Think.lang.AVAILABLE_IF}</div>
+                    <div>
+                        <select class="select" id="prif_add" multiple ondblclick="moveOptions('prif_add', 'chif_add', 0);"></select>
+                    </div>
+                </span>
+                <span class="input_margin">
+                    <input type="button" onClick="moveOptions('prif_add', 'chif_add', 0);" value=" > " ><br><br>
+                    <input type="button" onClick="moveOptions('chif_add', 'prif_add', 0);" value=" < " >
+                </span>
+                <span class="select_margin">
+                    <div class="tdlabel_net">{$Think.lang.SELECTED_IF}</div>
+                    <div>
+                        <select class="select" id="chif_add" multiple ondblclick="moveOptions('chif_add', 'prif_add', 0);"></select>
+                    </div>
+                </span>
+            </td>
+        </tr>				
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"
+               value="{$Think.lang.CONFIRM}" onClick="add_bond_submit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}"
+               onClick="closeWindow('add_page')">
+    </div>
+</form>
+<script>
+    $(function() {
+        //获取所有物理接口
+        getPhysicsInterface("prif_add", 'bond');
+        $("#id_add").combobox({ 
+            url: "?c=Network/Bond&a=allBondJsondata",
+            valueField: 'text',
+            textField: 'text',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            editable: false
+        });
+
+        $("#load_add").combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            editable: false
+        });
+//        addBondRowInit("id_add");
+    });
+</script>

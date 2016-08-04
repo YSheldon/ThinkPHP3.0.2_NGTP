@@ -1,0 +1,60 @@
+<div>
+    <form id="ha_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.GROUP}ID</td>
+            <td><input type="text" name="group_id" id="group_id" class='easyui-textbox global_input' style="width:200px" data-options="required:true,validType:'range[1,255]'"><span class="form_comment">[1-255]</span></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.CONFIG_ROLE}</td>
+            <td>
+                <input type="radio" name="mode" id="mode_master" checked value="master"><label for="mode_master"> {$Think.lang.MAIN}</label>
+                <input type="radio" name="mode" id="mode_backup" value="backup" style="margin-left:20px"><label for="mode_backup"> {$Think.lang.SPARE}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.START_SEIZE}</td>
+            <td>
+                <input type="radio" name="preempt" id="preempt_enable" value="enable"><label for="preempt_enable"> {$Think.lang.YES}</label>
+                <input type="radio" name="preempt" id="preempt_disable" checked value="disable" style="margin-left:20px"><label for="preempt_disable"> {$Think.lang.NO}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SEIZE_DELAY}</td>
+            <td>
+                <input type="text" value="10" name="preempt_delay" id="preempt_delay" class='easyui-textbox global_input' style="width:200px" data-options="required:true,validType:'range[1,121]'"><span class="form_comment">[1-120]</span>
+            </td>
+        </tr>
+        <tr>	
+            <td colspan="2">
+                <span class="select_margin" style="margin-left:80px;">
+                    <div>{$Think.lang.AVAILABLE_IF}</div>
+                    <div>
+                        <select class="select" id="prif_add" multiple ondblclick="moveOptions('prif_add', 'chif_add', 100);"></select>
+                    </div>
+                </span>
+                <span class="input_margin">
+                    <input type="button" onClick="moveOptions('prif_add', 'chif_add', 100);" value=" > " ><br><br>
+                    <input type="button" onClick="moveOptions('chif_add', 'prif_add', 0);" value=" < " >
+                </span>
+                <span class="select_margin">
+                    <div>{$Think.lang.SELECTED_IF}</div>
+                    <div>
+                        <select class="select" id="chif_add" multiple ondblclick="moveOptions('chif_add', 'prif_add', 0);"></select>
+                    </div>
+                </span>
+            </td>
+        </tr>			
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="submitGroup();">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_page')">
+    </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        //获取所有物理、vlan、bond接口
+        add_ha_group_init("prif_add");
+    });
+</script>

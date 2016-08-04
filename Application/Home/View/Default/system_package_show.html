@@ -1,0 +1,112 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css" type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/js/windows.js" type="text/javascript"></script>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/plugins/simpletooltip/ajaxfileupload.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/system/package.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="vr_table_topbar" >
+    <div>
+        <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" onClick="edit_package()">{$Think.lang.EDIT}</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-enable',plain:true" id="icon_enable" onClick="enable_app_roles()">{$Think.lang.ENABLE}</a>
+        <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-disable',plain:true" id="icon_disable" onClick="disable_app_roles()">{$Think.lang.DISABLE}</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-up" plain="true" id="icon_up" onClick="update_more_package()">{$Think.lang.UPDATE}</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-import" plain="true" id="icon_up" onClick="import_more_package()">{$Think.lang.IMPORT}</a>
+        &nbsp;&nbsp;
+    </div>
+</div>
+<script>
+    var roles_tag;
+//    var options = "";
+    var staus = "{$list_array.status}";
+//    var last_array = "{$lis_arry.name}";
+    $(function() {
+        $("#tt").datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            remoteSort: false,
+            autoRowHeight: true,
+            showFooter: false,
+            sortName: 'name',
+            sortOrder: 'asc',
+            url: '?c=System/Package&a=packageInfoJsondata',
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'name', title: $LANG.NAME, width: 80, sortable: true},
+                    {field: 'version', title: $LANG.VERSION, width: 80},
+                    {field: 'status', title: $LANG.STATE, width: 100, sortable: true},
+                    {field: 'level', title: $LANG.LEVEL, width: 100, sortable: true},
+                    {field: 'time', title: $LANG.VERSION_UPDATE_TIME, width: 100, sorta0ble: true},
+                    {field: 'descrip', title: $LANG.DESCRIPTION, width: 100, sortable: true}
+                ]],
+            toolbar: '#vr_table_topbar',
+            pagination: true,
+            rownumbers: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            checkOnSelect: true,
+            selectOnCheck: true
+        });
+        
+//        setInterval(function() {
+//                $.getJSON(
+//                    "?c=System/Package&a=packageShow",
+//                    function(data) {
+//                    if (data) {
+//                        $(data.rows).each(function(key, value) {
+//                            if (value.name != "" && value.name != null && value.status != "valid") {
+//                               if(key==1){
+//                                    $.messager.show({
+//                                        height: '300px',
+//                                        width: '200px',
+//                                        title: '补丁包升级提示',
+//                                        msg: "<table id='sum'></table><br><input type='button' onClick='update_package()' class='ngtos_button_middle confirmenable' style='margin-left:50px;' value='确认'>",
+//                                        timeout:0,
+//                                        //showSpeed: 3600000,
+//                                        showType: 'show'
+//
+//                                    })
+//                                }
+//                                var msg_name = value.name;
+//                                var msg_arr = new Array();
+//                                msg_arr = msg_name.split(" ");
+//                                for (i = 0; i < msg_arr.length; i++) {
+//                                    if (msg_name.length != 0) {
+//                                        options += "<tr><td>" + msg_name + "</td></tr>";
+//                                    }
+//                                }
+////                                                          alert(options);
+//                                $("#sum").html(options);
+//                            }
+////                                        }
+//                        })
+//                    }
+//                });
+//            },3600000);
+        
+        if("{$conf}" == 0 && "{$vsid}" == 0){
+
+           $('#icon_edit').linkbutton('disable');
+           $('#icon_enable').linkbutton('disable');
+           $('#icon_disable').linkbutton('disable');
+
+       }
+       if (staus == "disable") {
+ 
+            $("#icon_disable").linkbutton("disable");
+        } else {
+            
+            $("#icon_enable").linkbutton("disable");
+        }
+    })
+</script>
+</div>
+</div>
+</body>
+</html>

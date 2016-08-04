@@ -1,0 +1,78 @@
+<form id="suitstste_add">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td><input type="text" name="suitstate_name" id="suitstate_name_id" class='easyui-textbox input_length' data-options="required:true,validType:'unnormal'"></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net" style="vertical-align: middle;">{$Think.lang.INTERFACE}</td>
+            <td>
+                <div class="select_div">
+                    <div class="select_ldiv">
+                        <div class="select_ldiv_bottom border_bottom0">
+                            <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                            <span class="searchbox width100">
+                                <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'suitstate_if_id',1)">
+                                <span class="searchbox-button"></span>
+                            </span>
+                        </div>
+                        <select class="select middle2" style="height:216.5px;" id="suitstate_if_id" multiple ondblclick="move_options('suitstate_if_id', 'suitstate_member_id','1', 'sel_area_num');">
+                        </select>
+                    </div>
+                    <div class="select_cdiv">
+                        <input type="button" class="width40" onClick="move_options('suitstate_if_id', 'suitstate_member_id', '1','sel_area_num');" value=" > ">
+                        <br/><br/>
+                        <input type="button" class="width40" onClick="move_options('suitstate_member_id', 'suitstate_if_id', '0','sel_area_num');" value=" < ">
+                    </div>
+                    <div class="select_rdiv">
+                        <div id="sel_area_num" class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+                            {$Think.lang.SELECTED_0}
+                        </div>
+                        <select class="select middle2 height12" style="height:190px;" id="suitstate_member_id" name="service_item[]" multiple ondblclick="move_options('suitstate_member_id', 'suitstate_if_id','0', 'sel_area_num');">
+                        </select>
+                        <div class="select_ldiv_bottom border_top0">
+                            <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('suitstate_member_id','suitstate_if_id','0','sel_area_num');">{$Think.lang.CLEAR_ALL}</a>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onclick="suitstateSubmit()" style="margin-top:8px; margin-left:180px;"/>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_page')" style="margin-left:10px">
+    </div>
+</form>
+<script type="text/javascript">
+    $(function() {
+        var showinterface = new Array();
+        showinterface = interfaces_new.split(",");
+        var value = '';
+        //获取接口
+        $.ajax({
+            url: "?c=Network/Suitstate&a=callFun",
+            data:{
+                fun:'dataShow',
+                mod:'network physicalinterface'
+            },
+            type: 'POST',
+            dataType: 'json',
+            async: false,
+            success: function(data) {
+                if (typeof data != 'object') {
+                    ngtosPopMessager('error', data);
+                } else {
+                    rows_data = data['rows'];
+                    $("#interface").empty();
+                    for (var i = 0; i < rows_data.length; i++){
+                        value = rows_data[i]["interface_name"];
+                        if($.inArray(value,showinterface)<=-1) {
+                            $("#suitstate_if_id").append("<option value='" + value + "'>" + value + "</option>");
+                        }
+                    }
+					get_mulselect_options('suitstate_member_id', 'suitstate_if_id');
+                }
+            }
+        });
+    })
+</script>

@@ -1,0 +1,67 @@
+<div>
+    <form id="radiusForm">
+        <table class="ngtos_form_table">
+            <tr id="radiusId">
+                <td class="tdlabel">id</td>
+                <td>
+                    <input type="text" id="id" name="id" class="easyui-textbox input_length">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">Radius{$Think.lang.PROXY_PROFILE_NAME}</td>
+                <td>
+                    <input type="text" id="proxy_name" name="proxy_name" class="easyui-textbox input_length" data-options="required:true">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">radius{$Think.lang.PROXY_KEY}</td>
+                <td>
+                    <input type="text" id="radius_key" name="radius_key" class="easyui-textbox input_length" data-options="required:true">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.RADIUS_DICTPATH}</td>
+                <td>
+                    <input type="text" id="radius_dictpath" name="radius_dictpath" class="easyui-textbox input_length">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.RADIUS_DICTNAME}</td>
+                <td>
+                    <input type="text" id="radius_dictname" name="radius_dictname" class="easyui-textbox input_length">
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('radius_window_div')">
+    </div>
+</div>
+<script>
+    $(function(){
+
+        if(tagradius == 1) {
+            $("#radiusId").hide();
+            $('#radius_dictpath').val('/tos/etc/dictionary');
+            $('#radius_dictname').val('dictionary');
+        } else if(tagradius == 2 ) {
+            $('#id').val(param[0]);
+            $('#proxy_name').val(param[1]);
+            $("#radiusId").show();
+            $("#id").attr('disabled','true');
+            $("#proxy_name").attr('disabled','true');
+
+            $('#radius_dictpath').val(param[2]);
+            $('#radius_key').val(param[3]);
+            $('#radius_dictname').val(param[4]);
+        }
+
+        $('#confirm_button').click(function() {
+            var isValid = $('#radiusForm').form('validate');
+            if(isValid) {
+                addRadiusProfile(tagradius);
+            }
+        });
+    })
+</script>

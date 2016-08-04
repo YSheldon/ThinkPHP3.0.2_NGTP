@@ -1,0 +1,77 @@
+<div>
+    <form id="pf_form">
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.NAME}</td>
+                <td id='name_td'>
+                    <select class="combobox_len" id='name'>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.REGION}</td>
+                <td>
+                    <select type="text" class="combobox_len" id='area'><option value=""></option></select>
+                </td>
+            </tr>
+            <tr id='addr_tr'>
+                <td class="tdlabel_net">{$Think.lang.ADDRESS}</td>
+                <td>
+                    <select type="text"  class="combobox_len" id='addressname'><option value=""></option></select>
+                </td>
+            </tr>
+
+        </table>
+
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addP'>
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('adduserDiv')">
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        $("#name").combobox({
+            url: "?c=Policy/Pf&a=pfName",
+            valueField: 'name',
+            textField: 'name',
+            onChange: changType,
+            required: true,
+            panelHeight: 'auto',
+            panelMaxHeight: 198
+        });
+
+        if (names != null) {
+            $('#name').combobox('setValue', names);
+        }
+
+        area_combobox_reflesh('area', 12);
+        if ($.trim(area).length > 0) {
+            $('#area').combobox('setValue', $.trim(area));
+        }
+        if (names == 'dhcp')
+            $('#addr_tr').hide();
+        else {
+            pfAddrReflesh();
+        }
+
+        if ($.trim(addressname).length > 0) {
+            $.getJSON(
+                "?c=Resource/Address&a=getAddressId&name=" + $.trim(encodeURI(addressname)),
+                function(data) {
+                    if (data.rows) {
+                        var addr_id
+                        $(data.rows).each(function(key, value) {
+                            addr_id = value.id;
+                        })
+                        $('#addressname').combotree('setValue', addr_id);
+                    }
+                }
+            );
+        }
+        $('#addP').click(function() {
+            submit(ids);
+        });
+    });
+
+</script>

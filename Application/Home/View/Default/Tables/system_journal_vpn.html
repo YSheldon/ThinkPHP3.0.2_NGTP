@@ -1,0 +1,94 @@
+<include file='Index:main'/>
+<script src="./Public/modules/system/journal.js" type="text/javascript"></script>
+<div  id="center" class="main-center easyui-layout">
+<div data-options="region:'north',border:false" style="height: 35px">
+    
+	<div id="t" class="easyui-tabs">   
+            <div title="{$Think.lang.CONN}"></div>   
+            <div title="{$Think.lang.AC}" >     </div> 
+            <div title="{$Think.lang.SECURE}">   </div> 
+            <div title="{$Think.lang.DPI}" >   </div> 
+            <div title="{$Think.lang.VPN}" >   </div> 
+            <div title="{$Think.lang.PORTFLOW}" >   </div> 
+            <div title="{$Think.lang.USER_AUTH}" >   </div> 
+            <div title="{$Think.lang.IPS}" >   </div> 
+            <div title="{$Think.lang.AI}" >   </div>
+            <div title="{$Think.lang.IDS}" >   </div>
+            <div title="{$Think.lang.DDOS_INSPECC}" >   </div>
+            <div title="{$Think.lang.DDOS_CLEAN}" >   </div>
+            <div title="{$Think.lang.ANTI_VIRUS}" >   </div>
+            <div title="{$Think.lang.URL_FILTER}" >   </div>
+            <div title="{$Think.lang.DATA_FILTER}" >   </div>
+            <div title="{$Think.lang.FILE_BLOCK}" >   </div>
+            <div title="{$Think.lang.AUDIT}" >   </div>
+            <div title="{$Think.lang.ASSE}" >   </div>
+        </div>
+	
+</div>
+<div data-options="region:'center',border:false">
+	<table id="tt"></table>	
+</div>
+
+<!-- 菜单栏-->
+<div id="tb" style="height: auto">
+    <div>
+        <a href="###" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onClick="deleteall();">{$Think.lang.CLEAR}</a>
+        <a href="###" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="superQuery()">{$Think.lang.QUERY}</a>
+    </div>
+</div>
+<div id="log_search" style="width: 400px; display: none"></div>
+<script>
+    $(function(){
+        
+        $('#t').tabs({    
+            selected:4,
+            onSelect:function(title){   
+                if(title !=$LANG.VPN){
+                    policy_table(title);
+                }
+            }    
+        });  
+        $('#tt').datagrid({
+            nowrap: false,
+            fitColumns:true,
+            striped: true,
+            showFooter:false,
+            collapsible:true,
+            url:'?c=System/Journal&a=JournalJsondata&table=vpn_table',
+            queryParams:{
+                from:"1",
+                to:"2048"
+            },
+            fit:true,         							//设置为true时，面版的大小将铺满它所在的容器（浏览器）。面板属性。
+            border:false,								//定义是否显示控制面板边框。面板属性。
+            remoteSort: false,							//定义是否通过远程服务器对数据排序。
+            columns:[[
+                {field:'info',title:$LANG.LOG_CONTENT,align:'left',resizable:true,width:200,editor:'text',
+                    formatter:function(value,rowData,rowIndex){
+                           if(rowData.msg != "" && rowData.msg !=null){
+                            var str = rowData.msg;
+                            return str.replace(/,/ig,' ');
+                        }else{
+                            return value;
+                        }
+                    }
+                }
+            ]],
+            pagination:true,							//设置true将在数据表格底部显示分页工具栏。
+            rownumbers:true,							//设置为true将显示行数。
+            pageSize:20,								//当设置分页属性时，初始化每页记录数。
+            pageList:[20,100,1000,2000],							//当设置分页属性时，初始化每页记录数列表。
+            loadMsg:$LANG.WAITING,			//当从远程站点载入数据时，显示的一条快捷信息。
+            toolbar:'#tb',
+            //onHeaderContextMenu:createGridHeaderContextMenu,   //显示隐藏列
+            checkOnSelect:true,		//如果为true，该复选框被选中/取消选中，当用户点击某一行上。
+            //如果为false，该复选框仅检查/取消选中，当用户点击完全的复选框。
+            selectOnCheck:true,		//如果设置为true，单击一个复选框，将始终选择行。如果为false，不会选择行选中该复选框。
+            //onBeforeLoad:checkTimeOut($retArray['type'],"$retArray['info']")
+        });
+
+    });
+</script>
+</div>
+</body>
+</html>

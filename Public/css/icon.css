@@ -1,0 +1,102 @@
+.icon-add{
+    background:url('../images/icon/icon_add.png') no-repeat;
+}
+.icon-add-group{
+    background:url('../images/icon/icon_add_group.png') no-repeat;
+}
+.icon-edit{
+    background:url('../images/icon/icon_edit.png') no-repeat;
+}
+/*设置tool里面的图标，当前图标为编辑的新图标*/
+.icon-new{
+    background:url('../images/icon/add_icon1.png') no-repeat;
+}
+.icon-enable-new{
+    background:url('../images/icon/enable-icon.png') no-repeat;
+}
+.icon-disable-new{
+    background:url('../images/icon/disable-icon.png') no-repeat;
+}
+.icon-edit-group{
+    background:url('../images/icon/icon_edit_group.png') no-repeat;
+}
+.icon-delete{
+    background:url('../images/icon/icon_delete.png') no-repeat;
+}
+.icon-delete-group{
+    background:url('../images/icon/icon_delete_group.png') no-repeat;
+}
+.icon-clear{
+    background:url('../images/icon/icon_clear.png') no-repeat;
+}
+.icon-save{
+    background:url('../images/icon/icon_save.png') no-repeat;
+}
+.icon-saveas{
+    background:url('../images/icon/icon_saveas.png') no-repeat;
+}
+.icon-clone{
+    background:url('../images/icon/icon_clone.png') no-repeat;
+}
+.icon-enable{
+    background:url('../images/icon/icon_enable.png') no-repeat;
+}
+.icon-disable{
+    background:url('../images/icon/icon_disable.png') no-repeat;
+}
+.icon-import{
+    background:url('../images/icon/icon_import.png') no-repeat;
+}
+.icon-export{
+    background:url('../images/icon/icon_export.png') no-repeat;
+}
+.icon-up{
+    background:url('../images/icon/icon_up.png') no-repeat;
+}
+.icon-down{
+    background:url('../images/icon/icon_down.png') no-repeat;
+}
+.icon-search{
+    background:url('../images/icon/icon_search.png') no-repeat;
+}
+.icon-seach{
+    background:url('../images/icon/icon_seach.png') no-repeat;
+}
+.icon-mini-add{
+    background:url('../images/icon/mini_add.gif') no-repeat;
+}
+.icon-mini-delete{
+    background:url('../images/icon/mini_delete.gif') no-repeat;
+}
+.icon-mini-clear{
+    background:url('../images/icon/mini_clear.gif') no-repeat;
+}
+.icon-online-user{
+    background:url('../images/icon/icon_online_user.png') no-repeat;
+}
+.icon-mult-choice{
+    background:url('../images/icon/multiple_choice.png') no-repeat;
+}
+.icon-reset{
+    background:url('../images/icon/icon_reset.png') no-repeat;
+}
+.icon-sort{
+    background:url('../images/icon/icon_sort.png') no-repeat;
+}
+.icon-scan{
+    background:url('../images/icon/icon_scan.png') no-repeat;
+}
+.icon-insert{
+    background:url('../images/icon/icon_insert.png') no-repeat;
+}
+.icon-move{
+    background:url('../images/icon/icon_move.png') no-repeat;
+}
+.icon-set{
+    background:url('../images/icon/icon_set.png') no-repeat;
+}
+
+.icon-csv{
+    background:url('../images/icon/csv.png') no-repeat;
+}
+

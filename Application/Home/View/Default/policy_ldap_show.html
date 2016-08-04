@@ -1,0 +1,73 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/policy/proxy.js" type="text/javascript"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false">
+    <table id="ldap"></table>
+</div>
+
+</body>
+</html>
+<script>
+    var tagldap;
+    var param = [];
+    $(function() {
+        $('#ldap').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            url: '?c=Policy/LDAP&a=datagridShow',
+            queryParams:{
+                mod:'proxy ldap_profile'
+            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'id', title: "ID", width: 30},
+                    {field: 'proxy_name', title: "ldap" + $LANG.PROXY_PROFILE_NAME, width: 30}
+                ]],
+            checkOnSelect: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onCheck: setLdap,
+            onUncheck: setLdap,
+            onCheckAll: setLdap,
+            onUncheckAll: setLdap,
+            onLoadSuccess: setLdap
+        });
+        if (getPrivilege("proxy") != false) {
+            $('#ldap').datagrid({
+                toolbar: [{
+                        id: 'icon-add',
+                        text: '{$Think.lang.ADD}',
+                        iconCls: 'icon-add',
+                        handler: addLdap
+                    }, {
+//                    id: "icon-edit",
+//                    text: '{$Think.lang.EDIT}',
+//                    iconCls: 'icon-edit',
+//                    handler: editLdapRow
+//                }, {
+                        id: 'icon-delete',
+                        text: '{$Think.lang.DELETE}',
+                        iconCls: 'icon-delete',
+                        handler: deleteLdap
+                    }, {
+                        id: 'icon-clear',
+                        text: '{$Think.lang.CLEAR}',
+                        iconCls: 'icon-clear',
+                        handler: clearLdap
+                    }]
+            });
+        }
+    })
+</script>

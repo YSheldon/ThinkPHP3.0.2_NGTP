@@ -1,0 +1,102 @@
+
+<div>
+<form id="user_group_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td colspan="2" class="window_subtitle"><b>{$Think.lang.BASIC_INFO}</b></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.USER_GROUP_NAME}</td>
+            <td>
+                <input type="text" id="gro_name" name="gro_name">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+            <td>
+                <input type="text" id="gro_desc" name="gro_desc">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.BELONG_USER_GROUP}</td>
+            <td>
+                <select id="belong_group" name="state"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SELECT_MEMBER}</td>
+            <td>
+                <div class="select_div">
+                    <div class="select_ldiv">
+                        <div class="select_ldiv_bottom border_bottom0">
+                            <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                            <span class="searchbox width100">
+                                <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'service_item_cid_user',0)">
+                                <span class="searchbox-button"></span>
+                            </span>
+                        </div>
+                        <select class="select middle2 height216" style="height:216px;" id="service_item_cid_user" multiple ondblclick="move_options('service_item_cid_user','d_service_item_cid_user','1','sel_user_num');">
+                        </select>
+                    </div>
+                    
+                    <div class="select_cdiv">
+                        <input type="button" class="width40" onClick="move_options('service_item_cid_user','d_service_item_cid_user','1','sel_user_num');" value=" > ">
+                        <br/><br/>
+                        <input type="button" class="width40" onClick="move_options('d_service_item_cid_user','service_item_cid_user','0','sel_user_num');" value=" < ">
+                    </div>
+                    
+                    <div class="select_rdiv">
+                        <div id="sel_user_num"  class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+                            {$Think.lang.SELECTED_0}
+                        </div>
+                        <select class="select middle2 height12 height190" style="height:190px;" id="d_service_item_cid_user" name="service_item[]" multiple ondblclick="move_options('d_service_item_cid_user','service_item_cid_user','0','sel_user_num');">
+                        </select>
+                        <div class="select_ldiv_bottom border_top0">
+                            <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_service_item_cid_user','service_item_cid_user','0','sel_user_num');">{$Think.lang.CLEAR_ALL}</a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"value="{$Think.lang.CONFIRM}"  id="addUserGroup">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('userGroup_div')">
+    </div>
+</form>
+</div>
+<script>
+   $(function() {
+       $("#gro_name").textbox({
+           width:220,
+           required:true,
+           validType:['maxLength[31]','nospace']
+       });
+
+       $("#gro_desc").textbox({
+           width:220,
+           validType:['maxLength[125]','disableQuot']
+       });
+
+       $('#belong_group').combobox({
+           url: '?c=Auth/User&a=groupnameJsondata',
+           valueField:'name',
+           textField:'name',
+           required:true,
+           panelHeight:'auto',
+           panelMaxHeight:198,
+           width:150
+       });
+       if(group_tag == 1) {
+           refresh_group();
+           $('#belong_group').combobox('setValue','/');
+           $("#addUserGroup").click(function() {
+               add_user_group(group_tag);
+           });
+       } else {
+           modify_refresh_group(param[0]);
+           $('#gro_name').textbox('disable');
+       }
+   })
+</script>

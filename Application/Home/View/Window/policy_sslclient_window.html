@@ -1,0 +1,237 @@
+<div>
+    <form id="sslcForm">
+        <table class="ngtos_form_table">
+            <tr id='server'>
+                <td class="tdlabel">ID</td>
+                <td>
+                    <input id="id" type="text" name="id" class="easyui-textbox input_length">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.NAME}</td>
+                <td>
+                    <input id="name" type="text" name="name" class="easyui-textbox input_length" data-options="required:true">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">ssl{$Think.lang.SWITCH}</td>
+                <td>
+                    <input type="radio" name="ssl" id="ssl_enable" value="enable" checked/>
+                    <label for="ssl_enable">{$Think.lang.ENABLE}</label>
+                    <input type="radio" name="ssl" id="ssl_disable" value="disable" />
+                    <label for="ssl_disable">{$Think.lang.STOP}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.CERTIFICATE}</td>
+                <td>
+                    <select id="ssl_cert" type="text" name="ssl_cert"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.KEY}</td>
+                <td>
+                    <select id="ssl_cert_key" type="text" name="ssl_cert_key"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.VERIFY_CLIENT_CERTIFICATE}</td>
+                <td>
+                    <input type="radio" name="ssl_verify_client" id="vc_enable" value="enable" checked/>
+                    <label for="vc_enable">{$Think.lang.ENABLE}</label>
+                    <input type="radio" name="ssl_verify_client" id="vc_disable" value="disable" />
+                    <label for="vc_disable">{$Think.lang.STOP}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">CA{$Think.lang.CERTIFICATE}({$Think.lang.CLIENT})</td>
+                <td>
+                    <select id="ssl_client_cert" name="ssl_client_cert"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">CA{$Think.lang.CERTIFICATE}</td>
+                <td>
+                    <select id="ssl_trusted_cert" name="ssl_trusted_cert"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.CERTIFICATE_REVOCATION_LIST}</td>
+                <td>
+                    <select id="ssl_crl" name="ssl_crl"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">tickets{$Think.lang.SESSION_REUSE}</td>
+                <td>
+                    <input type="radio" name="ssl_session_tickets" id="shutdown_enable" value="enable" checked/>
+                    <label for="shutdown_enable">{$Think.lang.ENABLE}</label>
+                    <input type="radio" name="ssl_session_tickets" id="shutdown_disable" value="disable" />
+                    <label for="shutdown_disable">{$Think.lang.STOP}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">ssl会话ticket密钥</td>
+                <td>
+                    <select id="ssl_session_ticket_key" name="ssl_session_ticket_key"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.SESSION_REUSE_CACHE_SIZE}</td>
+                <td>
+                    <input id="ssl_session_cache" type="text" name="ssl_session_cache" class="easyui-textbox input_length">B
+                    <!--data-options="validType:'range[32768,20971520]'"-->
+                    <span class="form_comment">[32768(32K) to 20971520(20M)]/0</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.SESSION_REUSE_CACHING}</td>
+                <td>
+                    <input id="ssl_session_timeout" type="text" name="ssl_session_timeout" class="easyui-textbox input_length" data-options="validType:'range[1,3600]'">s
+                    <span class="form_comment">[1s to 3600s]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.VERIFY_CERTIFICATE_DEPTH}</td>
+                <td>
+                    <input type="text" id='ssl_verify_depth' name="ssl_verify_depth" class="easyui-textbox input_length" data-options="validType:'range[0,20]'"/><span class="form_comment">[1-20]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.SUPPORT_PASSWORD_SUITE}</td>
+                <td>
+                    <input id="ssl_ciphers" type="text" name="ssl_ciphers" class="easyui-textbox input_length">
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('ssl_window_div')">
+    </div>
+</div>
+<script>
+    $(function() {
+        //获取证书文件列表
+        $('#ssl_cert').combobox({
+            url: '?c=Policy/SSL&a=getComBox&link=0',
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false,
+            valueField:'name',
+            textField:'name'
+        });
+
+        //获取秘钥列表
+        $('#ssl_cert_key').combobox({
+            url: '?c=Policy/SSL&a=getComBox&link=1',
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false,
+            valueField:'name',
+            textField:'name'
+        });
+
+        //获取CA证书列表
+        $('#ssl_client_cert').combobox({
+            url: '?c=Policy/SSL&a=getComBox&link=2',
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false,
+            valueField:'name',
+            textField:'name'
+        });
+
+        //获取CA证书列表
+        $('#ssl_trusted_cert').combobox({
+            url: '?c=Policy/SSL&a=getComBox&link=2',
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false,
+            valueField:'name',
+            textField:'name'
+        });
+
+        //证书撤销列表
+        $('#ssl_crl').combobox({
+            url: '?c=Policy/SSL&a=getComBox&link=3',
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false,
+            valueField:'name',
+            textField:'name'
+        });
+
+        $('#ssl_session_ticket_key').combobox({
+            url: '?c=Policy/SSL&a=getComBox&link=4',
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false,
+            valueField:'name',
+            textField:'name'
+        });
+
+        if(tagsslc == 1) {
+            $("#server").hide();
+            $("#ssl_verify_depth").val('1');
+            $("#ssl_session_cache").val('0');
+            $("#ssl_session_timeout").val('300');
+            $("#ssl_ciphers").val('HIGH:!aNULL:!MD5');
+        } else if(tagsslc == 2 ) {
+            $("#server").show();
+            $('#id').val(param[13]);
+            $('#name').val(param[0]);
+            $("#id").attr('disabled','true');
+            $("#name").attr('disabled','true');
+            if(param[1] == 'on') {
+                $("input[name='ssl'][id='ssl_enable']").attr("checked",true);
+            } else {
+                $("input[name='ssl'][id='ssl_disable']").attr("checked",true);
+            }
+
+            $('#ssl_verify_depth').val(param[2]);
+            $('#ssl_ciphers').val(param[3]);
+
+            if(param[4] == 'on') {
+                $("input[name='ssl_verify_client'][id='vc_enable']").attr("checked",true);
+            } else {
+                $("input[name='ssl_verify_client'][id='vc_disable']").attr("checked",true);
+            }
+
+            $('#ssl_cert').combobox('setValue',param[5]);
+            $('#ssl_cert_key').combobox('setValue',param[6]);
+            $('#ssl_client_cert').combobox('setValue',param[7]);
+            $('#ssl_trusted_cert').combobox('setValue',param[8]);
+            $('#ssl_crl').combobox('setValue',param[9]);
+            $('#ssl_session_ticket_key').combobox('setValue',param[14]);
+
+            if(param[10] == 'on') {
+                $("input[name='ssl_session_tickets'][id='shutdown_enable']").attr("checked",true);
+            } else {
+                $("input[name='ssl_session_tickets'][id='shutdown_disable']").attr("checked",true);
+            }
+            $('#ssl_session_tickets').val(param[10]);
+            $('#ssl_session_cache').val(param[11]);
+            $('#ssl_session_timeout').val(param[12]);
+        }
+
+        $('#confirm_button').click(function() {
+            var isValid = $('#sslcForm').form('validate');
+            if(isValid) {
+                addSslProfile(tagsslc);
+            }
+        });
+    });
+</script>

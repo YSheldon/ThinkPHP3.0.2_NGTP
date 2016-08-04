@@ -1,0 +1,65 @@
+<div>
+<form id="portal_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td>
+                <input type="text" name="pname" id="pname" class='easyui-textbox' data-options="width:220,required:true,validType:'maxLength[30]'">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ADDRESS}</td>
+            <td>
+                <input type="text" name="paddress" id="paddress" class='easyui-textbox' data-options="width:220,required:true,validType:'ipFourOripSix'">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.DIAGNOSE_PORT}</td>
+            <td>
+                <input type="text" name="pport" id="pport" class='easyui-textbox' data-options="width:220,required:true,validType:'range[1,65535]'">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.AUTH_SERVER}</td>
+            <td>
+                <select id="portal_server"></select>
+            </td>
+        </tr>
+
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addPortal'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('portal_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        $('#addPortal').click(function() {
+            add_more_portal(portal_tag);
+        });
+
+        $("#portal_server").combobox({
+            url: '?c=Auth/Portal&a=comboBox',
+            valueField:'server_name',
+            textField:'server_name',
+            width:220,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            required:true,
+            editable:false,
+            queryParams:{
+                mod: 'user auth server',
+                textKey: 'server_name'
+            }
+        });
+
+        if(portal_tag == 2) {
+            $('#pname').val(param[0]);
+            $('#paddress').val(param[2]);
+            $('#pport').val(param[3]);
+            $("#pname").attr('disabled','disabled');
+            $("#portal_server").combobox('setValue',param[1]);
+        }
+    })
+</script>

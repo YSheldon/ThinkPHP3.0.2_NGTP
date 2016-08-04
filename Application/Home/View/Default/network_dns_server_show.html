@@ -1,0 +1,294 @@
+<include file='Index:main'/>
+<script src="{$Think.config.NG_PATH}Public/modules/network/dns.js"></script>
+<style>    
+    .ngtos_form_table_dns td {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border:0;
+        color: #4F6B72;
+        font-size: 11px;
+        padding: 5px 5px 5px 12px;
+    }
+</style>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false, tabWidth:120">
+    <div title="{$Think.lang.DNS_SERVER}">
+        <div class="ngtos_form">
+            <div  style="width:100%;height:100%;background-color:#fff" data-options="region:'center',border:false">
+                <table width="100%" class="ngtos_form_table">
+                    <tr>
+                        <td class="ngtos_width_15pc">
+                            DNS服务器状态
+                        </td>
+                        <td>
+                            <!--<img id="dns_server_switch_id" class="switch1" title="关闭" onclick="switch_dns('dns_server_switch_id')" src="./Public/images/image/stop.png">-->
+                            <input type="radio" name="dns_server_switch" id="dns_server_switch_on" value="on" onclick="switch_dns('on')">开启&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="dns_server_switch" id="dns_server_switch_off" value="off" onclick="switch_dns('off')">关闭
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">
+                            服务器监听地址
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table id="dns_listen_ip_tab" class="ngtos_form_table_dns">
+                                <tr>
+                                    <td>
+                                        <img src='./Public/images/icon/mini_clear.gif' class='delete_img' width='10' height='10' style='display:none' onClick='delete_listen_ip(this)'/>&nbsp;
+                                        <input type="text" size="30" value="">&nbsp;
+                                        <img src="./Public/images/icon/mini_add.gif" width="10" height="10" style="cursor:pointer;" onClick="add_listen_line('dns_listen_ip_tab', '', '')"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">
+                            上游DNS服务器地址
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="ngtos_width_15pc">
+                            首选DNS
+                        </td>
+                        <td>
+                            <input type="text" id="dns1_id" value="" size="32" maxlength="32"> &nbsp;&nbsp;仅支持IPv4
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="ngtos_width_15pc">
+                            备用DNS1
+                        </td>
+                        <td>
+                            <input type="text" id="dns2_id" value="" size="32" maxlength="32">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="ngtos_width_15pc">
+                            备用DNS2
+                        </td>
+                        <td>
+                            <input type="text" id="dns3_id" value="" size="32" maxlength="32">
+                        </td>
+                    </tr>                   
+                </table>
+                <div class="btn_config">
+                    <input type="button" id='subutton' value="{$Think.lang.APPLY}" class="ngtos_button_large" onClick="submit_dns_server();"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div title="{$Think.lang.DOMAIN_RECORD}"></div>
+    <div title="{$Think.lang.DNS_DOCTOR}"></div>
+</div>
+<script>
+    $('#easyui_tab').tabs({
+        selected: 0, //tab的位置，从0开始第几个
+        border: false,
+        onSelect: function(title, index) {
+            if (index == 1) {   //点击tab标签跳转的页面
+                location.href = '?c=Network/Dns&a=dns_server_show&tag=1';
+            } else if (index == 2) {
+                location.href = '?c=Network/Dns&a=dns_server_show&tag=2';
+            }
+        }
+    });
+    var listen_ip_num = 1;
+    var running = false;
+    var alllisten = false;
+    function refresh_status() {
+        $.ajax({
+            url: "?c=Network/Dns&a=serverStatus",
+            type: 'POST',
+            dataType: 'json',
+            success: function(data, textStatus) {
+                if (typeof data != 'object')
+                    ngtosPopMessager('error', data);
+                else {
+                    if (data.length == 0) {
+                        ngtosPopMessager('error', "登陆超时，请重新登陆!");
+                        return false;
+                    }
+                    var local_len = data['local'].length;
+                    var up_len = data['upstream'].length;
+                    set_listen_ip('dns_listen_ip_tab', data['local']);
+                    set_switch_dns(data['status']);
+                    if (up_len > 0) {
+                        if (data['upstream'][0])
+                            $("#dns1_id").val(data['upstream'][0]['ipaddr']);
+                        else
+                            $("#dns1_id").val('');
+                        if (data['upstream'][1])
+                            $("#dns2_id").val(data['upstream'][1]['ipaddr']);
+                        else
+                            $("#dns2_id").val('');
+                        if (data['upstream'][2])
+                            $("#dns3_id").val(data['upstream'][2]['ipaddr']);
+                        else
+                            $("#dns3_id").val('');
+                    } else {
+                        $("#dns1_id").val('');
+                        $("#dns2_id").val('');
+                        $("#dns3_id").val('');
+                    }
+                }
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        refresh_status();
+    });
+
+    function add_listen_line(tbid, value, id) {
+//            if ($("#dns_server_switch_id").attr('title') == '开启')
+//                return false;
+        if ($('input[name="dns_server_switch"]:checked').val() == 'on')
+            return false;
+        if (listen_ip_num > 7) {
+            ngtosPopMessager('error', "最多能有8条特征");
+            return false;
+        }
+        if (value == '0.0.0.0')
+            alllisten = true;
+        var tbl = $("#" + tbid)[0];
+        var row = tbl.insertRow(listen_ip_num);
+        var cellCenter = row.insertCell(0);
+        var t = '';
+
+        addId = "add" + listen_ip_num;
+        closeId = "close" + listen_ip_num;
+
+        if (listen_ip_num == 0)
+            t = "<img id='close0'src='./Public/images/icon/mini_clear.gif' class='delete_img' width='10' height='10' style='display:none' onClick='delete_listen_ip(this)'/>&nbsp;&nbsp;";
+        else
+            t = "<img id='" + closeId + "' src='./Public/images/icon/mini_clear.gif'  class='delete_img' width='10' height='10' onClick='delete_listen_ip(this)'/>&nbsp;&nbsp;";
+        t += '<input type="text" class="local_ip_class" size="30" value="' + value + '" id="' + id + '">';
+        t += '&nbsp;&nbsp;<img id="' + addId + '" src="./Public/images/icon/mini_add.gif" width="10" height="10" style="cursor:pointer;" onClick="add_listen_line(\'' + tbid + '\',\'\',\'\')"/>';
+        cellCenter.innerHTML = t;
+        listen_ip_num++;
+        if (listen_ip_num > 1) {
+            $("#" + tbid).find(".delete_img:first").css("display", "");
+        }
+    }
+    function delete_listen_ip(o) {
+        if ($("#dns_server_switch_id").attr('title') == '开启')
+            return false;
+        listen_ip_num--;
+        var i = o.parentNode.parentNode.rowIndex;
+        var tbl = o.parentNode.parentNode.parentNode;
+        if (o.value == '0.0.0.0')
+            alllisten = false;
+        tbl.deleteRow(i);
+        if (listen_ip_num < 2) {
+            $(tbl).find(".delete_img:first").css("display", "none");
+        }
+        if (listen_ip_num < 0) {
+            listen_ip_num = 0;
+        }
+    }
+    function set_listen_ip(tbid, data) {
+        $("#" + tbid).html('');
+        listen_ip_num = 0;
+        var len = data.length;
+        if (len > 0) {
+            for (var i = 0; i < len; i++) {
+                add_listen_line(tbid, data[i]['ipaddr'], data[i]['ID']);
+            }
+        } else
+            add_listen_line(tbid, '', '');
+    }
+
+    function switch_dns(act) {
+        waitMegBox();
+        $.ajax({
+            url: "?module=network_dns&action=dns_switch",
+            type: 'POST',
+            data: {
+                'switch': act
+            },
+            success: function(data, textStatus) {
+                if (data == 'done') {
+                    closeWaitBox();
+                    window.location.reload();
+                } else
+                {
+                    closeWaitBox();
+                    ngtosPopMessager("error", data);
+                }
+
+            }
+        });
+    }
+    function set_switch_dns(val) {
+        if (val == 'off') {
+            $("#dns_server_switch_off").attr("checked", "checked");
+            $('#subutton').attr('disabled', false);
+        } else {
+            $("#dns_server_switch_on").attr("checked", "checked");
+            $('#subutton').attr('disabled', true);
+            $('#subutton').removeClass().addClass('ngtos_button_large_disable');
+            $("#dns1_id").attr('disabled', 'true');
+            $("#dns2_id").attr('disabled', 'true');
+            $("#dns3_id").attr('disabled', 'true');
+            $("#submit_btn_id").attr('disabled', 'true');
+            $(".local_ip_class").each(function(i, e) {
+                $(e).attr('disabled', 'true');
+            });
+
+            var img = $("img");
+            var id = "";
+            for (var i = 0; i < img.length; i++) {
+                id = img[i].id;
+                if (id.indexOf('add') >= 0 || id.indexOf('close') >= 0) {
+                    $('#' + id).attr("style", "display:none");
+                }
+            }
+
+        }
+    }
+    function submit_dns_server() {
+        var ip_reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+        var localip = [];
+        var errflag = false;
+        $(".local_ip_class").each(function(i, e) {
+            var ids = $(e).attr('id');
+            var val = $(e).val();
+            if (ip_reg.test(val)) {
+                localip.push({
+                    id: ids,
+                    ipaddr: val
+                });
+            } else
+                errflag = true;
+        });
+        if (localip.length == 0) {
+            ngtosPopMessager('error', "至少需要填一个服务器监听地址");
+            return false;
+        }
+        if (errflag == true) {
+            ngtosPopMessager('error', "地址错误");
+            return false;
+        }
+        $.ajax({
+            url: "?module=network_dns&action=server_submit",
+            type: 'POST',
+            data: {
+                'dns1': $("#dns1_id").val(),
+                'dns2': $("#dns2_id").val(),
+                'dns3': $("#dns3_id").val(),
+                'local': localip
+            },
+            success: function(data, textStatus) {
+                if (data == 'done') {
+                    window.location.reload();
+                } else
+                    ngtosPopMessager("error", data);
+            }
+        });
+    }
+</script>
+</div>
+</div>
+</body>
+</HTML>

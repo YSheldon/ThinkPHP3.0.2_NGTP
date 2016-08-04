@@ -1,0 +1,88 @@
+/* CSS Document */
+@charset "utf-8";
+#topdiv{
+    min-width:1296px;
+
+}
+#topdiv_logo1{
+    height:43px;
+    width:176px;
+    float:left;
+}
+.home-center{min-width: 1280px !important;}
+.topmenu {
+    width:auto !important;
+    padding:0 20px;
+}
+.treelineleft{
+    overflow: hidden;
+}
+.tdlabel_net{
+    width:110px;
+    left: 83px !important;
+}
+.ngtos_button_small{
+    width:102px;
+    background-size:102px 21px ;
+}
+.ngtos_button_small:hover{
+    background-size:102px 21px ;
+}
+#sync_to_peer{
+    width:160px;
+    background-size:160px 21px ;
+}
+.ngtos_window_tab{
+    overflow: hidden;
+}
+.ngtos_window_tab_on{
+    overflow: hidden;
+}
+.ngtos_window_tab_off{
+    overflow: hidden;
+}
+.form_comment{margin-left: 5px;}
+.tdlabel{width:210px;}
+#resource_form .ngtos_form_table .tdlabel_net{width:200px; }
+#setstyles .tdlabel_net{
+    width:140px;
+}
+.select_cdiv{margin-left:172px;}
+.select_ldiv_bottom{width:168px;}
+.select_ldiv {width:170px;}
+.middle2{width:170px;}
+#portal_form .tdlabel_net{width:125px;}
+table td{word-break: normal;}
+#vsys_form .tdlabel{width:140px;}
+.treelinedown{margin:15px 0 0 0;}
+.treelineup{margin:15px 0 0 0;}
+.ngtos_button_middle{width:100px;}
+#add_ipaddr{left:243px !important;}
+.width40{width:30px;}
+.select_rdiv{margin-left:204px;}
+#wholeStyle{overflow: hidden;}
+.unselectStyle{overflow: hidden;}
+.selectStyle{overflow: hidden;}
+#local-div .ngtos_form_pop span{width:30px !important;}
+#whole_attr_form div:nth-child(2){
+    overflow-y: auto;
+}
+#new_obj_div .add_ser{
+left:0 !important;
+}
+#new_obj_div .add_ser_group{
+left:10px !important;
+}
+#add4_cid{width:82px !important;background-size: 82px 21px;}
+#add_page{width:750px !important;}
+#route_add_window{width: 790px !important;}
+#radvd_add .ngtos_window_content{width:600px !important;}
+#radvd_add{width:700px !important;}
+#ipprobe_add{width:630px !important;}
+#admin_add_window{width:550px !important;}
+#admin_add_window #adminadd_form .tdlabel_net{width:150px !important;}
+#userGroup_div{width: 600px !important;}
+#user_group_form .tdlabel_net{width:130px !important;}
+
+#panel{left:1106px !important;width: 330px !important;}
+.module-select{width:140px !important;}

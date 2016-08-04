@@ -1,0 +1,83 @@
+<div>
+<form id="isp_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ISP_NAME}</td>
+            <td id='name_td'>
+                <select id='ispname' name="ispname" class="combobox_len"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.GATEWAY}</td>
+            <td>
+                <input id='gw' type="text" name="gw" class="easyui-textbox input_length" data-options="required:true,validType:'ipFour'"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.INTERFACE}</td>
+            <td>
+                <select id='dev' name="dev" class="combobox_len"></select>
+            </td>
+        </tr>
+
+    </table>
+
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="submitIsp()">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('isp_route_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function(){
+        $("#ispname").combobox({
+            url: '?c=Network/IspRoute&a=ispRouteList',
+            required:true,
+            valueField:'ispKey',
+            textField:'ispName',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:true
+        });
+
+        $("#dev").combobox({
+            url: '?c=Network/IspRoute&a=comboBox',
+            queryParams:{
+                mod:'network interfaces',
+                textKey:'dev'
+            },
+            required:false,
+            valueField:'dev',
+            textField:'dev',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:true
+        });
+    });
+    function submitIsp() {
+        var isValid = $('#isp_form').form('validate');
+        if(isValid) {
+            $.ajax({
+                url: '?c=Network/IspRoute',
+                type:'POST',
+                dataType: 'text',
+                data: {
+                    isp:$("#ispname").combobox('getValue'),
+                    gw:$("#gw").val(),
+                    dev:$("#dev").combobox('getText')
+                },
+                success: function(data) {
+                    if(data != '0') {
+                        ngtosPopMessager('error',data);
+                    } else {
+                        $('#isp_route_div').window('close');
+                        $("#tt").datagrid('reload');
+                    }
+                    $("#tt").datagrid("unselectAll");
+                }
+            });
+        }
+    }
+</script>

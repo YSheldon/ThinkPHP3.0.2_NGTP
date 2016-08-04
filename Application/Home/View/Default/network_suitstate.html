@@ -1,0 +1,139 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/network/suitstate.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/network/suitstate.js"></script>
+<form  action="" name="system_parameters_form" method="post">
+    <table class="ngtos_form_table">
+        <tr>
+            <th colspan="2">{$Think.lang.STATE}</th>
+        </tr>
+        <tr>
+                <td class="ngtos_width_15pc">{$Think.lang.CURRENT_STATE}:<span id="suitstate_status_id">{$Think.lang.ON}</span></td>
+            <td><img id="suitstate_switch_id" class="switch1" title="开启" onclick="switchSuitstate('suitstate_switch_id')" src="{$Think.config.NG_PATH}Public/images/image/start.png"></td>
+        </tr>
+    </table>
+</form>
+<div data-options="region:'center',title:'{$Think.lang.SUITSTATE_GROUP}'" style="height:632px;">
+    <table id="tt"></table>
+</div>
+<div id='ha_suitstate_window' style="width:500px; display:none"></div>
+<script type="text/javascript">
+    var param = [];
+    var selOptions = [];
+    var max_group_num = 255;
+    var origin_data = [];
+    var suitstate_enable = false;
+    var interfaces_new = "";
+    $(function() {
+        $('#tt').datagrid({
+            toolbar: [{
+                id: 'icon-add',
+                text: $LANG.ADD,
+                iconCls: 'icon-add',
+                handler: addSuitstate
+            }, {
+                id: 'icon-delete',
+                text: $LANG.DELETE,
+                iconCls: 'icon-delete',
+                handler: delSuitstate
+            }, {
+                id: 'icon-clear',
+                text: $LANG.ELIMINATE,
+                iconCls: 'icon-clear',
+                handler: cleanSuitstate
+            },
+            {
+                id: 'icon-enable',
+                text: $LANG.ENABLE,
+                iconCls: 'icon-enable',
+                handler: changeEnable
+            }, {
+                id: 'icon-disable',
+                text: $LANG.DISABLE,
+                iconCls: 'icon-disable',
+                handler: changeDisable
+            }
+            ]
+        });
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            nowrap: true,
+            autoRowHeight: true,
+            remoteSort: false,
+            sortName: 'name',
+            toolbar: '#table_topbar',
+//            url: '?c=Network/Suitstate&a=datagridShow',
+            url: '?c=Network/Suitstate&mod=suitstate&act=w',
+//            queryParams:{
+//                mod:'network suitstate',
+//                act:'webui-group'
+//            },
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[{
+                        field: 'name',
+                        title: $LANG.NAME,
+                        width: 50,
+                        sortable: true
+                    }, {
+                        field: 'member',
+                        title: $LANG.INTERFACE_MEMBER,
+                        width: 120
+                    }, {
+                        field: 'state',
+                        title: $LANG.STATE,
+                        width: 30
+                    }
+                ]],
+            singleSelect: false,
+            pagination: true,
+            rownumbers: true,
+            pageSize: 10,
+            pageList: [10, 20, 50],
+            onClickRow: set_suitstate_toolbar,
+            onCheck: set_suitstate_toolbar,
+            onUncheck: set_suitstate_toolbar,
+            onCheckAll: set_suitstate_toolbar,
+            onUncheckAll: set_suitstate_toolbar,
+            onSelect: set_suitstate_toolbar,
+            onUnselect: set_suitstate_toolbar,
+            onLoadSuccess: set_suitstate_toolbar
+        });
+
+      //  }
+        $.ajax({
+            url: "?c=Network/Suitstate&a=datagridShow",
+            data:{
+                mod:'network suitstate',
+                act:'webui-configure',
+                npage:'0'
+            },
+            type: 'POST',
+            dataType: 'json',
+            success: function(data) {
+                if (!data) {
+                    ngtosPopMessager("error", $LANG.LOGIN_TIMEOUT, "login");
+                    return;
+                }
+                if (typeof data == 'object') {
+                    if (data['rows'][0]['status'] == 'enable')
+                        setSwitchSuitstate('suitstate_switch_id', 'on');
+                    else
+                        setSwitchSuitstate('suitstate_switch_id', 'off');
+                } else
+                    ngtosPopMessager("error", data);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

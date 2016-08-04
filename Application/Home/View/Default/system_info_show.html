@@ -1,0 +1,133 @@
+<include file='Index:main'/>
+<script>
+    $(function() {
+        var timezone = $("#timezone").val();
+        var date = $("#date").val();
+        var clock = $("#clock").val();
+        var rst_strto_time = jsStrtoTime(date + ' ' + clock);
+        var rst_date_time = jsDateTime(rst_strto_time);
+        var runtime = $("#runtime").val();
+        $('#systemtime').html(timezone + ' ' + rst_date_time);
+        if (runtime) {
+            var time_arr = runtime.split("-");
+            var tmp = "";
+            var tmp_day = time_arr[0] ? time_arr[0] : "0";
+            var tmp_hour = time_arr[1] ? time_arr[1] : "0";
+            var tmp_minute = time_arr[2] ? time_arr[2] : "0";
+            var tmp_second = time_arr[3] ? time_arr[3] : "0";
+            if (tmp_day !== "0") {
+                if (tmp_day == 1) {
+                    tmp += tmp_day + ' day, ';
+                } else {
+                    tmp += tmp_day + ' days, ';
+                }
+            }
+            if (tmp_second < 10 || tmp_second == "0") {
+                tmp_second = "0" + tmp_second;
+            }
+            tmp += tmp_hour + ":" + tmp_minute + ":" + tmp_second;
+            $('#sys_runtime').html(tmp);
+        }
+
+        setTimeout(
+                function() {
+                    setInterval(function() {
+                        rst_strto_time += 1;
+                        var rst_date_time = jsDateTime(rst_strto_time);
+                        $('#systemtime').html(timezone + ' ' + rst_date_time);
+
+                        tmp_second++;
+                        if (tmp_second == 60) {
+                            tmp_minute++;
+                            tmp_second = "0";
+                        }
+                        if (tmp_minute == 60) {
+                            tmp_hour++;
+                            tmp_minute = "0";
+                        }
+                        if (tmp_hour == 24) {
+                            tmp_day++;
+                            tmp_hour = "0";
+                        }
+                        if (tmp_second < 10) {
+                            tmp_second = "0" + tmp_second;
+                        }
+                        var tmp_str = tmp_day + '-' + tmp_hour + '-' + tmp_minute + '-' + tmp_second;
+                        var runtime = handleRuntime(tmp_str);
+                        $('#sys_runtime').html(runtime);
+                    }, 1000)
+                }
+        , 1000);
+    });
+</script>
+
+<div class="ngtos_form">
+    <table class="ngtos_form_table">
+         <if condition=" $vsys_route eq '1'">
+            <tr>
+                <td class="tdlabel">{$Think.lang.PRODUCT_TYPE}</td>
+                <td>{$outcome.product_model}</td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.PRODUCT_SERIAL_NUMBER}</td>
+                <td>{$outcome.product_sn}</td>
+            </tr>
+            </if>
+        <tr>
+            <td class="tdlabel">{$Think.lang.OS}</td>
+            <td>NGTOS</td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.SOFTWARE_VERSION}</td>
+            <td>{$outcome.tos_version}</td>
+        </tr>
+         <if condition=" $vsys_route eq '1' AND $conf eq '1'">
+            <tr>
+                <td class="tdlabel">{$Think.lang.LICENCE_VERSION}</td>
+                <td>{$outcome.license_version}</td>
+            </tr>
+         </if>
+         <if condition=" $vsys_route eq '1'">
+            <tr>
+                <td class="tdlabel">{$Think.lang.SYS_NAME}</td>
+                <td>{$outcome.devname}</td>
+            </tr>
+         </if>
+            <tr>
+                <td class="tdlabel">{$Think.lang.TEMINAL_TIMEOUT}</td>
+                <td>{$outcome.timout_webui}</td>
+            </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.SYS_TIME}</td>
+            <td>
+                <div style="margin-left:5px"  id="systemtime">{$outcome.timezone} {$outcome.date} {$outcome.clock}</div>
+                <input type="hidden" id="timezone" value="{$outcome.timezone}"/>
+                <input type="hidden" id="date" value="{$outcome.date}"/>
+                <input type="hidden" id="clock" value="{$outcome.clock}"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.SYS_RUN_TIME}</td>
+            <td>
+                <div style="margin-left:5px"  id="sys_runtime">{$outcome.uptime}</div>
+                <input type="hidden" id="runtime" value="{$outcome.uptime}"/>
+            </td>
+        </tr>
+        <if condition="$outcome['tryout'] neq none">
+            <tr>
+                <td class="tdlabel">{$Think.lang.LEASE_TIME}</td>
+                <td>
+                    <if condition="strlen($outcome['tryout']) gt 12 ">
+                        <div class="red">{$outcome.tryout}</div>
+                    <else />
+                        {$outcome.tryout}
+                    </if>
+                </td>
+            </tr>
+        </if>
+    </table>	
+</div>
+</div>
+</div>
+</body>
+</html>

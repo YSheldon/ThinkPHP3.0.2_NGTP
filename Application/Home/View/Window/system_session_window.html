@@ -1,0 +1,117 @@
+<div>
+    <form id="session_form">
+        <table class="ngtos_form_table">
+            <if condition="$switch eq 'on' AND $vr_admin neq true">
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.VSYS}</td>
+                    <td>
+                        <select id='vsid' name='vsid' class="easyui-combobox combobox_len"></select>
+                    </td>
+                </tr>
+            </if>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.PROTOCOL}</td>
+                <td>
+                    <select id='protocolType' name="protocolType" class="easyui-combobox combobox_len" data-options="panelHeight:'auto',panelMaxHeight:198,editable:false">
+                        <option value=''>{$Think.lang.ALL}</option>
+                        <option value='tcp'>TCP</option>
+                        <option value='udp'>UDP</option>
+                        <if condition="$type eq 'ipv4'">
+                            <option value='icmp'>ICMP</option>
+                        </if>
+                        <if condition="$type eq 'ipv6'">
+                            <option value='icmpv6'>ICMPv6</option>
+                        </if>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.SRC}IP</td>
+                <td>
+                    <if condition="$type eq 'ipv4'">
+                        <input type="text" id='saddr' name="saddr" class="easyui-textbox input_length" data-options="validType:'ipFour'"/>
+                    </if>
+                    <if condition="$type eq 'ipv6'">
+                        <input type="text" id='saddr' name="saddr" class="easyui-textbox input_length" data-options="validType:'ipSix'"/>
+                    </if>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.SRC_PORT}</td>
+                <td>
+                    <input type="text" id='sport' name="sport" class="easyui-textbox input_length" data-options="validType:'range[1,65535]'"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.DST}IP</td>
+                <td>
+                    <if condition="$type eq 'ipv4'">
+                        <input type="text" id='daddr' name="daddr" class="easyui-textbox input_length" data-options="validType:'ipFour'"/>
+                    </if>
+                    <if condition="$type eq 'ipv6'">
+                        <input type="text" id='daddr' name="daddr" class="easyui-textbox input_length" data-options="validType:'ipSix'"/>
+                    </if>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.DST_PORT}</td>
+                <td>
+                    <input type="text" id='dport' name="dport" class="easyui-textbox input_length" data-options="validType:'range[1,65535]'"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="window_foot_btn">
+    <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onclick='searchSession();'>
+    <input type="button"  class="ngtos_button_middle " value="{$Think.lang.CANCEL}" onClick="closeWindow('session_search')">
+</div>
+<script>
+    $(function() {
+        var type = "{$type}";
+        if ("{$conf_global}" == 1) {
+            $('#protocolType').combobox({
+                url: '?c=System/Session&a=ProtocoljsonData&family='+type+"&ip="+$('#saddr').val(),
+                width:220,
+                panelHeight: 'auto',
+                panelMaxHeight: 198,
+                multiple:false,
+                editable:false,
+                valueField:'protocolName',
+                textField:'protocolName'
+            });
+        }
+        if ("{$switch}" == 'on' && "{$vr_admin}" != true) {
+            //获取所有的虚系统
+            $('#vsid').combobox({
+                url: '?c=System/Session&a=VrjsonData',
+                width:220,
+                panelHeight: 'auto',
+                panelMaxHeight: 198,
+                multiple:false,
+                editable:false,
+                valueField:'vsys_name',
+                textField:'vsys_name'
+            });
+		}
+    });
+    function searchSession() {
+        var sessionIp = $('#session_form').form('validate');
+        if (sessionIp) {
+            var protocolType = $('#protocolType').combobox('getValue');
+            var saddr = $('#saddr').val();
+            var sport = $('#sport').val();
+            var daddr = $('#daddr').val();
+            var dport = $('#dport').val();
+            if ("{$switch}"=='on' && "{$vr_admin}" != true)
+                var vsid = $('#vsid').combobox('getValue');
+            else
+                var vsid='';
+            var tt = "{$type}";
+            var url = '?c=System/Session&a=jsonData&family='+tt+'&protocol='+encodeURIComponent(protocolType)+'&saddr='+encodeURIComponent(saddr)+'&sport='+encodeURIComponent(sport)+'&daddr='+encodeURIComponent(daddr)+'&dport='+encodeURIComponent(dport)+'&vsid='+encodeURIComponent(vsid);
+            $("#session"+tt).datagrid('options').url=url;
+            $('#session'+tt).datagrid('load');
+            $("#session_search").window("close");
+        }
+    }
+</script>

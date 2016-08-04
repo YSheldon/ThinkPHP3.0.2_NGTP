@@ -1,0 +1,43 @@
+<form id="arp_search">
+    <table class="ngtos_form_table">
+        <if condition=" $switch eq 'on'">
+        <tr>
+            <td class="tdlabel">{$Think.lang.VIRTUAL_ROUTER}</td>
+            <td><select id='virtualId' class="input_length">
+                    <option value='all'>{$Think.lang.ALL}</option>
+                </select>
+            </td>
+        </tr>
+        </if>
+        <tr><td class="tdlabel">{$Think.lang.INTERFACE}</td>
+            <td><select id='find_interface' class="easyui-combobox" style="width:222px" data-options="panelHeight:'auto',panelMaxHeight:'198'">
+                    <option value='all'>{$Think.lang.ALL}</option>
+                    <volist name="name_list" id="vo">
+                        <option value='{$vo.name}'>{$vo.name}</option>
+                    </volist>
+                </select>
+            </td>
+        </tr>
+        <tr><td class="tdlabel">{$Think.lang.IP_ADDR}</td>
+            <td><input type="text" id='find_ip' class="easyui-textbox input_length" data-options="validType:'ipFour'"/></td>
+        </tr>
+        <tr><td class="tdlabel">{$Think.lang.MAC_ADDR}</td>
+            <td><input type="text" id='find_mac' class="easyui-textbox input_length" data-options="validType:'mac'"/></td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="searchArpSubmit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('search_page')">
+    </div>
+</form>
+<!--
+<script>
+var switch_tag = '{$switch}';
+    $(function() {
+        if (switch_tag == '1') {
+            //获取所有的虚拟路由器
+            //get_vr("virtualId");
+        }
+//        getAllInterface("find_interface");
+    });
+</script>-->

@@ -1,0 +1,88 @@
+<div>
+<form id="time_group_form">
+    <table id="setstyles" class="ngtos_form_table">
+        <tr>
+            <td width="100px" class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td width="400px">
+                <input type="text" id="ti_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','eSymbols']">
+                <span class="form_comment">{$Think.lang.MAX_CHAR30}</span>
+            </td>
+        </tr>
+        <tr id="tg_vshare" style="display:none">
+            <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+            <td width="400px">
+                <input type="radio" name="tg_sha"  value="1" id="share_on">
+                <label for="share_on">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="tg_sha" value="0" id="share_off" checked>
+                <label for="share_off">{$Think.lang.DENY}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.TIME}</td>
+            <td>
+                <div class="select_div">
+                    <div class="select_ldiv">
+                        <div class="select_ldiv_bottom border_bottom0">
+                            <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                            <span class="searchbox width100">
+                                <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'time_item_cid',0)">
+                                <span class="searchbox-button"></span>
+                            </span>
+                        </div>
+                        <select class="select middle2 height190" style="height:190px;" id="time_item_cid" multiple ondblclick="move_options('time_item_cid','d_time_item_cid','1','sel_time_num');">
+                        </select>
+                        <div id='time_add_div' class="select_ldiv_bottom border_top0">
+                            <a class="lineHeight26 cursorPoint" onclick="add_times('{$Think.lang.ADD}')">{$Think.lang.ADD_TIME}</a>
+                        </div>
+                    </div>
+                    <div class="select_cdiv">
+                        <input type="button" class="width40" onClick="move_options('time_item_cid','d_time_item_cid','1','sel_time_num');" value=" > ">
+                        <br/><br/>
+                        <input type="button" class="width40" onClick="move_options('d_time_item_cid','time_item_cid','0','sel_time_num');" value=" < ">
+                    </div>
+                    <div class="select_rdiv">
+                        <div id="sel_time_num" class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+
+                        </div>
+                        <select class="select middle2 height12 height190" style="height:190px;" id="d_time_item_cid" name="service_item[]" multiple ondblclick="move_options('d_time_item_cid','time_item_cid','0','sel_time_num');">
+                        </select>
+                        <div class="select_ldiv_bottom border_top0">
+                            <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_time_item_cid','time_item_cid','0','sel_time_num');">{$Think.lang.CLEAR_ALL}</a>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addTimeGro'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('time_group_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        if(!isShared())
+            $('#tg_vshare').css("display","");
+        else
+            $('#tg_vshare').css("display","none");
+        if(typeof(grtag)!='undefined' && grtag==6) {
+            $('#time_add_div').hide();
+            $('#time_item_cid').height(216.5);
+        }
+        if(time_tag == 1)
+            refresh_cirtime();
+        else  {
+            modify_refresh_cirtime(param[2]);
+            $('#ti_name').val(param[0]);
+            $("#ti_name").attr('disabled','disabled');
+            if(param[1] == 'on')
+                $('input:radio[name="tg_sha"]').get(0).checked = true;
+            else
+                $('input:radio[name="tg_sha"]').get(1).checked = true;
+        }
+        $('#addTimeGro').click(function() {
+            sel_time_group(time_tag);
+        });
+    })
+</script>

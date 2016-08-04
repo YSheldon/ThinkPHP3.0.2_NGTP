@@ -1,0 +1,28 @@
+<div id='admin1'>
+    <div>
+    <form id="addhost2_form">
+        <table class="ngtos_form_table">
+            <tr><td class="tdlabel">{$Think.lang.HOST_NAME}</td>
+                <td><input type="text" id="hostName1" name="hostName1"  class="easyui-textbox input_length" data-options="required:true,validType:'eSymbols'"/></td>
+            </tr>
+            <tr><td class="tdlabel">{$Think.lang.HOST_IP}</td>
+                <td><input type="text" id="hostIp1" name="hostIp1"  class="easyui-textbox input_length" data-options="required:true,validType:'ipFour'"/></td>
+            </tr>
+        </table>
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}"  id="add_snmp_control_Host">
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('snmp_div2')">
+        </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(function(){
+        $('#add_snmp_control_Host').click(function() {
+            var addhost2 = $('#addhost2_form').form('validate');
+            if (addhost2) {
+               add_snmpControl_submit(); 
+            }
+        });
+    })
+</script>

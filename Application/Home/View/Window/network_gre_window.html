@@ -1,0 +1,89 @@
+<div>
+    <form id="greForm">
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel">{$Think.lang.NAME}</td>
+                <td>
+                    <input type="text" id="name" name="name" class="easyui-textbox input_length" data-options="required:true"/>
+                    <span class="form_comment">{$Think.lang.TUNNEL_GRE_START}</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.LOCALHOST}</td>
+                <td>
+                    <input type="text" id="hostaddr" name="hostaddr"  class="easyui-textbox input_length" data-options="required:true,validType:'ipFour'"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.REMOTE_ADDR}</td>
+                <td>
+                    <input type="text" id="yuanaddr" name="yuanaddr" class="easyui-textbox input_length" data-options="required:true,validType:'ipFour'"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.KEYWORD}</td>
+                <td>
+                    <input type="text" id="greDesc" name="greDesc" class="easyui-textbox input_length" data-options="validType:'range[0,4294967295]'"/>
+                    <span class="form_comment">[0-4294967295]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.SURVIVAL_TIME}</td>
+                <td>
+                    <input type="text" id="Lifetime" name="Lifetime" class="easyui-textbox input_length" data-options="validType:'range[1,255]'"/>
+                    <span class="form_comment">[1-255]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.VERIFY_SUM_CHECK}</td>
+                <td>
+                    <img src="{$Think.config.NG_PATH}Public/images/image/stop.png" onClick="changBtState_gre(this);" title="{$Think.lang.STOP}" class="switch1" id="check1"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.SERIAL_NUMBER_CHECK}</td>
+                <td>
+                    <img src="{$Think.config.NG_PATH}Public/images/image/stop.png" onClick="changBtState_gre(this);" title="{$Think.lang.STOP}" class="switch1" id="check2"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"
+               value="{$Think.lang.CONFIRM}" id="addGre">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}"
+               onClick="closeWindow('gre_div')">
+    </div>
+</div>
+<script>
+    $(function(){
+        if (dhcpPool_tag == 1) {
+            $("#name").removeAttr('disabled');
+        } else {
+            $('#name').val(param[0]);
+            $("#name").attr('disabled','true');
+            $('#yuanaddr').val(param[1]);
+            $('#hostaddr').val(param[2]);
+            $('#greDesc').val(param[3]);
+            $('#Lifetime').val(param[4]);
+
+            if (param[5] == "off") {
+                setBtState_gre("check1","stop");
+            } else {
+                setBtState_gre("check1","start");
+            }
+
+            if(param[6] == "off") {
+                setBtState_gre("check2","stop");
+            } else {
+                setBtState_gre("check2","start");
+            }
+        }
+        $('#addGre').click(function() {
+            var isValid = $('#greForm').form('validate');
+            if (isValid) {
+                add_addrGre_submit(dhcpPool_tag);
+            }
+        });
+    })
+</script>

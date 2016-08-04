@@ -1,0 +1,122 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/system/upload_file.css" type="text/css"/>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/plugins/simpletooltip/ajaxfileupload.js">
+</script>
+<script src="{$Think.config.NG_PATH}Public/modules/system/upload.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="loding" style="width:65px; display:none;position:absolute;margin:100px auto;">
+    <div class="waitMsgDiv" width="65px">
+        <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif" style="margin-left: 10px">
+        &nbsp;&nbsp;{$Think.lang.CONFIG_ING}
+    </div>
+</div>
+<div id="window_cover" class="easyui-window" style="width:200px;height:100px;z-index:10000;" 
+     data-options="collapsible: false, minimizable: false, maximizable: false, noheader: true,border:false, shadow:false, closed:true">
+    <div id="sub_cover"></div>
+    <div class="waitMsgDiv" style="margin:40px 0px 0px 40px;position: absolute;z-index: 111;">
+        <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif" style="margin-left: 10px">
+        &nbsp;&nbsp;{$Think.lang.CONFIG_ING}
+    </div>
+</div>
+<div id="reboot_wait" class="easyui-window" style="width:420px;height:120px" 
+     data-options="modal:true,collapsible: false, minimizable: false, maximizable: false, noheader: true,border:false, shadow:false, closed:true">
+    <div style="margin:10px 30px;">{$Think.lang.SYS_REBOOT_WAITING}</div>
+    <hr><br><br>
+    <div id="p" class="easyui-progressbar" style="width:400px;margin:0 auto"></div>
+</div>
+<div id="dlg-toolbar" style="padding:2px 0">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="padding-left:2px">
+                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-import',plain:true" onClick="import_file('{$Think.lang.IMPORT}')">{$Think.lang.IMPORT}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_del" data-options="iconCls:'icon-delete',plain:true" onClick="delete_item()">{$Think.lang.DELETE}</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(function() {
+        /*if(parent.document.getElementById('ngtos_cover').style.display == 'block')
+         parent.document.getElementById('ngtos_cover').style.display="none";*/
+        $('#tt').datagrid({
+            fit: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            remoteSort: false,
+            url: '?c=System/Upload&a=uploadJsondata',
+            columns: [[
+                    {field: 'ck',
+                        formatter: function(value, row, index) {
+                            if (row.flag != "" && row.flag != null) {
+                                if (row.flag.charAt(2) == "1" || row.flag.charAt(3) == "1") {
+                                    return '';
+                                } else {
+                                    if (value == 1) {
+                                        var q = "<input type='checkbox' checked>";
+                                        return q;
+                                    } else {
+                                        var q = "<input type='checkbox' >";
+                                        return q;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {field: 'filename', title: $LANG.FILENAME},
+                    {field: 'version', title: $LANG.VERSION_NUM, width: 250, sortable: true},
+                    {field: 'md5', title: $LANG.CRC32_VERIFY, width: 320, sortable: true},
+                    {field: 'flag', title: $LANG.STATE, width: 100,
+                        formatter: function(value, rowData, rowIndex) {
+                            if (value != "" && value != null) {
+                                if (value.charAt(3) == "1") {
+                                    var s = '<img src="__PUBLIC__/images/icon/icon_enable.png" width="16" height="16"/>';
+                                } else
+                                    var s = '<img src="__PUBLIC__/images/icon/icon_disable.png" width="16" height="16" style="cursor:pointer;" onClick="change_upload(&quot;' + rowData.filename + '&quot;)"/>';
+                                return s;
+                            }
+                        }
+                    },
+                    {field: 'description', title: $LANG.DESCRIPTION, width: 500}
+                ]],
+            toolbar: "#dlg-toolbar",
+            pagination: false,
+            rownumbers: true,
+            loadMsg: "{lang waiting}",
+            checkOnSelect: true,
+            onClickRow: function(rowIndex, rowData) {
+
+                if (rowData.flag.charAt(2) == "1" || rowData.flag.charAt(3) == "1") {
+                    $('#tt').datagrid("unselectRow", rowIndex);
+                } else {
+                    if (rowData.ck == 1)
+                        rowData.ck = 0;
+
+                    else {
+                        rowData.ck = 1;
+                    }
+                    $('#tt').datagrid('refreshRow', rowIndex);
+                }
+                setSysToolBar();
+            },
+            onLoadSuccess: function(data) {
+                $('#icon_del').linkbutton('disable');
+            },
+            onCheckAll: setSysToolBar,
+            onUncheckAll: setSysToolBar,
+            onSelect: setSysToolBar,
+            onUnselect: setSysToolBar,
+            rowStyler: function(rowIndex, rowData) {
+                if (rowData.flag != "0000" && rowData.flag != "1100")
+                    return 'background-color:#fcf9cd';
+                else
+                    return 'background-color:#d5d5d5';
+            }
+        });
+        $('#tt').datagrid('hideColumn', 'filename');
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

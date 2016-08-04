@@ -1,0 +1,352 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/network/dhcpserver.css"
+      type="text/css"/>
+<style>
+    .datagrid{padding-top:0;}
+    .datagrid-toolbar a{margin:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/dhcp.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/physics.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/vlan.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/macvif.js"></script>
+    <ul id="ipv" class="resp-tabs-list hor_1"> 
+        <if condition="$server eq '1'">
+        <a href="?c=Network/DhcpServer&a=serverinfo">
+            <li id="ipv_4">
+                DHCP{$Think.lang.SERVER_SIDE}
+            </li>
+        </a>
+        </if>
+        <if condition="$client eq '1'">
+        <a href="?c=Network/DhcpServer&a=serverinfo&tab=4">
+            <li>
+                DHCP{$Think.lang.CLIENT}
+            </li>
+        </a>
+        </if>
+        <if condition="$relay eq '1'">
+        <a href="?c=Network/DhcpServer&a=serverinfo&tab=5">
+            <li>
+                DHCP{$Think.lang.RELAY}
+            </li>
+        </a>
+        </if>
+    </ul>
+    <if condition="$server eq '1'">
+        <div style="margin: 10px;float: left;">
+            <fieldset style="padding: 15px;width: 365px;height: 225px;">
+                <legend>&nbsp;&nbsp;{$Think.lang.IF_CONFIG}&nbsp;&nbsp;</legend>
+                <div class="select_div">
+                    <div class="select_ldiv">
+                        <div class="select_ldiv_bottom border_bottom0">
+                            <span class="lineHeight26">{$Think.lang.SELECT_A_INTERFACE}</span>
+                        </div>
+                        <select class="select middle2 height12" id="service_item_cid" multiple 
+                                ondblclick="move_options('service_item_cid', 'd_service_item_cid', '1');" 
+                                style="height: 150px;">
+                        </select>
+                        <div class="select_ldiv_bottom border_top0">
+                            <a class="lineHeight26 cursorPoint" onclick="editInterface('service_item_cid');">{$Think.lang.EDIT_INTERFACE}</a>
+                        </div>
+                    </div>
+                    <div class="select_cdiv">
+                        <input type="button" onClick="move_options('service_item_cid', 'd_service_item_cid', '1');" value=" > "><br>
+                        <input type="button" onClick="move_options('d_service_item_cid', 'service_item_cid', '0');" value=" < ">
+                    </div>
+                    <div class="select_rdiv">
+                        <div class="select_ldiv_bottom border_bottom0">
+                            <span class="lineHeight26">{$Think.lang.SELECTED_IF}</span>
+                        </div>
+                        <select class="select middle2 height12" id="d_service_item_cid" name="service_item[]" multiple ondblclick="move_options('d_service_item_cid', 'service_item_cid', '0');" style="height: 150px;"></select>
+                        <input type="hidden" name="service-item" />
+                        <div class="select_ldiv_bottom border_top0">
+                            <a class="lineHeight26 cursorPoint" onclick="clearAllOption('service_item_cid', 'd_service_item_cid');">{$Think.lang.CLEAR_ALL}</a>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div style="float: left;margin-top: 15px;">
+            <input type="button" class="ngtos_button_small" data-options="plain:true" onClick="dhcpStart()" id="btn_start" value="{$Think.lang.START}"/>
+            <br/>
+            <input type="button" class="ngtos_button_small" data-options="plain:true" onClick="dhcpStop()" id="btn_stop" value="{$Think.lang.STOP}" />
+        </div>
+        <table  width=100% class="tab_tag_table">
+            <tr>
+                <td>
+                    <ul id="ipv2" class="resp-tabs-list hor_1"> 
+                        <a href="?c=Network/DhcpServer&a=serverinfo">
+                            <li id="ipv_4">
+                                {$Think.lang.ADDR_POOL}
+                            </li>
+                        </a>
+                        <a href="?c=Network/DhcpServer&a=serverinfo&tab=2">
+                            <li>
+                                {$Think.lang.ADDR_BIND}
+                            </li>
+                        </a>
+                        <a href="?c=Network/DhcpServer&a=serverinfo&tab=3">
+                            <li>
+                                {$Think.lang.DIST_ADDR}
+                            </li>
+                        </a>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+        <table id='tt' style="height: 344px;"></table>
+    </if>
+<div id='add_addrPool' style="width:630px; display:none;"></div>
+<div id='edit_page' style="width:630px; display:none;"></div>
+<script>
+    var param = [];
+    var dhcpPool_tag;
+    var language;
+    $(function() {
+        $('#tt').datagrid({
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            url: '?c=Network/DhcpServer&mod=dhcp',
+//            queryParams:{
+//                mod:'network dhcp dhcpd_subnet'
+//            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'area', title: $LANG.EFFECT_AREA, width: 80,
+                        formatter: function(value, rowData) {
+                            var str = '';
+                            if (rowData != "" && rowData != null) {
+                                if (rowData.subnet && rowData.submask) {
+                                    str += rowData.subnet + "/" + rowData.submask;
+                                }
+                                return str;
+                            }
+
+                        }
+                    },
+                    {field: 'addr', title: $LANG.ADDR_RANG, width: 80,
+                        formatter: function(value, rowData) {
+                            var str = '';
+                            if (rowData != "" && rowData != null) {
+                                str += rowData.sub_start + "-" + rowData.sub_end;
+                                return str;
+                            }
+                        }
+                    },
+                    {field: 'def-lease', title: $LANG.DEFAULT_LEASE_TIME, width: 50,
+                        formatter: function(value, rowData) {
+                            var str = '';
+                            if (rowData != "" && rowData != null) {
+                                str += rowData.def_lease_day + "天-" + rowData.def_lease_hour + "小时-" + rowData.def_lease_min + "分";
+                                return str;
+                            }
+                        }
+                    },
+                    {field: 'max-lease', title: $LANG.MAX_LEASE_TIME, width: 50,
+                        formatter: function(value, rowData) {
+                            var str = '';
+                            if (rowData != "" && rowData != null) {
+                                str += rowData.max_lease_day + "天-" + rowData.max_lease_hour + "小时-" + rowData.max_lease_min + "分";
+                                return str;
+                            }
+                        }
+                    },
+                    {field: 'type', title: $LANG.OPTION, width: 100,
+                        formatter: function(value, rowData) {
+                            var str = '';
+                            if (rowData != "" && rowData != null) {
+                                if (rowData.gateway != "") {
+                                    str += $LANG.GATEWAY+"：" + rowData.gateway + "<br>";
+                                }
+                                if (rowData.pri_dns != "") {
+                                    str += "{$Think.lang.MASTER_DNS}：" + rowData.pri_dns + "<br>";
+                                }
+                                if (rowData.sec_dns != "") {
+                                    str += "{$Think.lang.SERVANT_DNS}：" + rowData.sec_dns + "<br>";
+                                }
+                                if (rowData.rsv_start != "") {
+                                    str += "{$Think.lang.PRIVATE_START_ADDR}：" + rowData.rsv_start + "<br>";
+                                }
+                                if (rowData.rsv_end != "") {
+                                    str += "{$Think.lang.PRIVATE_END_ADDR}：" + rowData.rsv_end + "<br>";
+                                }
+                                if (rowData.domain != "") {
+                                    str += "{$Think.lang.DOMAIN_NAME}：" + rowData.domain + "<br>";
+                                }
+                                if (rowData.pri_wins != "") {
+                                    str += "{$Think.lang.MASTER_WINS}：" + rowData.pri_wins + "<br>";
+                                }
+                                if (rowData.sec_wins != "") {
+                                    str += "{$Think.lang.SERVANT_WINS}：" + rowData.sec_wins + "<br>";
+                                }
+                            }
+                            return str;
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onCheck: dhcppool_toolbar,
+            onUncheck: dhcppool_toolbar,
+            onCheckAll: dhcppool_toolbar,
+            onUncheckAll: dhcppool_toolbar,
+            onLoadSuccess: dhcppool_toolbar,
+            onDblClickRow: function(index,row) {
+                if (getPrivilege("network") != false) {
+                    editaddrPoolDbclick(row.subnet);
+                }
+            },
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+        if (getPrivilege("network") != false) {
+        //数据表格顶部面板的菜单栏。
+        $('#tt').datagrid({
+            toolbar: [{
+                    id: 'icon-add',
+                    text: $LANG.ADD,
+                    iconCls: 'icon-add',
+                    handler: addAddrPool
+                }, {
+                    id: 'icon-edit',
+                    text: $LANG.EDIT,
+                    iconCls: 'icon-edit',
+                    handler: editaddrPool
+                }, {
+                    id: 'icon-delete',
+                    text: $LANG.DELETE,
+                    iconCls: 'icon-delete',
+                    handler: delPool
+                }, {
+                    id: 'icon-clear',
+                    text: $LANG.CLEAR,
+                    iconCls: 'icon-clear',
+                    handler: clearPool
+                }]
+        });
+         }
+
+        parent.sourOptions = [];
+        parent.selOptions = [];
+        $("#d_service_item_cid").html("");
+        $.getJSON(
+                "?c=Network/DhcpServer&a=callFun&fun=dataShow&mod="+encodeURI('network dhcp_server_wait'),
+                function(data) {
+                    var options = "";
+                    if (data) {
+                        $(data.rows).each(function(key, value) {
+                            if (value.interface != "" && value.interface != null) {
+                                var msg_interface = value.interface;
+                                var msg_arr = new Array();
+                                msg_arr = msg_interface.split(" ");
+                                for (i = 0; i < msg_arr.length; i++) {
+                                    if (msg_interface.length != 0) {
+                                        options += "<option value='" + msg_interface + "' title='" + msg_interface + "'>" + msg_interface + "</option>";
+                                    }
+                                }
+                            }
+                            $('#service_item_cid').html(options);
+                        })
+                    }
+                });
+
+        $.getJSON(
+                "?c=Network/DhcpServer&a=callFun&fun=dataShow&mod="+encodeURI('network dhcp dhcp_server_start'),
+                function(data) {
+                    var options1 = "";
+                    if (data) {
+                        $(data.rows).each(function(key, value) {
+                            if (value.interface != "" && value.interface != null) {
+                                var msg_interface1 = value.interface;
+                                var msg_arr1 = new Array();
+                                msg_arr1 = msg_interface1.split(" ");
+                                for (j = 0; j < msg_arr1.length; j++) {
+                                    if (msg_interface1.length != 0) {
+                                        options1 += "<option value='" + msg_interface1 + "' title='" + msg_interface1 + "'>" + msg_interface1 + "</option>";
+                                    }
+                                }
+                            }
+                            $('#d_service_item_cid').html(options1);
+                        })
+
+                        //处理开始 停止的按钮可用不可用
+                        $("#btn_start").attr("disabled", "true");
+                        $("#btn_stop").removeAttr("disabled");
+                        var btn_sel = $("#d_service_item_cid").text();
+                        if (btn_sel.length == 0) {
+                            $("#btn_stop").attr("disabled", "true");
+                            $("#btn_start").removeAttr("disabled");
+                        }
+                    }
+                });
+                if (getPrivilege("network") == false) {
+
+                    $('#icon-add').linkbutton('disable');
+                    $('#icon-clear').linkbutton('disable');
+                }
+            });
+//接口运行开始
+    function dhcpStart() {
+
+        var msg = get_select_value('d_service_item_cid');
+        if (msg == '') {
+            ngtosPopMessager("info", $LANG.PLEASE_SELECT_INTERFACE);
+            return false;
+        }
+        $.ajax({
+            url: "?c=Network/DhcpServer&a=doDhcpStart",
+            type: 'POST',
+            datatype: 'text',
+            data: {
+                msg: msg
+            },
+            success: function(data) {
+                if (data == "0") {
+                    //处理开始 停止的按钮可用不可用
+                    $("#btn_start").attr("disabled", "true");
+                    $("#btn_stop").removeAttr("disabled");
+                    window.location.reload();
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+
+    }
+//停止接口
+    function dhcpStop() {
+        $.ajax({
+            url: "?c=Network/DhcpServer&a=callFun",
+            type: 'POST',
+            datatype: 'text',
+            data: {
+                fun:'simpleHandle',
+                mod:'network dhcp server',
+                act:'stop'
+            },
+            success: function(data) {
+                if (data == "0") {
+                    //处理开始 停止的按钮可用不可用
+                    $("#btn_start").attr("disabled", "true");
+                    $("#btn_stop").removeAttr("disabled");
+                    window.location.reload();
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<form id="routePolicy_add">
+    <table class="ngtos_form_table">
+        <tr>
+            <td  width="60%" style="padding-left:50px">
+                <span id='moveid'></span>
+                <input type="hidden" id='curid'/>
+                <select id='selectedid' style="width:150px"></select>
+                <select id='position' class="easyui-combobox" data-options="panelHeight: 'auto',panelMaxHeight: 198">
+                    <option value="before">{$Think.lang.BEFORE}</option>
+                    <option value="after">{$Think.lang.AFTER}</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="moveProuteSubmit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('move_page')">
+    </div>
+</form>
+<script>
+    $(function() {
+        moveProuteRowInit();
+    });
+</script>

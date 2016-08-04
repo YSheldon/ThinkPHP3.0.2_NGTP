@@ -1,0 +1,52 @@
+<form id="interview_group_form">
+    <div>
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.NAME}</td>
+                <td><input type="text" class="easyui-textbox input_length" data-options="required:true,validType:['eSymbols','nospace']" id='add_policy_group_name'></td>
+            </tr>
+        </table>
+
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="addGroup()">
+            <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('admin_policy_group')">
+        </div>
+
+    </div>
+</form>
+<script>
+    $(function() {
+        if(oldGroupName != '') {
+            $("#add_policy_group_name").val(oldGroupName);
+        } else {
+            $("#add_policy_group_name").val('');
+        }
+    });
+    function addGroup() {
+        var isValid = $("#interview_group_form").form('validate');
+        if(isValid) {
+            $.ajax({
+                url: '?c=Policy/Interview&a=addGroup',
+                type: 'POST',
+                datatype: 'text',
+                async: false,
+                data: {
+                    oldname:oldGroupName,
+                    before:insertNmae,
+                    name:$("#add_policy_group_name").textbox('getValue')
+                },
+                success: function(data, textStatus) {
+                    if(data == '0') {
+                        $('#admin_policy_group').window('close');
+                        oldGroupName = '';
+                        insertNmae = '';
+                        $('#tt').treegrid('unselectAll');
+                        $('#tt').treegrid('reload');
+                    } else {
+                        ngtosPopMessager("error", data);
+                    }
+                }
+            });
+        }
+    }
+</script>

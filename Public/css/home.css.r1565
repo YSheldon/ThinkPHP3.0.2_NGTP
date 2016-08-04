@@ -1,0 +1,182 @@
+﻿/* CSS Document */
+@charset "utf-8";
+.home-center {
+    clear:both;
+    position:absolute;  
+    top:60px;
+    right:0;
+    bottom:0;
+    left:0;
+    border: none;
+    min-width:1200px;
+    overflow-y:auto;
+    overflow-x:auto;
+    width:100%;
+}
+
+.module-half-body{
+    width: 50%;
+    float: left;
+    height:400px;
+}
+
+.module-full-body{
+    width: 100%;
+    float: left;
+    height:400px;
+}
+.modyle-text{
+    padding-left:5px;
+}
+.module-default{
+    padding-left: 10px;
+    padding-right: 110px;
+}
+.module{
+    background:#fffffc;
+    margin: 15px;
+    border:1px solid #f2f2f1;   
+    box-shadow: 0 -2px 5px rgba(242, 242, 241, 1);
+    -webkit-box-shadow: 0 -2px 5px rgba(242, 242, 241, 1);
+    -moz-box-shadow: 0 -2px 5px rgba(242, 242, 241, 1);
+}
+.module-header {
+    clear: right;
+    cursor: move;
+    height: 17px;
+    padding: 15px 15px 12px;
+}
+
+
+.module-title {
+    float: left
+}
+.module-icon {
+    float: right;
+}
+.atuo_load_time {
+    padding-right: 10px;
+    padding-left: 10px;
+    float: right;
+    cursor: pointer;
+}
+.module-content{
+    height: 323px;
+    padding: 0 15px;
+}
+.ngtos_form_table td {
+    background: #fffffc;
+    padding: 2px 2px 2px 6px;
+}
+.close-icon {
+    background: url("../images/image/close.png");
+    float: right;
+    height: 14px;
+    width: 14px;
+    cursor: pointer;
+}
+
+.close-icon:hover {
+    background: url("../images/image/close.png");
+    float: right;
+    height: 14px;
+    width: 14px;
+    cursor: pointer;
+}
+
+.slide-up-icon {
+    background: url("../images/image/title.png") no-repeat;
+    float: left;
+    height: 17px;
+    margin-right: 10px;
+    width: 17px;
+    cursor: pointer;
+}
+
+.slide-down-icon {
+    background: url("../images/image/title.png") no-repeat;
+    float: left;
+    height: 10px;
+    margin-right: 10px;
+    width: 10px;
+    cursor: pointer;
+}
+
+
+#sidebar{
+    position:fixed;
+    top:200px;
+    right:-50px;
+    z-index:9999
+}
+#panel{
+    width:260px;
+    height:190px;
+    background:#f8bcbc;
+    border-radius: 15px;
+    border:1px solid #FBC7C7;
+    position:absolute;
+    display:none;
+    color:#fff;
+}
+#panel a{color:#fff;padding-top:10px;display:inline-block;}
+#panel hr{color:#F9C9C9;background: #F9C9C9;}
+.module-select {
+    float: left;
+    margin: 10px 0 0 10px;
+    width: 110px;
+}
+.module-select input {
+    vertical-align:middle; margin-top:-2px; margin-bottom:1px;
+}
+.chartdiv {
+    display: none;
+    width: 100%;
+    height: 358px;
+}
+.tablediv {
+    display: none;
+    width: 100%;
+    height: 358px;
+}
+.loading {
+    text-align: center;
+    padding-top: 150px;
+}
+/*returnTop*/
+p#back-to-top{
+    position:fixed;
+    display:none;
+    bottom:50px;
+    right:10px;
+    z-index:9999
+}
+p#back-to-top a{
+    text-align:center;
+    text-decoration:none;
+    color:#d1d1d1;
+    display:block;
+    width:64px;
+    /*使用CSS3中的transition属性给跳转链接中的文字添加渐变效果*/
+    -moz-transition:color 1s;
+    -webkit-transition:color 1s;
+    -o-transition:color 1s;
+}
+p#back-to-top a:hover{
+    color:#979797;
+}
+p#back-to-top a span{
+    border-radius:6px;
+    display:block;
+    height:80px;
+    width:50px;
+    margin-bottom:5px;
+    background: url("../images/image/up.png") no-repeat;
+    /*使用CSS3中的transition属性给<span>标签背景颜色添加渐变效果*/
+    -moz-transition:background 1s;
+    -webkit-transition:background 1s;
+    -o-transition:background 1s;
+}
+#back-to-top a:hover span{
+    background: url("../images/image/up_hover.png") no-repeat;
+}

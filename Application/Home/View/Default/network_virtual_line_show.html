@@ -1,0 +1,66 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/virtual_line.js"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false">
+    <table id="tt"></table>
+</div>
+<div id="tb">
+    <a href="###" id="icon-add" onClick="addVlineRow()" class="easyui-linkbutton" iconCls="icon-add" plain="true">{$Think.lang.ADD}</a>
+    <a href="###" id="icon-delete" onClick="deleteVlineRow()" class="easyui-linkbutton" iconCls="icon-delete" plain="true">{$Think.lang.DELETE}</a>
+    <a href="###" id="icon-clear" onClick="clearVlineRow()" class="easyui-linkbutton" iconCls="icon-clear" 
+       plain="true" style="border:none;">{$Think.lang.CLEAR}</a>
+</div>
+
+</body>
+</html>
+<script>
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'dev',
+//            url: '?c=Network/Virtualline&a=datagridShow',
+            url: '?c=Network/Virtualline&mod=virtualline',
+//            queryParams:{
+//                mod:'network virtualline'
+//            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'dev', title: $LANG.IF1, width: 200, sortable: true},
+                    {field: 'peer_dev', title: $LANG.IF2, width: 200, sortable: true}
+                ]],
+            toolbar: '#tb',
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onClickRow: set_vline_toolbar,
+            onCheck: set_vline_toolbar,
+            onUncheck: set_vline_toolbar,
+            onCheckAll: set_vline_toolbar,
+            onUncheckAll: set_vline_toolbar,
+            onSelect: set_vline_toolbar,
+            onUnselect: set_vline_toolbar,
+            onLoadSuccess: set_vline_toolbar,
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+        if(getPrivilege("network") == false) {
+            $('#icon-add').linkbutton('disable');
+            $('#icon-clear').linkbutton('disable');
+        }
+    });
+</script>

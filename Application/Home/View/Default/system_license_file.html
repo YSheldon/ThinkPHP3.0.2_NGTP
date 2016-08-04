@@ -1,0 +1,75 @@
+<include file='Index:main'/>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/plugins/simpletooltip/ajaxfileupload.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/system/license.js" type="text/javascript"></script>
+<form id="lice_form">
+<div class="ngtos_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.UPDATE_WAY}</td>
+            <td>
+                <select id="sel">
+                    <option value="0">{$Think.lang.LOCAL}</option>
+                    <option value="1">TFTP</option>
+                    <option value="2">FTP</option>
+                </select>
+            </td>
+        </tr>
+        <tr id="ser_addr" style="display:none"><td class="tdlabel_net">{$Think.lang.SERVER_ADDR}</td>
+            <td><input type="text"  id="serverip" value="" class="easyui-textbox" style="width:200px" data-options="validType:'ipFour'">&nbsp;<font color="red">*</font></td>
+        </tr>
+        <tr id="file_name" style="display:none"><td class="tdlabel_net">{$Think.lang.FILE_NAME}</td>
+            <td><input type="text" id="filename" value="" class="easyui-textbox" style="width:200px" data-options="validType:'unnormals'">&nbsp;<font color="red">*</font></td>
+        </tr>
+        <tr id="user" style="display:none"><td class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td><input type="text" id="user_name" value="" class="easyui-textbox" style="width:200px"></td>
+        </tr>
+        <tr id="passwd" style="display:none"><td class="tdlabel_net">{$Think.lang.PASSWORD}</td>
+            <td><input type="password" id="pass_name" value="" class="easyui-textbox" style="width:200px"></td>
+        </tr>
+        <tr id="loc_upload">
+            <td class="tdlabel_net">{$Think.lang.FILE_NAME}</td>
+            <td>
+                <input type="file" name="file" style="display: block; width:222px" id="file">
+            </td>
+        </tr>
+    </table>
+    <div class="btn_config">
+        <input type="button" value="{$Think.lang.APPLY}" class="ngtos_button_large confirmenable" id="licenseFile" style="margin-left:123px" />
+    </div>
+</div>
+    </form>
+<div id="window_cover" class="easyui-window" style="width:200px;height:100px;z-index:10000;" 
+     data-options="collapsible: false, minimizable: false, maximizable: false, noheader: true,border:false, shadow:false, closed:true">
+    <div class="waitMsgDiv" width="65px">
+        <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif" style="margin-left: 10px">&nbsp;&nbsp;{$Think.lang.CONFIG_ING}
+</div>
+</div>
+<div id="reboot_wait" class="easyui-window" style="width:420px;height:120px" 
+     data-options="modal:true,collapsible: false, minimizable: false, maximizable: false, noheader: true,border:false, shadow:false, closed:true">
+    <div style="margin:10px 30px;">{$Think.lang.SYS_REBOOT_WAITING}</div>
+    <hr>
+    <br>
+    <br>
+    <div id="p" class="easyui-progressbar" style="width:400px;margin:0 auto"></div>
+</div>
+<script>
+    $(function() {
+        $('#sel').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 200,
+            onChange: license_item,
+            multiple: false,
+            editable: false
+        });
+        
+        $('#licenseFile').click(function() {
+                license_tab();
+        });
+//        license_item();
+    })
+</script>
+</div>
+</div>
+</body>
+</HTML>

@@ -1,0 +1,93 @@
+<include file='Index:main'/>
+<div class="ngtos_form"> 
+    <table class="ngtos_form_table" style="margin: 10px;width: 98%">
+        <tr>
+            <td align='left' class="ngtos_width_15pc">{$Think.lang.MAJORDNS}</td>
+            <td class="ngtos_width_85pc">
+                <input type="text" class="ngtos_input" name="firstDNS" id="firstDNS"/><font color="red"> *</font>
+            </td>
+        </tr>
+        <tr>
+            <td align='left'>{$Think.lang.MINORDNS1}</td>
+            <td>
+                <input type="text" class="ngtos_input" name="secondDNS1" id="secondDNS1"/>
+            </td>
+        </tr>
+        <tr>
+            <td align='left'>{$Think.lang.MINORDNS2}</td>
+            <td>
+                <input type="text" class="ngtos_input" name="secondDNS2" id="secondDNS2"/>
+            </td>
+        </tr>
+    </table>
+    <div style="margin-left: 10px;margin-top: 20px;">
+        <input type="submit" class="ngtos_button_large" value="{$Think.lang.APPLY}"  id="apply">&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset"  class="ngtos_button_large" value="{$Think.lang.RESET}" id="reset">
+    </div>
+</div>  
+<script>
+    $(function() {
+        $.getJSON(
+                "?c=System/HostDNS&a=Show",
+                function(data) {
+                    if (data) {
+                        $(data.group).each(function(key, value) {
+                            $('#firstDNS').val(value.dns1);
+                            $('#secondDNS1').val(value.dns2);
+                            $('#secondDNS2').val(value.dns3);
+                        })
+                    }
+                });
+        $('#apply').click(function() {
+            var firstDNS = $("#firstDNS").val();
+            var secondDNS1 = $("#secondDNS1").val();
+            var secondDNS2 = $("#secondDNS2").val();
+            if (!$("#firstDNS").val()) {
+                ngtosPopMessager("info", "请输入首选DNS");
+                return;
+            }
+
+            $.ajax({
+                url: "?c=System/HostDNS&a=HostDNSset",
+                type: 'POST',
+                datatype: 'text',
+                data: {
+                    firstDNS: firstDNS,
+                    secondDNS1: secondDNS1,
+                    secondDNS2: secondDNS2
+                },
+                success: function(data, textStatus) {
+                    if (data.indexOf("parent.window.location") >= 0) {
+                        ngtosPopMessager("error", "登录超时，请重新登录!", "login");
+                    } else if (data == 0) {
+                        window.location.reload();
+                    } else {
+                        ngtosPopMessager("error", data);
+                    }
+                }
+            });
+        });
+
+        $('#reset').click(function() {
+            $.ajax({
+                url: "?c=System/HostDNS&a=HostDNSReset",
+                type: 'POST',
+                datatype: 'text',
+                data: {},
+                success: function(data) {
+                    if (data.indexOf("parent.window.location") >= 0) {
+                        ngtosPopMessager("error", "登录超时，请重新登录!", "login");
+                    } else if (data == 0) {
+
+                    } else {
+                        ngtosPopMessager("error", data);
+                    }
+                }
+            });
+        });
+    })
+</script>
+</div>
+</div>
+</body>
+</html>

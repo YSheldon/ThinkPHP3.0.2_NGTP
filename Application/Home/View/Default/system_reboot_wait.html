@@ -1,0 +1,25 @@
+<include file='Index:main'/>
+<div  id="center" class="main-center easyui-layout">
+    <form>
+        <div style="margin:10px 30px;">{$Think.lang.SYS_REBOOT_WAITING}</div>
+        <hr>
+        <br>
+        <br>
+        <div id="p" class="easyui-progressbar" style="width:400px;margin:0 auto"></div>
+        <script>
+            $(function() {
+                var value = $('#p').progressbar('getValue');
+                if (value < 100) {
+                    value += Math.floor(Math.random() * 10);
+                    $('#p').progressbar('setValue', value);
+                    setTimeout(arguments.callee, 3000);
+                }
+                else {
+                    top.location.href = $.cookie("urlorg");
+                }
+            });
+        </script>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<include file='Index:main'/> 
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/system/journal.js" type="text/javascript"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=System/Journal&a=system_log_show">
+        <li id="ipv_4">
+            {$Think.lang.SYSTEM}
+        </li>
+    </a>
+    <a href="?c=System/Journal&a=system_log_show&tab=1">
+        <li>
+            {$Think.lang.HA}
+        </li>
+    </a>
+    <a href="?c=System/Journal&a=system_log_show&tab=2">
+        <li>
+            {$Think.lang.PF}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table>
+<!-- 菜单栏-->
+<div id="tb" style="height: auto">
+    <div>
+        <input type="hidden" name="hid" id ="hid" value ="system">
+        <input type="hidden" name="tid" id ="tid" value ="system_table">
+        <a href="###" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onClick="deleteall();">{$Think.lang.CLEAR}</a>
+        <a href="###" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="superQuery()">{$Think.lang.QUERY}</a>
+        <a href="###" class="easyui-linkbutton" iconCls="icon-export" plain="true" onClick="logExport()">{$Think.lang.EXPORT}</a>
+    </div>
+</div>
+<div id="log_search" style="width: 400px; display: none"></div>
+<script>
+ var log_type = $("#hid").val();
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: false,
+            border: false,
+            remoteSort: false,
+            showFooter: false,
+            collapsible: true,
+            url: '?c=System/Journal&a=JournalJsondata&table=system_table',
+            columns: [[
+                {field:'id',title:$LANG.EXPORT,align:'left',resizable:true,width:20},
+				{field:'version',title:$LANG.VERSION_NUM,align:'left'},
+				{field:'time',title:$LANG.TIME,align:'left',width:50},
+				{field:'dev',title:$LANG.DEVICE,align:'left',width:30},
+				{field:'pri',title:$LANG.PRIORITY,align:'left',resizable:true},
+				{field:'type',title:$LANG.TYPE,align:'left',width:20},
+				{field:'recorder',title:$LANG.TEMPLATE_NAME,align:'left',width:20},
+				{field:'vsid',title:$LANG.VIRTUAL_SYSTEM_NUMBER,align:'left'},
+				{field:'format_msg',title:$LANG.INFORMATION,align:'left',width:200},
+				{field:'serial_num',hidden:true},
+				{field:'opt',title:$LANG.OPERATION,
+					formatter: function(rowIndex, rowData) {
+					return '<a href="###" onclick="del_row4(' +rowData.serial_num + ')"><img src="'+NG_PATH+'Public/images/icon/icon_delete.png" title="<?php echo L('DELETE')?>" style="vertical-align:middle"></a>';
+					}
+				}
+                ]],
+            pagination: true,
+            rownumbers: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: '#tb',
+            checkOnSelect: true,
+            selectOnCheck: true,
+			onLoadSuccess: function() {
+                $('#tt').datagrid('fixRownumber');
+            }
+        });
+    });
+</script>
+</body>
+</html>

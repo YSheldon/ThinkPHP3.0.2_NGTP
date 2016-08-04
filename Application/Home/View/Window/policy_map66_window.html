@@ -1,0 +1,73 @@
+<div>
+<form id="map66_form">
+    <div style="height:200px;">
+        <table class="ngtos_form_pop">
+            <tr style="height: 10px"></tr>
+            <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.SRC}</b></td></tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.ADDRESS}</td>
+                <td>
+                    <input class="easyui-textbox input_length" data-options="required:true" id='add_orig_src' name='src'>
+                    <a href="###" onClick="map66ShowDst('add_orig_src','define host','show','define group_address')" class="easyui-linkbutton" plain="true">{$Think.lang.SELECT_DOT}</a>
+                </td>
+            </tr>
+            <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.CONFIG}</b></td></tr>
+            <tr id='org_tr' class="org_tr">
+                <td class="tdlabel">{$Think.lang.SRC_ADDR_TRANSFORM}</td>
+                <td>
+                    <select id='add_trans_src' class="combobox_len">
+                        <!--<option value="">--不做转换--</option>-->
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.POLICY_ON_OFF}</td>
+                <td>
+                    <input type="radio" name='nat_switch' id='nat_enable' value="1" checked>
+                    <label for="nat_enable">{$Think.lang.ENABLE}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name='nat_switch' id='nat_disable' value="0">
+                    <label for="nat_disable">{$Think.lang.DISABLE}</label>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addNat'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('nat_admin1')">
+    </div>
+</form>
+</div>
+<script>
+    $(function(){
+        $('#addNat').click(function(){
+            if(natMap66Par[0]) {
+                submitMap66(natMap66Par[0]);
+            } else {
+                submitMap66();
+            }
+        });
+        transSrcMap66Reflesh();
+        if(natMap66Par[0]) {
+            $('#add_orig_src')[0].value=$.trim(natMap66Par[1]);
+            if(natMap66Par[3]=='yes') {
+                $('#nat_enable')[0].checked=true;
+            } else {
+                $('#nat_disable')[0].checked=true;
+            }
+
+            $.ajaxSettings.async = false;
+            $.getJSON(
+                    '?c=Policy/Map66&a=addrObj&name='+$.trim(encodeURI(natMap66Par[2])),
+                    function(data){
+                        if(data.rows) {
+                            var addr_id='';
+                            $(data.rows).each(function(key,value){
+                                addr_id = value.name;
+                            })
+                            $('#add_trans_src').combobox('setValue',addr_id);
+                        }
+                    });
+            $.ajaxSettings.async = true;
+        }
+    });
+</script>

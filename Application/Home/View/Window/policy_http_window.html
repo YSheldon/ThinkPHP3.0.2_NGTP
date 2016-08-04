@@ -1,0 +1,125 @@
+<div>
+<form id="httpform">
+    <table class="ngtos_form_table">
+        <tr id="httpId">
+            <td  class="tdlabel">ID</td>
+            <td>
+                <input type="text" id="id" name="id">
+            </td>
+        </tr>
+        <tr>
+            <td  class="tdlabel">{$Think.lang.NAME}</td>
+            <td>
+                <input type="text" id="name" name="name" class="easyui-textbox input_length" data-options="required:true">
+            </td>
+        </tr>
+        <tr>
+            <td  class="tdlabel">{$Think.lang.VIRTUAL_SERVER_NAME}</td>
+            <td>
+                <input type="text" id="vs_name" name="vs_name" class="easyui-textbox input_length">
+            </td>
+        </tr>
+        <tr>
+            <td  class="tdlabel">{$Think.lang.MAXMUM_REQUEST_HEADER}</td>
+            <td>
+                <input type="text" id="max_request_len" name="max_request_len" class="easyui-textbox input_length" data-options="validType:'range[1,32]'">
+            </td>
+        </tr>
+        <tr>
+            <td  class="tdlabel">{$Think.lang.MAXIMUM_BODY_LENGTH}</td>
+            <td>
+                <input type="text" id="max_body_len" name="max_body_len" class="easyui-textbox input_length" data-options="validType:'range[1024,4096]'">
+            </td>
+        </tr>
+        <tr>
+            <td  class="tdlabel">{$Think.lang.IGNORE_ILLEGAL_REQUEST_HEADER_INFORMATION}</td>
+            <td>
+                <input type="radio" name="ignore_invalid_header" id="enable" value="enable" checked/>
+                <label for="enable">{$Think.lang.ENABLE}</label>
+                <input type="radio" name="ignore_invalid_header" id="disable" value="disable" />
+                <label for="disable">{$Think.lang.STOP}</label>
+
+                <!--<input type="text" id="ignore_invalid_header" name="ignore_invalid_header" class="easyui-textbox input_length">-->
+            </td>
+        </tr>
+        <tr>
+            <td  class="tdlabel">{$Think.lang.BLOCKING_HTTP_HEADER_TYPE}</td>
+            <td>
+                <input type="text" id="content_type" name="content_type" class="easyui-textbox input_length">
+            </td>
+        </tr>
+        <tr>
+            <td  class="tdlabel">{$Think.lang.BLOCKING_HTTP_REQUEST_HEADER_URI}</td>
+            <td>
+                <input type="text" id="uri" name="uri" class="easyui-textbox input_length">
+            </td>
+        </tr>
+        <tr>
+            <td  class="tdlabel">{$Think.lang.BLOCKING_KEY}</td>
+            <td>
+                <input type="text" id="keyword" name="keyword" class="easyui-textbox input_length">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.OVERRIDE_HTTP_REQUEST_HEADER}</td>
+            <td>
+                <input type="radio" name="rewrite_request_head" id="proxy_enable" value="enable" checked/>
+                <label for="proxy_enable">{$Think.lang.ENABLE}</label>
+                <input type="radio" name="rewrite_request_head" id="proxy_disable" value="disable" />
+                <label for="proxy_disable">{$Think.lang.STOP}</label>
+            </td>
+        </tr>
+        <tr>
+            <td  class="tdlabel">{$Think.lang.SET_COOKINE}</td>
+            <td>
+                <input type="text" id="setcookie" name="setcookie" class="easyui-textbox input_length">
+            </td>
+        </tr>
+    </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle window_button_cancel" value="{$Think.lang.CANCEL}" onClick="closeWindow('http_window_div')">
+    </div>
+</div>
+<script>
+    $(function() {
+        if(taghttp == 1) {
+            $("#httpId").hide();
+            $('#max_request_len').val("1");
+            $('#max_body_len').val("1024");
+        } else if(taghttp == 2 ) {
+            $('#id').val(param[0]);
+            $('#name').val(param[1]);
+            $("#id").attr('disabled','true');
+            $("#name").attr('disabled','true');
+            $('#vs_name').val(param[2]);
+            $('#max_request_len').val(param[3]);
+            $('#max_body_len').val(param[4]);
+
+            if(param[5] == 'on') {
+                $("input[name='ignore_invalid_header'][id='enable']").attr("checked",true);
+            } else {
+                $("input[name='ignore_invalid_header'][id='disable']").attr("checked",true);
+            }
+
+            $('#content_type').val(param[6]);
+            $('#uri').val(param[7]);
+            $('#keyword').val(param[8]);
+            $('#setcookie').val(param[9]);
+            $('#rewrite_request_head').val(param[10]);
+
+            if(param[10] == 'on') {
+                $("input[name='rewrite_request_head'][id='proxy_enable']").attr("checked",true);
+            } else {
+                $("input[name='rewrite_request_head'][id='proxy_disable']").attr("checked",true);
+            }
+        }
+        $('#confirm_button').click(function() {
+            var httpd = $('#httpform').form('validate');
+            if (httpd) {
+                addHttpProfile(taghttp);
+            }
+        });
+    })
+</script>

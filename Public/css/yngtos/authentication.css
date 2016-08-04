@@ -1,0 +1,39 @@
+#main-content{
+    /* position:relative; */
+    left: 0;
+}
+#dlg-toolbar{
+    border: 0 none;
+    margin: 20px 10px 10px 12px;
+    padding: 0;
+    /*width: 83%;*/
+}
+.flotRight{
+    float:left;
+}
+.datagrid .datagrid-pager{
+    width: 68%;
+    margin-left:10px;
+}
+.datagrid-view{
+    height: 230px;
+    width: 98%;
+	position: relative;
+}
+.datagrid-view2 >.datagrid-header{
+    /*width: 98.4%;*/
+}
+#left_div{
+    float: left;
+    left: 0;
+    overflow: hidden;
+    position: relative;
+    top: 0;
+    width: 230px;
+}
+#content_div{
+    margin-top:15px;
+}
+.panel-body{
+    overflow:hidden;
+}

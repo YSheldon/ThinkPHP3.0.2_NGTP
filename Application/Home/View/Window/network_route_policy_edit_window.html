@@ -1,0 +1,132 @@
+<form id="routePolicy_add">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel">{$Think.lang.GATEWAY}</td>
+            <td>
+                <div class="big_div">
+                    <div class="big_note"></div>
+                    <input type="text" class="easyui-textbox input_length" id='gw_add' data-options="validType:'ipSixPre'" onblur="checkNote(this, true)" onfocus="checkNote(this)" onkeyup="checkNote(this)" />
+                </div>
+            </td>
+        </tr>
+        <!--添加出接口-->
+        <tr>
+            <td class = 'tdlabel'>{$Think.lang.OUT_INTERFACE}</td>
+            <td>
+                <select id='out_interface' class="combobox_len"></select>
+            </td>
+        </tr>
+        <!--添加探测ID的下拉框-->
+        <tr>
+            <td class = 'tdlabel'>{$Think.lang.PROBE_ID}</td>
+            <td>
+                <select  id="probe_id" class="combobox_len"></select>
+            </td>
+        </tr>
+        <!--智能选路算法下拉框-->
+        <tr>
+            <td class = 'tdlabel'>{$Think.lang.INTELLIGENT_ROUTING_ALGORITHM}</td>
+            <td>
+                <select class="easyui-combobox combobox_len" id='load_blance' data-options="panelHeight: 'auto',panelMaxHeight: 198">
+                    <option value=""></option>
+                    <option value="weighted">{$Think.lang.WEIGHT_COST_MULTIPATH}</option>
+                    <option value="ttl">{$Think.lang.TTL}</option>
+                    <option value="latency">{$Think.lang.LATENCY}</option>
+                    <option value="bandwidth">{$Think.lang.MINIMUM_BANDWIDTH_UTILIZATION}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.WEIGHT}</td>
+            <td><input type="text" class="easyui-textbox input_length" id='weight_add' data-options="validType:'range[1,256]'"><span class="form_comment">[1-256]</span></td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"
+               value="{$Think.lang.CONFIRM}" id="confirm_button">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}"
+               onClick="closeWindow('add_page')">
+    </div>
+</form>
+<script>
+    $(function() {
+        $("#name_add").combobox({
+            url: "?c=Network/RoutePolicy&a=comboBox",
+            queryParams:{
+                mod:'network interfaces',
+                textKey:'dev'
+            },
+            valueField: 'dev',
+            textField: 'dev',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple: false,
+            editable: false
+        });
+        $('#out_interface').combobox({
+            url: "?c=Network/RoutePolicy&a=comboBox",
+            queryParams:{
+                mod:'network interfaces',
+                textKey:'dev'
+            },
+            required:false,
+            valueField:'dev',
+            textField:'dev',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false
+        })
+        $('#probe_id').combobox({
+            url: "?c=Network/RoutePolicy&a=comboBox",
+            queryParams:{
+                mod:'network ip-probe',
+                textKey:'probe-id'
+            },
+            required:false,
+            valueField:'probe-id',
+            textField:'probe-id',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false
+        })
+        $('#sport_add').textbox({
+            validType: ['range[0,65535]', 'lessEquals[$(\'#sport2_add\').val()]']
+        });
+
+        $('#sport2_add').textbox({
+//            required: true,
+            validType: ['range[0,65535]', 'greaterEquals[$(\'#sport_add\').val()]']
+        });
+
+        $('#dport_add').textbox({
+//            required: true,
+            validType: ['range[0,65535]', 'lessEquals[$(\'#dport2_add\').val()]']
+        });
+
+        $('#dport2_add').textbox({
+//            required: true,
+            validType: ['range[0,65535]', 'greaterEquals[$(\'#dport_add\').val()]']
+        });
+        // alert(newArr['id'] == 1);
+            if(newArr['gw'])
+                $('#gw_add')[0].value = $.trim(newArr['gw']);
+            if(newArr['weight'])
+                $('#weight_add')[0].value = $.trim(newArr['weight']);
+            if(newArr['dev'])
+                $('#out_interface').combobox('setValue', $.trim(newArr['dev']));
+            //探测ID中编辑取值
+            if(newArr['probe-id'])
+                $('#probe_id').combobox('setValue', $.trim(newArr['probe-id']));
+            if(newArr['load-balance'])
+                $('#load_blance')[0].value = $.trim(newArr['load-balance']);
+        //获取所有接口
+        $('#confirm_button').click(function() {
+            var add = $('#routePolicy_add').form('validate');
+            if (add) {
+                    editProuteSubmit();
+            }
+        });
+    });
+</script>

@@ -1,0 +1,130 @@
+<include file='Index:main'/>
+<style>
+    #center{margin:25px 0 0 5px;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/system/admin.js" type="text/javascript"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=System/Admin&a=admin_show">
+        <li>
+            {$Think.lang.ADMIN}
+        </li>
+    </a>
+    <if condition=" ($pri neq '0')">
+        <a href="?c=System/Admin&a=admin_show&tab=1">
+            <li style="background-color: #f5f5f5;">
+                {$Think.lang.MANAGE_PERMISSION}
+            </li>
+        </a>
+    </if>
+    <if condition="$device eq '1'">         
+        <a href="?c=System/Admin&a=admin_show&tab=2">
+            <li>
+                {$Think.lang.SET}
+            </li>
+        </a>
+    </if>
+</ul>
+<table id="tt"></table>
+<!-- 菜单栏-->
+<div id="tb" style="border-top:1px solid #000;">
+    <a href="###" class="easyui-linkbutton" iconCls="icon-add" id='icon_add' plain="true" onClick="openLimitWindow();">{$Think.lang.ADD}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-edit" id='icon_edit' plain="true" onClick="editLimitWindow();">{$Think.lang.EDIT}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-delete" id='icon_delete' plain="true" onClick="deleteLimitselectrow();">{$Think.lang.DELETE}</a>
+</div>
+<script>
+    var oper = 0;
+    var editName;
+    var editCom;
+    var editLimt;
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            remoteSort: false,
+            collapsible: true,
+            showFooter: false,
+            url: '?c=System/Admin&a=datagridShow',
+            queryParams:{
+                mod:'system privilege map'
+            },
+            columns: [[
+                    {field: 'ck',
+                        formatter: function(value, row) {
+                            if (row.map_type == "default")
+                                return '';
+                            else {
+                                if (value == 1) {
+                                    var q = "<input type='checkbox' checked>";
+                                    return q;
+                                } else {
+                                    var q = "<input type='checkbox' >";
+                                    return q;
+                                }
+                            }
+                        }
+                    },
+                    {field: 'map_name', title: $LANG.FORMWORK_NAME, width: 150, sortable: true, align: 'left'},
+                    {field: 'map_type', title: $LANG.TYPE, width: 100, sortable: true, align: 'left',
+                        formatter: function(value) {
+                            if (value == 'custom')
+                                return $LANG.CUSTOM;
+                            else
+                                return $LANG.PRESET;
+                        }
+                    },
+                    {field: 'limit_show', title: $LANG.BITMAP, align: 'left', resizable: true, width: 50,
+                        formatter: function(value, row) {
+                            return '<a href="###" onclick="showLimit(&quot;' + row.map_name + '&quot;)"><?php echo L(CLICK_VIEW)?></a>';
+                        }
+                    },
+                    {field: 'comment', title: $LANG.DESCRIPTION, align: 'left', sortable: true, resizable: true, width: 150, editor: 'text'}
+                ]],
+            pagination: true,
+            rownumbers: true,
+            loadMsg: $LANG.WAITING,
+            toolbar: '#tb',
+            checkOnSelect: true,
+            selectOnCheck: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            onClickRow: function(rowIndex, rowData) {
+                if (rowData.map_type == 'default')
+                    $('#tt').datagrid("unselectRow", rowIndex);
+                else {
+                    if (rowData.ck == 1)
+                        rowData.ck = 0;
+                    else
+                        rowData.ck = 1;
+                    setTimeout(function(){
+                        $('#tt').datagrid('refreshRow', rowIndex)
+                    },260);
+                }
+                setLimitToolBar();
+            },
+            onDblClickRow: function(rowindex, rowData) {
+                setLimitToolBar();
+                if (rowData.map_type != 'default')
+                    editDoubleClickLimitWindow(rowData.map_name, rowData.comment);
+            },
+            onLoadSuccess: function(data) {
+                $('#icon_delete').linkbutton('disable');
+                $('#icon_edit').linkbutton('disable');
+            },
+            onCheckAll: setLimitToolBar,
+            onUncheckAll: setLimitToolBar,
+            onSelect: setLimitToolBar,
+            onUnselect: setLimitToolBar,
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

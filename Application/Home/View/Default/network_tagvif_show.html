@@ -1,0 +1,136 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/tagvif.js"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=Network/Macvif&a=show">
+        <li>
+            {$Think.lang.MAC_SUBIF}
+        </li>
+    </a>
+    <a href="?c=Network/Macvif&a=show&tabs=tag">
+        <li  id="ipv_4">
+            {$Think.lang.TAG_SUBIF}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table>
+<script>
+    var param = [];
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            nowrap: false,
+            remoteSort: false,
+            sortName: 'interface_name',
+            rownumbers: true,
+//            url: '?c=Network/Macvif&a=datagridShow',
+            url: '?c=Network/Macvif&mod=tagvif',
+//            queryParams:{
+//                mod:'network tagvif'
+//            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'interface_name', title: $LANG.INTERFACE_NAME, width: 80, sortable: true,
+                        sorter:function(a,b){
+                            a = a.split('.');
+                            b = b.split('.');
+                            if(a[0] == b[0]) {
+                                return (parseInt(a[1])>parseInt(b[1])?1:-1);
+                            } else {
+                                return (a[0]>b[0]?1:-1);
+                            }
+                        },
+                        formatter: function(value) {
+                            return "<a style='cursor:pointer;' onclick='show_flow(&quot;" + value + "&quot;)'>" + value + "</a>";
+                        }
+                    },
+                    {field: 'description', title: $LANG.DESCRIPTION, width: 250},
+                    {field:'comm_type',title:$LANG.SWITCH_MODE,width:60,formatter:function(value){
+                        if(value == 'routing'){
+                            return $LANG.ROUTE;
+                        }else{
+                            return $LANG.NETWORK_SWITCH;
+                        }
+                    }},
+                    {field: 'ip', title: $LANG.ADDR_MASK, width: 250,
+                        formatter: function(value, row) {
+                            return format_ip(row.ip4, row.ip6);
+                        }
+                    },
+                    {field: 'mtu', title: 'MTU', width: 60},
+                    {field: 'shutdown', title: $LANG.STATE, width: 60, sortable: true,
+                        formatter: function(value) {
+                            if (value == "enable") {
+                                return $LANG.ENABLE;
+                            } else {
+                                return $LANG.DOWN;
+                            }
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING, 
+            onDblClickRow: function(index, row) {
+                $("#tt").datagrid('unselectAll');
+                $("#tt").datagrid('selectRow', index);
+                editTagvifRow(row.interface_name);
+            },
+            toolbar: [{
+                    id: 'icon-add',
+                    text: $LANG.ADD,
+                    iconCls: 'icon-add',
+                    handler: addTagvifRow
+                }, {
+                    id: 'icon-edit',
+                    text: $LANG.EDIT,
+                    iconCls: 'icon-edit',
+                    handler: editTagvifRow
+                }, {
+                    id: 'icon-delete',
+                    text: $LANG.DELETE,
+                    iconCls: 'icon-delete',
+                    handler: deleteTagvifRow
+                }, {
+                    id: 'icon-clear',
+                    text: $LANG.CLEAR,
+                    iconCls: 'icon-clear',
+                    handler: clearTagvifRow
+                }],
+            onCheck: set_tagvif_toolbar,
+            onUncheck: set_tagvif_toolbar,
+            onClickRow: set_tagvif_toolbar,
+            onCheckAll: set_tagvif_toolbar,
+            onUncheckAll: set_tagvif_toolbar,
+            onSelect: set_tagvif_toolbar,
+            onUnselect: set_tagvif_toolbar,
+            onLoadSuccess: function() {
+                $('#tt').datagrid('fixRownumber');
+                $('#icon-edit').linkbutton('disable');
+                $('#icon-delete').linkbutton('disable');
+                if ($('.tagvif_tip').length > 0) {
+                    $('.tagvif_tip').tooltip({position: 'bottom'});
+                    $('.tagvif_tip').mouseover(function() {
+                        $(this).tooltip('show');
+                    });
+                }
+            }
+        });
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

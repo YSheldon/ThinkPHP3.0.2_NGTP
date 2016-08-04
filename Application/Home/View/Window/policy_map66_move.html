@@ -1,0 +1,57 @@
+<div>
+<form id="map66_move_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td  width="60%" style="padding-left:50px"><span id='moveid'></span>&nbsp;&nbsp;<select id='selectedid' class="easyui-combobox combobox_len" data-options="panelHeight: 'auto',panelMaxHeight: 198,required:true"></select>&nbsp;&nbsp;
+                <select id='position' class="easyui-combobox" data-options="panelHeight:'auto',editable:false">
+                    <option value="before">{$Think.lang.BEFORE}</option>
+                    <option value="after">{$Think.lang.AFTER}</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="natMove()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('nat_move')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        $('#nat_move').find('#moveid')[0].innerHTML=$LANG.MOVE+' &nbsp;&nbsp;'+natMoveMap66Val+'&nbsp;&nbsp;'+$LANG.TO+'&nbsp;';
+        $.each(natMoveMap66Data,function(){
+            if(this.nat_id!=natMoveMap66Val) {
+                $('#nat_move').find('#selectedid')[0].add(new Option(this.nat_id,this.nat_id));
+            }
+        });
+    });
+
+    function natMove() {
+        var isValid = $("#map66_move_form").form('validate');
+        if(!isValid) {
+            return false;
+        }
+        $.ajax({
+            url: "?c=Policy/Map66&a=natMove",
+            type: 'POST',
+            dataType: 'text',
+            async: false,
+            data: {
+                name:natMoveMap66Val,
+                position:$("#position").combobox('getValue'),
+                selected:$("#selectedid").combobox('getValue')
+            },
+            success: function(data, textStatus) {
+                if(data == '0') {
+                    natMoveMap66Val = '';
+                    natMoveMap66Data = {};
+                    $('#nat_move').window('close');
+                    $('#tt').datagrid('reload');
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+</script>

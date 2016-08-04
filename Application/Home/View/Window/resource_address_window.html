@@ -1,0 +1,141 @@
+<div id="pop_div">
+<form id="addr_form">
+    <div>
+        <table class="ngtos_form_table">
+            <tr><td width="150px"  class="tdlabel_net">{$Think.lang.NAME}</td>
+                <td width="400px">
+                    <input type="text" name="addr_name" id="addr_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','addrName']">
+                    <span class="form_comment">{$Think.lang.MAX_CHAR30}</span>
+                </td>
+            </tr>
+            <tr id="addr_vshare" style="display:none">
+                <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+                <td width="450px">
+                    <input type="radio" name="addr_sha" id="addr_share1" value="1">
+                    <label for="addr_share1">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="addr_sha" id="addr_share2" value="0" checked>
+                    <label for="addr_share2">{$Think.lang.DENY}</label>
+                </td>
+            </tr>
+            <tr><td align="center" colspan="2"><br/>
+                <div id="host_div" style="overflow:auto;height:130px;float: left;width:490px;">
+                    <fieldset style="border:1px solid #e5e5e5;"><legend>&nbsp;&nbsp;{$Think.lang.TYPE}&nbsp;&nbsp;</legend>
+                        <table width="100%" cellpadding="5" cellspacing="5" class="ngtos_border0_table">
+                            <tr>
+                                <td width="300px" align="center">
+                                    <input type="radio" name="add_type" id="type_1" onClick="change_type(1)" value="1" checked>
+                                    <label for="type_1">{$Think.lang.HOST}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="add_type" id="type_2"  onClick="change_type(2)" value="2">
+                                    <label for="type_2">{$Think.lang.RANGE}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="add_type" id="type_3"  onClick="change_type(3)" value="3">
+                                    <label for="type_3">{$Think.lang.SUBNET}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="add_type" id="type_4" class="macdom" onClick="change_type(4)" value="4">
+                                    <label for="type_4" class="macdom">{$Think.lang.MAC_ADDR}</label>
+                                </td>
+                            </tr>
+                            <tr id="addr1">
+                                <td align="center">
+                                    <table id="host_addr" class="ngtos_border0_table">
+                                        <tr>
+                                            <td align=center>
+                                            <img src='{$Think.config.NG_PATH}Public/images/icon/mini_clear.gif' width='10' height='10' style='visibility:hidden' />
+                                            <input type="text" name="ipaddr_host" id="ipaddr_host" class="easyui-textbox input_length" data-options="required:true,validType:'ipFourOripSix'">
+                                            <img src="{$Think.config.NG_PATH}Public/images/icon/mini_add.gif" width="10" height="10" style="cursor:pointer;" name="add_type1" onClick="add_host()"/></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr id="addr2" style="display:none">
+                                <td align=center>
+                                    <input type="text" name="ipaddr_st" id="ipaddr_st" class="easyui-textbox input_width150" data-options="required:true,validType:'ipFourOripSix',novalidate:true">
+                                    &nbsp;—&nbsp;
+                                    <input type="text" name="ipaddr_end" id="ipaddr_end" class="easyui-textbox input_width150" data-options="required:true,validType:'ipFourOripSix',novalidate:true">
+                                </td>
+                            </tr>
+                            <tr id="addr3" style="display:none">
+                                <td align=center>
+                                <input type="text" name="ipaddr_sub" id="ipaddr_sub" class="easyui-textbox input_width150" data-options="required:true,validType:'ipSixPre',novalidate:true">
+                                    &nbsp;/&nbsp;
+                                    <input type="text" name="ipaddr_mask" id="ipaddr_mask" class="easyui-textbox input_width150" data-options="required:true,validType:'maskOrPrefix',novalidate:true">
+                                <input type="text" name="resub" id="resub" style="display:none">
+                                </td>
+                            </tr>
+                            <tr id="addr4" style="display:none">
+                                <td align=center>
+                                    <input type="text" name="ipaddr_mac" id="ipaddr_mac" class="easyui-textbox input_length" data-options="required:true,validType:'mac',novalidate:true">
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </div>
+                <div style="float: right;padding-top:5px;">
+                    <img src="{$Think.config.NG_PATH}Public/images/icon/icon_warm.png" class="easyui-tooltip" data-options="position:'top'" title='{$Think.lang.SUPPORT_IPV6}xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx' style="cursor: pointer">
+                </div>
+            </td>
+            </tr>
+        </table>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addAddr'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('addr_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function(){
+        if(!isShared())
+            $('#addr_vshare').css("display","");
+        else
+            $('#addr_vshare').css("display","none");
+        if(addr_tag == 1) {
+        } else {
+            $('#addr_name').val(param[0]);
+            if(param[6] == 'on')
+                $('input:radio[name="addr_sha"]').get(0).checked = true;
+            else
+                $('input:radio[name="addr_sha"]').get(1).checked = true;
+
+            if(param[1] == 1) {
+                $('input[name="add_type"]').get(0).checked = true;
+                var iparray = param[3].split(',');
+                $('#ipaddr_host').val(iparray[0]);
+                ip_init_num = iparray.length;
+                if(iparray.length > 1)
+                    for(var p=1;p<iparray.length;p++) {
+                        add_host();
+                        $('#host_addr'+p).textbox('setValue',iparray[p]);
+                    }
+
+            } else if(param[1] == 2) {
+                $('input[name="add_type"]').get(2).checked = true;
+                if(param[2].indexOf("/") > 0 ) {
+                    var iparray = param[2].split("/");
+                    $('#ipaddr_sub').val(iparray[0]);
+                    $('#ipaddr_mask').val($.trim(iparray[1]));
+                } else {
+                    $('#ipaddr_sub').val(param[2]);
+                    $('#ipaddr_mask').val(param[4]);
+                }
+                param[1] = 3;
+            } else if(param[1] == 3) {
+                $('input[name="add_type"]').get(1).checked = true;
+                ipstr = param[2].split(' ');
+                $('#ipaddr_st').val(ipstr[0]);
+                $('#ipaddr_end').val(ipstr[1]);
+                param[1] = 2;
+            } else if(param[1] == 4) {
+                $('input[name="add_type"]').get(3).checked = true;
+                $('#ipaddr_mac').val(param[5]);
+            }
+
+            change_type(param[1]);
+            $("#addr_name").attr('disabled','disabled');
+            $("input:radio[name='add_type']").attr('disabled','disabled');
+        }
+        if(grtag == 2)
+            $('input[name="add_type"]').get(3).disabled = true;
+        $('#addAddr').click(function(){
+            add_host_address('addr_form',addr_tag, grtag, gaddr_tag);
+        });
+    })
+</script>

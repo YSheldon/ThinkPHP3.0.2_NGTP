@@ -1,0 +1,166 @@
+<div>
+    <table class="ngtos_form_table">
+        <tr>
+            <td colspan="2" class="window_subtitle"><b>{$Think.lang.IMPORT_CONDITION}</b></td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.SELECT_IMPORT_FORMAT}</td>
+            <td>
+                <input type="radio" name="import_meth" id="import_met1" value="1" checked>
+                <label for="import_met1">TXT</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="import_meth" id="import_met2" value="2">
+                <label for="import_met2">CSV</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">&nbsp;</td>
+            <td><div style="float:left">{$Think.lang.FORMAT_TEXT_FILE}</div>
+                <div style="float:left">
+                    <a href="javascript:void(0);" onclick="download_module()" style="color:blue">{$Think.lang.DOWNLOAD_TEMPLATE}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="cursor: pointer" onmouseover="open_notice_window('{$Think.lang.IMPORT_NOTICE}')" src="/Public/images/icon/icon_warm.png"/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.SELECT_IMPORT_FILE}</td>
+            <td>
+                <input name="file" class="easyui-filebox" data-options="buttonText:'{$Think.lang.SELECT_DOT}',width:200,required:true" id="file">
+            </td>
+        </tr>
+        <tr><td class="tdlabel">{$Think.lang.SELECT_IMPORT_LOCATION}</td>
+            <td >
+                <select id="user_sel_group_import"></select>
+                <div id="group_div_import"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.SAME_USER_HANDLE}</td>
+            <td>
+                <input type="radio" name="same_user" id="same_user1" value="1" checked>
+                <label for="same_user1">{$Think.lang.REPLACE}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="same_user" id="same_user2" value="2">
+                <label for="same_user2">{$Think.lang.IGNORE}</label>
+            </td>
+        </tr>
+        <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.USER_ACCESS_POLICY}</b></td></tr>
+        <tr style="display: none">
+            <td class="tdlabel">&nbsp;</td>
+            <td>
+                <input type="checkbox" name="import_able_login" id="import_able_login">{$Think.lang.ALLOW_SAME_ACCOUNT}
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.ALLOW_LOGIN_ADDR}</td>
+            <td >
+                <select id="import_login_addr" name="state"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.ALLOW_ONLINE_TIME}</td>
+            <td >
+                <select id="import_login_time" name="state"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.ALLOW_LOGIN_REGION}</td>
+            <td >
+                <select id="import_login_area"></select>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" id="importUser" value="{$Think.lang.CONFIRM}">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('import_user_div')">
+    </div>
+</div>
+<div id="window_cover" style="margin:0 auto;display:none;">
+    <div id="sub_cover"></div>
+    <div class="waitMsgDiv" style="margin:100px 150px;position: absolute;z-index: 11;">
+        <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif" style="margin-left: 10px">&nbsp;&nbsp;{$Think.lang.CONFIG_ING}
+    </div>
+</div>
+<div id="notice" style="display: none;width:600px;"></div>
+<script>
+    $(function() {
+        $('#importUser').click(function() {
+            module_import();
+        });
+        $('#import_login_addr').combotree({
+            url: '?c=Auth/User&a=callFun',
+            parent_checked:false,
+            width:157,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            required:false,
+            multiple:false,
+            editable:true,
+            queryParams:{
+                fun: 'comboTree',
+                parentNode: 'Address,AddressGroup',
+                Address: 'define host,define range,define subnet',
+                AddressGroup: 'define group_address'
+            }
+        });
+        if($("toolbar3").size() == 0)
+            $("#import_login_addr").combotree('panel').after(comboBut("add_loginAddr('"+$LANG.ADD+"','import_login_addr')","toolbar3"));
+
+        $('#import_login_time').combotree({
+            url: '?c=Auth/User&a=callFun',
+            parent_checked:false,
+            width:157,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            required:false,
+            multiple:false,
+            editable:true,
+            queryParams:{
+                fun: 'comboTree',
+                parentNode: 'Time,TimeGroup',
+                Time: 'define schedule',
+                TimeGroup: 'define group_schedule'
+            }
+        });
+        if($("toolbar2").size() == 0)
+            $("#import_login_time").combotree('panel').after(comboBut("add_loginTime('"+$LANG.ADD+"','import_login_time')","toolbar2"));
+
+        $('#import_login_area').combobox({
+            url: '?c=Resource/Region&a=comboBox',
+            width:157,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            valueField:'name',
+            textField:'name',
+            required:false,
+            multiple:false,
+            queryParams:{
+                mod: 'define area'
+            }
+        });
+        if($("toolbar1").size() == 0)
+            $("#import_login_area").combotree('panel').after(comboBut("add_region('"+$LANG.ADD+"','import_login_area')","toolbar1"));
+        
+        make_user_group("user_sel_group_import","group_div_import","usergroup_import","gruser_import","search_group_import");
+    });
+
+    function open_notice_window(tipMsg){
+        $("#notice").css("display", "");
+        $("#notice").window({
+            width:600,
+            collapsible:false,
+            minimizable:false,
+            maximizable:false,
+            draggable:true,
+            border:false,
+            top:300,
+            href:"?c=Auth/User&a=windowShow&w=auth_user_import_notice_window",
+            resizable:false,
+            shadow:false,
+            modal:true,
+            cache:false,
+            title: tipMsg,
+            style:{
+                borderWidth:0,
+                padding:5
+            }
+        });
+    }
+</script>

@@ -1,0 +1,12 @@
+<table class="ngtos_form_table">
+    <tr>
+        <td class="tdlabel_net"><label for="config_block">{$Think.lang.CIPHERTEXT}</label>
+        <input  type="radio" name="config" id="config_block"></td>
+        <td><label for="block">{$Think.lang.EXPRESS}</label>
+        <input  type="radio" name="config" id="block" checked="checked"></td>
+    </tr>
+</table>
+<div class="window_foot_btn">
+    <input type="button"  id='saveAs' class="ngtos_button_middle confirmenable"onclick="config_save()" value="{$Think.lang.CONFIRM}">
+    <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('config_save_window');">
+</div>

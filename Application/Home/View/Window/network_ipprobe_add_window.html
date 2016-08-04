@@ -1,0 +1,82 @@
+<div>
+    <form id="ipprobeForm">
+        <table class="ngtos_form_table">
+            <tr id="id">
+                <td class="tdlabel">ID</td>
+                <td>
+                    <input type="text" id='probe-id' name="probe-id" class="easyui-textbox input_length" data-options="validType:'range[0,9]'"/>
+                    <span class="form_comment">[0-9]</span>
+                </td>
+            </tr>
+            <tr id="ip">
+                <td class="tdlabel">{$Think.lang.PROBE}IP</td>
+                <td>
+                    <input type="text" id='probe-ip' name="probe-ip" class="easyui-textbox input_length" data-options="required:true"/></td>
+            </tr>
+            <tr >
+                <td class="tdlabel">{$Think.lang.TIME_INTERVAL}</td>
+                <td>
+                    <input type="text" id='interval' name="interval" class="easyui-textbox input_length" data-options="required:true,validType:'range[1,3600]'"/>
+                    <span class="form_comment">[1-3600 {$Think.lang.UNIT_SECONDS}]</span>
+                </td>
+            </tr>
+            <tr >
+                <td class="tdlabel">{$Think.lang.INTERFACE}</td>
+                <td>
+                    <input type="text" id='dev' name="dev" class="easyui-combobox input_length" data-options="required:true"/>
+                    <!-- <input type="text" id='dev' name="dev" class="easyui-textbox input_length" data-options="required:true,"/> -->
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('ipprobe_add');">
+    </div>
+</div>
+<script>
+$(function() {
+    if (tag == 1) {
+        $("#dev").combobox({
+            url: "?c=Network/IpProbe&a=comboBox",
+            queryParams:{
+                mod:'network interfaces',
+                textKey:'dev',
+                select:'true'
+            },
+            valueField: 'dev',
+            textField: 'dev',
+            panelHeight: 'auto',
+            panelMaxHeight:198,
+            multiple: false,
+            editable: false
+        });
+    } else {
+        $("#probe-id").attr('disabled','true');
+        $('#probe-ip').attr('disabled','true');
+        $('#probe-id').val(param[0]);
+        $('#probe-ip').val(param[1]);
+        $('#interval').val(param[2]);
+        $("#dev").combobox({
+            url: "?c=Network/IpProbe&a=comboBox",
+            queryParams:{
+                mod:'network interfaces',
+                textKey:'dev',
+                select:'true'
+            },
+            valueField: 'dev',
+            textField: 'dev',
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            multiple: false,
+            editable: false
+        });
+    }
+    $('#confirm_button').click(function() {
+        var isValid = $('#ipprobeForm').form('validate');
+        if (isValid) {
+            ipProbeHandle(tag);
+        }
+    });
+})
+</script>

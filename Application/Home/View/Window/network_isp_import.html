@@ -1,0 +1,57 @@
+<div>
+    <form id="isp" method="post" enctype="multipart/form-data">
+    <table class="ngtos_form_table">
+        <tr>
+            <td>{$Think.lang.ISP_RESOURCE}</td>
+            <td>
+                <input name="isp_file" class="easyui-filebox ispfile" data-options="buttonText:'{$Think.lang.SELECT_DOT}',width:220,required:true"/>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="ispImportSubmit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('isp_import_page')">
+    </div>
+    </form>
+</div>
+<script>
+    function ispImportSubmit() {
+        $('#isp').form('submit', {
+            url:'?c=Network/IspRoute&import=1',
+            type:'post',
+            ajax:false,
+            onSubmit: function() {
+                 var isValid = $(this).form('validate');
+                 if (!isValid) {
+                    ngtosPopMessager('error','请选择上传文件！');
+                 }
+                var ispFileName;
+                var ispFile = $(".ispfile").filebox('getValue');
+                var startStr1 = ispFile.lastIndexOf('\\');
+                var startStr2 = ispFile.lastIndexOf('\/');
+                 if(startStr1 != -1) {
+                     ispFileName = ispFile.substring(startStr1+1,ispFile.length);
+                 } else if(startStr2 != -1) {
+                     ispFileName = ispFile.substring(startStr2+1,ispFile.length);
+                 } else {
+                     ispFileName = ispFile;
+                 }
+                 if(ispFileName != 'isp.zip' && isValid) {
+                    ngtosPopMessager('info',$LANG.UPLOAD_NAME_ONLY_ALLOW + 'isp.zip');
+                    return false;
+                 }
+                return isValid;	// 返回false将停止表单的提交操作
+             },
+            success:function(data) {
+                if(data == 'ok') {
+                    $("#isp_import_page").window('close');
+                    ngtosPopMessager('success',$LANG.UPDATE_SUCCESS);
+                    $("#tt").datagrid('load');
+                } else {
+                  ngtosPopMessager('error',data);
+                }
+                $("#tt").datagrid("unselectAll");
+            }
+        });
+    }
+</script>

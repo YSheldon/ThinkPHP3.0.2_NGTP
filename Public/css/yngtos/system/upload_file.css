@@ -1,0 +1,106 @@
+#main-content{
+    /* position:relative; */
+}
+#dlg-toolbar{
+    margin: 30px 10px 10px 0;
+    padding: 0;
+}
+.datagrid-view{
+    position: relative;
+    height: 230px;
+    width: 98%;
+}
+.datagrid-view2 >.datagrid-header{
+    width: 98.4%;
+}
+#left_div{
+    float: left;
+    left: 0;
+    overflow: hidden;
+    position: relative;
+    top: 0;
+    width: 230px;
+}
+.datagrid-view{
+    height: 230px;
+    width: 98%;
+}
+#searchs{
+    position:relative;
+    border-right:0px;
+    float:right;
+    color:#000000;
+}
+#searchs_1{
+    position: absolute;
+    right: 145px;
+    top: 5px;
+    width: 100px;
+}
+.tools-lft{
+    width:100%;
+}
+.datagrid .datagrid-pager
+{
+    width: 95.2%;
+}
+.tableDiv{
+    margin-top:0px;
+}
+ul.resp-tabs-list, p {
+    padding: 0;
+}
+.datagrid-toolbar{
+    padding: 3px 5px;
+    width: 99%;
+}
+#ipv{
+    border-bottom: 1px solid black;
+    height: 45px;
+    width: 97%;
+    margin-left: 15px;
+}
+.btn-left-text{
+    padding:0px;
+}
+#ipv_4{
+    background-color:#f5f5f5;
+}
+.panel{
+    margin: 0 0 0 5px;
+}
+.combo-p{
+    margin:0px;
+}
+.btn-enquiry {
+    position:relative;
+    background: #484343 none repeat scroll 0 0;
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 3px;
+    width: 50px;
+}
+#super_query > img{
+    position:absolute;
+    top:10px;
+    left:10px;
+}
+.text-wrap{
+    margin-left:15px;
+}
+#dlg-toolbar a{
+    border-right: 1px solid #d7d7d7;
+}
+.datagrid-toolbar {
+    height: 60px;
+    line-height:48px;
+}
+
+
+
+
+
+
+
+
+

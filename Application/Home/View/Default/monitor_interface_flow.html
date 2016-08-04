@@ -1,0 +1,186 @@
+<include file='Index:main'/>
+<table id="interface_flow_table"></table>
+<div id="main" style="height: 200px;display: none"></div>
+<div id="tb" style="padding:1px;height:26px;">
+    <span style="float: left;margin-left:5px;margin-right:5px;margin-top:3px;">
+        {$Think.lang.TIME}：
+        <select style="width:100px;" id="interface_flow_time">
+            <option value="5minute">{$Think.lang.LAST_FIVE_MINUTES}</option>
+            <option value="hour">{$Think.lang.LAST_HOUR}</option>
+            <option value="day">{$Think.lang.LAST_DAY}</option>
+            <option value="week">{$Think.lang.LAST_WEEK}</option>
+            <option value="month">{$Think.lang.LAST_APRIL}</option>
+            <option value="dayBefore ">{$Think.lang.DAY_BEFORE}</option>
+            <option value="weekBefore">{$Think.lang.WEEK_BEFORE}</option>
+            <option value="monthBefore">{$Think.lang.APRIL_BEFORE}</option>
+        </select>
+    </span>
+    <span id="user_defined_time" style="display:none">
+        {$Think.lang.START_TIME}：<input id="start_time" class="easyui-datetimebox" style="width:150px">&nbsp;
+        {$Think.lang.END_TIME}: <input id="end_time"   class="easyui-datetimebox" style="width:150px">
+        <input type="button" value="{$Think.lang.APPLY}" id="submit"/>
+    </span>
+    <span style="float: right;margin-right:5px;margin-top:3px;">{$Think.lang.REFRESH_TIME}：
+        <select style="width:50" id="page_ref_time">
+            <option value="60000">{$Think.lang.ONE_MINUTES}</option>
+            <option value="300000">{$Think.lang.FIVE_MINUTES}</option>
+            <option value="600000">{$Think.lang.TEN_MINUTES}</option>
+        </select>
+    </span>
+    <a href="#" class="easyui-linkbutton" id='export' iconCls="icon-csv" plain="true">{$Think.lang.EXPORT}</a>
+</div>
+<script src="{$Think.config.NG_PATH}/Public/modules/monitor/echarts.js"></script>
+<script type="text/javascript">
+    var pagereftime;
+    $(function() {
+        $("#export").click(function() {
+            var interfacetime = $('#interface_flow_time').val();
+            window.location.href = '?c=Monitor/Interface&a=interfaceExportData&time='+interfacetime;
+        });
+
+        $("#interface_flow_table").datagrid({
+            url: '?c=Monitor/Interface&a=monitor_interface_flow',
+            autoRowHeight: true,
+            fitColumns: true,
+            singleSelect: true,
+            collapsible: true,
+            nowrap: true,
+            striped: true,
+            fit: true,
+            remoteSort: false,
+            toolbar: '#tb',
+            columns: [[
+                {
+                    field: 'name',
+                    title: $LANG.INTERFACE + $LANG.NAME,
+                    width: 80,
+                    sortable: true,
+                    formatter: function(rowIndex, rowData) {
+                        return "<a style='cursor:pointer;' onclick=\"showamcharts_interface('" + rowData.name + "')\">" + rowData.name + "</a>";
+                    }
+                }, {
+                    field: 'upbytes',
+                    title: $LANG.FLOW_SEND,
+                    width: 80,
+                    sortable: true,
+                    formatter: function(value) {
+                        return byte_format(value);
+                    }
+                }, {
+                    field: 'downbytes',
+                    title: $LANG.FLOW_RECV,
+                    width: 100,
+                    sortable: true,
+                    formatter: function(value) {
+                        return byte_format(value);
+                    }
+                }, {
+                    field: 'totalbytes',
+                    title: $LANG.FLOW_TOTAL,
+                    width: 100,
+                    sortable: true,
+                    formatter: function(value) {
+                        return byte_format(value);
+                    }
+                }, {
+                    field: 'link_statu',
+                    title: $LANG.INTERFACE + $LANG.STATE,
+                    width: 60,
+                    formatter: function(value) {
+                        if (value == "up") {
+                            return '<img src="{$Think.config.NG_PATH}Public/images/icon/interface_normal.png" title="连接"/>';
+                        } else {
+                            return  '<img src="{$Think.config.NG_PATH}Public/images/icon/interface_abnormal.png" title=“未连接”/>';
+                        }
+                    }
+                }
+            ]],
+            rownumbers: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING
+        });
+        $("#interface_flow_time").change(function() {
+            var interfacetime = $('#interface_flow_time').val();
+            if (this.value == 'user_defined') {
+                $('#user_defined_time').show();
+                return false;
+            } else {
+                $('#user_defined_time').hide();
+            }
+
+            $("#interface_flow_table").datagrid('options').url = "?c=Monitor/Interface&a=monitor_interface_flow&time=" + interfacetime;
+            $("#interface_flow_table").datagrid("options").pageNumber = 1;
+            $("#interface_flow_table").datagrid('getPager').pagination({pageNumber: 1});
+            $("#interface_flow_table").datagrid('reload');
+        });
+
+        $('#submit').click(function() {
+            var start_time = $('#start_time').datebox('getValue');
+            var end_time = $('#end_time').datebox('getValue');
+            if (start_time == '') {
+                ngtosPopMessager('info', '开始时间不能为空');
+                return false;
+            }
+            if (end_time && start_time > end_time) {
+                ngtosPopMessager('info', '开始时间不能大于结束时间');
+                return false;
+            }
+            var myDate = new Date();
+            var str_time = myDate.toLocaleString( );
+            str_time = str_time.replace('年', '-');
+            str_time = str_time.replace('月', '-');
+            str_time = str_time.replace('日', '');
+            var str_tmp_time = js_strto_time(str_time);
+            var end_tmp_time = js_strto_time(end_time);
+            if ((end_tmp_time - str_tmp_time) > 0) {
+                ngtosPopMessager('info', '结束时间不能大于当前时间');
+                return false;
+            }
+            $('#interface_flow_table').datagrid('options').url ="?c=Monitor/Interface&a=monitor_interface_flow&time=user_defined&start_time=" + start_time + "&end_time=" + end_time;
+            $("#interface_flow_table").datagrid("options").pageNumber = 1;
+            $("#interface_flow_table").datagrid('getPager').pagination({pageNumber: 1});
+            $("#interface_flow_table").datagrid('reload');
+        });
+
+        pagereftime = setInterval(function() {
+            $("#interface_flow_table").datagrid('reload');
+        }, $('#page_ref_time').val());
+
+        $('#page_ref_time').change(function() {
+            clearInterval(pagereftime);
+            pagereftime = setInterval(function() {
+                $("#interface_flow_table").datagrid('reload');
+            }, this.value);
+        });
+    });
+    function showamcharts_interface(obj) {
+        $('#editTitle').html('接口' + obj + '流量');
+        interface_line_chart(obj);
+    }
+    function interface_line_chart(interfaceName) {
+        var interfacetime = $('#interface_flow_time').val();
+        if (interfacetime == 'user_defined') {
+            var start_time = $('#start_time').datebox('getValue');
+            var end_time = $('#end_time').datebox('getValue');
+        }
+        $.ajax({
+            url: '?c=Monitor/Interface&a=monitor_interface_chart&interface_name=' + interfaceName + '&time=' + interfacetime + "&start_time=" + start_time + "&end_time=" + end_time,
+            timeout: 30000,
+            dataType: 'json',
+            success: function(chartData) {
+                if (chartData["data"] == "no") {
+                    ngtosPopMessager('info', '接口' + interfaceName + '流量无数据！');
+                    return false;
+                } else {
+                    render_line_chart(chartData, '接口' + interfaceName, 'first_window');
+                }
+            }
+        });
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

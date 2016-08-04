@@ -1,0 +1,173 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/network/dhcpserver.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/dhcpv6.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/physics.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/vlan.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/macvif.js"></script>
+    <ul id="ipv" class="resp-tabs-list hor_1"> 
+        <a href="?c=Network/Dhcpv6Server&a=serverinfov6">
+            <li>
+                DHCPV6{$Think.lang.SERVER_SIDE}
+            </li>
+        </a>
+        <a href="?c=Network/Dhcpv6Server&a=serverinfov6&tab=4">
+            <li>
+                DHCPV6{$Think.lang.CLIENT}
+            </li>
+        </a>
+        <a href="?c=Network/Dhcpv6Server&a=serverinfov6&tab=5">
+            <li id="ipv_4">
+                DHCPV6{$Think.lang.RELAY}
+            </li>
+        </a>
+    </ul>
+    <div style="float: left;margin: 10px;">
+        <fieldset style="padding: 15px;width: 365px;height: 295px;">
+            <legend>&nbsp;&nbsp;{$Think.lang.IF_CONFIG}&nbsp;&nbsp;</legend>
+            <div class="select_div">
+                <div class="select_ldiv">
+                    <div class="select_ldiv_bottom border_bottom0">
+                        <span class="lineHeight26">{$Think.lang.SELECT_A_INTERFACE}</span>
+                    </div>
+                    <select class="select middle2 height12" id="service_item_cid" multiple ondblclick="move_options('service_item_cid', 'd_service_item_cid', '1');" style='height:150px'></select>
+                    <div class="select_ldiv_bottom border_top0">
+                        <a class="lineHeight26 cursorPoint" onclick="editDhcpv6Interface('service_item_cid');">{$Think.lang.EDIT_INTERFACE}</a></a>
+                    </div>
+                </div>
+                <div class="select_cdiv">
+                    <input type="button" onClick="move_options('service_item_cid', 'd_service_item_cid', '1');" value=" > "><br>
+                    <input type="button" onClick="move_options('d_service_item_cid', 'service_item_cid', '0');" value=" < ">
+                </div>
+                <div class="select_rdiv">
+                    <div class="select_ldiv_bottom border_bottom0">
+                        <span class="lineHeight26">{$Think.lang.SELECTED_IF}</span>
+                    </div>
+                    <select class="select middle2 height12" id="d_service_item_cid" name="service_item[]" multiple ondblclick="move_options('d_service_item_cid', 'service_item_cid', '0');" style='height:150px'></select>
+                    <div class="select_ldiv_bottom border_top0">
+                        <a class="lineHeight26 cursorPoint" onclick="clearAllDhcpv6Option('service_item_cid', 'd_service_item_cid');">{$Think.lang.CLEAR_ALL}</a>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div style="float: left;margin-top: 15px;">
+        <input type="button" class="ngtos_button_small" data-options="plain:true" onClick="dhcp_start()" id="btn_start" value="{$Think.lang.START}"/>
+        <br/>
+        <input type="button" class="ngtos_button_small" data-options="plain:true" onClick="dhcp_stop()" id="btn_stop" value="{$Think.lang.STOP}" />
+    </div>
+<div id='edit_page' style="width:630px; display:none;"></div>
+<script language='javascript'>
+    $(function() {
+        //显示中继左侧接口
+        parent.sourOptions = [];
+        parent.selOptions = [];
+        param = [];
+        $("#d_service_item_cid").html("");
+        $.getJSON(
+            "?c=Network/Dhcpv6Relay&a=callFun&fun=dataShow&mod="+encodeURI('network dhcp6_relay_wait'),
+            function(data) {
+                var options = "";
+                if (data) {
+                    $(data.rows).each(function(key, value) {
+                        if (value.interface != "" && value.interface != null) {
+                            var msg_interface = value.interface;
+                            var msg_arr = new Array();
+                            msg_arr = msg_interface.split(" ");
+                            for (i = 0; i < msg_arr.length; i++) {
+                                if (msg_interface.length != 0) {
+                                    options += "<option value='" + msg_interface + "' title='" + msg_interface + "'>" + msg_interface + "</option>";
+                                }
+                            }
+                        }
+                        $('#service_item_cid').html(options);
+                    })
+                }
+            });
+        //显示中继右侧接口
+        $.getJSON(
+            "?c=Network/Dhcpv6Relay&a=callFun&fun=dataShow&mod="+encodeURI('network dhcpv6 dhcpv6_relay_start'),
+            function(data) {
+                var options1 = "";
+                if (data) {
+                    $(data.rows).each(function(key, value) {
+                        if (value.interface != "" && value.interface != null) {
+                            var msg_interface1 = value.interface;
+                            var msg_arr1 = new Array();
+                            msg_arr1 = msg_interface1.split(" ");
+                            for (j = 0; j < msg_arr1.length; j++) {
+                                if (msg_interface1.length != 0) {
+                                    options1 += "<option value='" + msg_interface1 + "' title='" + msg_interface1 + "'>" + msg_interface1 + "</option>";
+                                }
+                            }
+                        }
+                        $('#d_service_item_cid').html(options1);
+                    })
+                    //处理开始 停止的按钮可用不可用
+                    $("#btn_start").attr("disabled", "true");
+                    $("#btn_stop").removeAttr("disabled");
+                    var btn_sel = $("#d_service_item_cid").text();
+                    if (btn_sel.length == 0) {
+                        $("#btn_stop").attr("disabled", "true");
+                        $("#btn_start").removeAttr("disabled");
+                    }
+                }
+            });
+        });
+    //运行接口开始
+    function dhcp_start() {
+        var msg = get_select_value('d_service_item_cid');
+        if (msg == '') {
+            ngtosPopMessager('error',$LANG.PLEASE_SELECT_INTERFACE);
+//            alert($LANG.PLEASE_SELECT_INTERFACE);
+            return false;
+        }
+        $.ajax({
+            url: "?c=Network/Dhcpv6Relay&a=Dhcpv6Start",
+            type: 'POST',
+            datatype: 'text',
+            data: {
+                msg: msg
+            },
+            success: function(data) {
+                if (data == 0) {
+                    //处理开始 停止的按钮可用不可用
+                    $("#btn_start").attr("disabled", "true");
+                    $("#btn_stop").removeAttr("disabled");
+                    window.location.reload();
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+    //运行接口停止
+    function dhcp_stop() {
+        $.ajax({
+            url: "?c=Network/Dhcpv6Relay&a=callFun",
+            type: 'POST',
+            datatype: 'text',
+            data: {
+                mod:'network dhcpv6 relay',
+                act:'stop',
+                fun:'simpleHandle'
+            },
+            success: function(data) {
+                if (data == "0") {
+                    //处理开始 停止的按钮可用不可用
+                    $("#btn_start").attr("disabled", "true");
+                    $("#btn_stop").removeAttr("disabled");
+                    window.location.reload();
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

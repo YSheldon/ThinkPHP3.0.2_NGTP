@@ -1,0 +1,180 @@
+<div>
+<form id="self_service_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td width="100px" class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td width="400px">
+                <input type="text" name="serv_name" id="serv_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','eSymbols']">
+                <span class="form_comment">{$Think.lang.MAX_CHAR30}</span>
+            </td>
+        </tr>
+        <tr id="self_vshare" style="display:none">
+            <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+            <td width="400px">
+                <input type="radio" name="self_sha"  value="1" id="share_on">
+                <label for="share_on">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="self_sha" value="0" id="share_off" checked>
+                <label for="share_off">{$Think.lang.DENY}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+            <td>
+                <input type="text" name="serv_des" id="serv_des" class="easyui-textbox input_length" data-options="multiline:true,height:66,validType:['maxLength[125]','disableQuot']">
+                <span class="form_comment">{$Think.lang.MAX_BYTE125}</span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center" width="350px"><br/>
+                <fieldset style="border:1px solid #e5e5e5;"><legend>&nbsp;&nbsp;{$Think.lang.TYPE}&nbsp;&nbsp;</legend>
+                    <table width="100%" cellpadding="5" cellspacing="5">
+                        <tr>
+                            <td align="center">
+                                <input type="radio" name="add_type" id="type_1" onClick="change_serv_type(1)" value="1" checked>
+                                <label for="type_1">TCP</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="add_type" id="type_2"  onClick="change_serv_type(2)" value="2">
+                                <label for="type_2">UDP</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="add_type" id="type_3"  onClick="change_serv_type(3)" value="3">
+                                <label for="type_3">ICMP</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="add_type" id="type_4"  onClick="change_serv_type(4)" value="4">
+                                <label for="type_4">{$Think.lang.OTHER_IP_PROTOCOL}</label>
+                                <!-- <input type="radio" name="add_type" id="type_4"  onClick="change_serv_type(5)" value="5">{lang tree_resource_type6} -->
+                            </td>
+                        </tr>
+                        <tr id="serv1">
+                            <td align="center">{$Think.lang.DIAGNOSE_PORT}&nbsp;
+                                <input type="text" name="port_st" id="port_st">
+                                &nbsp;—&nbsp;
+                                <input type="text" name="port_end" id="port_end">
+                                <span class="form_comment">{$Think.lang.SINGLE_PORT_OR_RANGE}</span>
+                            </td>
+                        </tr>
+                        <tr id="serv2" style="display:none">
+                            <td align="center">{$Think.lang.TYPE_VALUE}&nbsp;
+                                <input type="text" name="pro_num_st" id="pro_num_st">
+                                <span class="form_comment">[0-18]</span>
+                                &nbsp;{$Think.lang.CODE_VALUE}&nbsp;
+                                <input type="text" name="pro_num_end" id="pro_num_end">
+                            </td>
+                        </tr>
+                        <tr id="serv3_1" style="display:none">
+                            <td align="left" style="padding-left:100px">{$Think.lang.PROTOCOL_NUM}&nbsp;
+                                <input type="text" name="proto_num" id="proto_num" >
+                            </td>
+                        </tr>
+                        <tr id="serv3_2" style="display:none">
+                            <td align="left"  style="padding-left:100px">
+                                <span style="margin-right:15px;">{$Think.lang.DIAGNOSE_PORT}</span>
+                                <input type="text" name="sport_st" id="sport_st">
+                                &nbsp;—&nbsp;
+                                <input type="text" name="sport_end" id="sport_end">
+                            </td>
+                        </tr>
+                        <!-- <tr id="serv3" style="display:none"><td>{lang tree_resource_value}</td><td>
+                        <input type="text" name="ether_value" id="ether_value" size="30">&nbsp;&nbsp;[256-65536]
+                        </td>
+                        <td><input type="button" value="添加" name="add_type3" onclick="add_ether()"></td></tr>-->
+                    </table>
+                </fieldset>
+            </td>
+        </tr>
+    </table>
+
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addSelfServ'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('service_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function(){
+        $("#port_st").textbox({
+            width: 60,
+            required: true,
+            validType: ['range[0,65535]', 'lessEquals[$(\'#port_end\').val()]']
+        });
+
+        $("#port_end").textbox({
+            width: 60,
+            validType: ['range[0,65535]', 'greaterEquals[$(\'#port_st\').val()]']
+        });
+
+        $("#pro_num_st").textbox({
+            width: 60,
+            required: true,
+            novalidate: true,
+            invalidMessage: $LANG.TYPE_VALUE_RANGE,
+            validType: 'range[0,18]'
+        });
+        $("#pro_num_end").textbox({
+            width: 60,
+            novalidate: true,
+            invalidMessage: $LANG.CODE_VALUE_RANGE,
+            validType: 'range[0,18]'
+        });
+
+        $("#proto_num").textbox({
+            width: 60,
+            novalidate: true,
+            required: true,
+            invalidMessage: $LANG.PROTOCOL_VALUE,
+            validType: 'range[1,65535]'
+        });
+        $("#sport_st").textbox({
+            width: 60,
+            novalidate: true,
+            required: true,
+            validType: ['range[0,65535]', 'lessEquals[$(\'#sport_end\').val()]']
+        });
+        $("#sport_end").textbox({
+            width: 60,
+            novalidate: true,
+            validType: ['range[0,65535]', 'greaterEquals[$(\'#sport_st\').val()]']
+        });
+
+        if(!isShared())
+            $('#self_vshare').css("display","");
+        else
+            $('#self_vshare').css("display","none");
+        if(serv_tag == 2) {
+            $('#serv_name').val(param[0]);
+            $('#serv_des').val(param[3]);
+            if(param[1] == 6) {
+                $('input[name="add_type"]').get(0).checked = true;
+                change_serv_type(1);
+            } else if(param[1] == 17) {
+                $('input[name="add_type"]').get(1).checked = true;
+                change_serv_type(2);
+            } else if(param[1] == 1) {
+                $('input[name="add_type"]').get(2).checked = true;
+                change_serv_type(3);
+            } else {
+                $('input[name="add_type"]').get(3).checked = true;
+                change_serv_type(4);
+            }
+
+            port=param[2].split("~");
+            if(param[1] == 6 || param[1] == 17) {
+                $('#port_st').textbox('setValue',$.trim(port[0]));
+                $('#port_end').textbox('setValue',$.trim(port[1]));
+            } else if(param[1] == 1) {
+                $('#pro_num_st').textbox('setValue',$.trim(port[0]));
+                $('#pro_num_end').textbox('setValue',$.trim(port[1]));
+            } else {
+                $('#proto_num').textbox('setValue',$.trim(param[1]));
+                $('#sport_st').textbox('setValue',$.trim(port[0]));
+                $('#sport_end').textbox('setValue',$.trim(port[1]));
+            }
+            $("#serv_name").attr('disabled','disabled');
+
+            if(param[4] == 'on')
+                $('input:radio[name="self_sha"]').get(0).checked = true;
+            else
+                $('input:radio[name="self_sha"]').get(1).checked = true;
+        }
+
+        $('#addSelfServ').click(function() {
+            add_self_service(serv_tag, grtag);
+        });
+    })
+</script>

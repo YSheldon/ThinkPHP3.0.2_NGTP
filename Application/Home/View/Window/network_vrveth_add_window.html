@@ -1,0 +1,28 @@
+<form id="vrveth_add">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">VSYS1:</td>
+            <td>
+                <select  class="easyui-combobox" name="interface_one" id="interface_one_cid" style="width:153px;" data-options="panelHeight:'auto',panelMaxHeight:'198'">
+                    <volist name ="list_vsys" id ="vo">
+                        <option value="{$vo.vsys_name}">{$vo.vsys_name}</option>
+                    </volist>
+                </select>
+            </td>
+        </tr>
+        <tr>	
+            <td class="tdlabel_net">VSYS2:</td>
+            <td>
+                <select  class="easyui-combobox" name="interface_two" id="interface_two_cid" style="width:153px;" data-options="panelHeight:'auto',panelMaxHeight:'198'">
+                    <volist name ="list_vsys" id ="voo">
+                        <option value="{$voo.vsys_name}">{$voo.vsys_name}</option>
+                    </volist>
+                </select>
+            </td>
+        </tr>				
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="add_vveth_submit();">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_page')">
+    </div>  
+</form>

@@ -1,0 +1,26 @@
+<!--导入   弹出框-->
+<div id='admin1'>
+    <form id="config_form" >
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.IMPORT_TYPE}</td>
+                <td class="tdlabel_net operation">{$Think.lang.OPERATION}</td>
+                <td class="tdlabel_net"></td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.BEFORE_IMPORT}</td>
+                <td class="tdlabel_net"><a href='#' onclick="import_file(0)" class="export">{$Think.lang.IMPORT}</a></td>
+                <td class="tdlabel_net"></td>
+            </tr>
+            <tr id="all">
+                <td class="tdlabel_net">{$Think.lang.ALL_IMPORT}</td>
+                <td class="tdlabel_net"><a href='#' onclick="import_file(1)" class="export">{$Think.lang.IMPORT}</a></td>
+                <td class="tdlabel_net"></td>
+            </tr>
+        </table>    
+    </form>
+</div>
+<script>    
+    if(vs_id != 0)
+        $("#all").hide();
+</script>

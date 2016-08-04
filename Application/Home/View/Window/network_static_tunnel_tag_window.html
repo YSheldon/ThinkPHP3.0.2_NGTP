@@ -1,0 +1,18 @@
+<div class="ngtos_form_main">
+    <form action="" method="post" enctype="multipart/form-data" name="upload_file_form" id='upload_file_form'>
+        <table class="ngtos_form_table">
+            <tr style=" height: 100px;">
+                <td style="border:none;">{$Think.lang.SELECT_CENTIFICATE_FILE}</td>
+                <td id='vlinkname_td' style="border:none;">
+                    <input class="input_text" style="width:250px;" type="text" id="ca_certtxt" name="ca_certtxt" />
+                    <input type="button" value="{$Think.lang.BROWSER}" />
+                    <input class="input_file" size="30" name="ca_cert" id="ca_cert" style="width:300px; margin-left:-300px; filter:alpha(opacity=0); opacity:0;" type="file" onchange="ca_certtxt.value = this.value" />              
+                </td>
+            </tr>
+        </table>
+        <div>
+            <input type="button"  onclick="submitCertTag()" class="ngtos_button_middle" style="margin-top:20px; margin-left:180px; margin-bottom:20px" value="{$Think.lang.CONFIRM}">
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('addExceptDivTag')" style="margin-left:10px">
+        </div>
+    </form>
+</div>

@@ -1,0 +1,60 @@
+<div class="ngtos_form_main">
+
+    <div class="search_map_div">
+        <input id="search_map" class="search_map_input"/>
+    </div>
+    <foreach name="menu" item="v" key="k">
+        <div>
+            <div class="map_title">{$v.text}</div>
+
+            <!--<div class="map_content">-->
+                <!--<foreach name="v[childs]" item="sv" key="sk">-->
+                    <!--<div class="map_content_detail"><span class="map_serord_title">{$sv.text}</span>-->
+                        <!--<if condition="$sv['childs'] neq ''">-->
+                            <!--<foreach name='sv[childs]' item='tv' key='tk'>-->
+                                <!--<span class="map_third_title"><a href="{$tv.url}">{$tv.text}</a></span>-->
+                            <!--</foreach>-->
+                        <!--</if>-->
+                    <!--</div>-->
+                <!--</foreach>-->
+            <!--</div>-->
+            <div class="map_content">
+                <foreach name="v[childs]" item="sv" key="sk">
+                        <if condition="$sv['childs'] neq ''">
+                            <span class="map_serord_title">{$sv.text}</span>
+                            <foreach name='sv[childs]' item='tv' key='tk'>
+                                <span class="map_third_title"><a href="{$tv.url}">{$tv.text}</a></span>
+                            </foreach>
+                        <else/>
+                            <span class="map_serord_title"><a href="{$sv.url}">{$sv.text}</a></span>
+                        </if>
+
+                </foreach>
+            </div>
+        </div>
+    </foreach>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#search_map').searchbox({
+            searcher:function(value,name) {
+                $('.map_content').each(function() {
+                    var f=0;
+                    $(this).find('span').each(function() {
+                        if($(this).text().indexOf(value)<0)
+                            $(this).hide();
+                        else {
+                            f=1;
+                            $(this).show();
+                        }
+                    });
+                    if(f==0)
+                        $(this).parent().hide();
+                    else
+                        $(this).parent().show();
+                });
+            },
+            prompt:'请输入值'
+        });
+    });
+</script>

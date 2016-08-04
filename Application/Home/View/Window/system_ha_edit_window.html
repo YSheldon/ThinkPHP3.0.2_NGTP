@@ -1,0 +1,77 @@
+<div>
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.GROUP}ID</td>
+            <td><span id="edit_group_show"></span>
+                <input type="hidden" name="edit_group_id" id="edit_group_id">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.CONFIG_ROLE}</td>
+            <td>
+                <span id="edit_group_mode"></span>
+<!--                <input type="radio" name="mode" id="mode_master" value="master">主
+                <input type="radio" name="mode" id="mode_backup" value="backup">备-->
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.START_SEIZE}</td>
+            <td>
+                <input type="radio" name="edit_preempt" id="edit_preempt_enable" value="enable"><label for="edit_preempt_enable">{$Think.lang.YES}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="edit_preempt" id="edit_preempt_disable" value="disable"><label for="edit_preempt_disable">{$Think.lang.NO}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SEIZE_DELAY}</td>
+            <td>
+                <input type="text" value="10" name="edit_preempt_delay" id="edit_preempt_delay" class='easyui-textbox global_input'><span class="form_comment">[1-120]</span>
+            </td>
+        </tr>
+        <tr>	
+            <td colspan="2">
+                <input type="hidden" id="dev_edit"/>
+                <span class="select_margin" style="margin-left:80px;">
+                    <div>{$Think.lang.AVAILABLE_IF}</div>
+                    <div>
+                        <select class="select" id="prif_edit" multiple ondblclick="moveOptions('prif_edit', 'chif_edit', 100);"></select>
+                    </div>
+                </span>
+                <span class="input_margin">
+                    <input type="button" onClick="moveOptions('prif_edit', 'chif_edit', 100);" value=" > " ><br><br>
+                    <input type="button" onClick="moveOptions('chif_edit', 'prif_edit', 0);" value=" < " >
+                </span>
+                <span class="select_margin">
+                    <div>{$Think.lang.SELECTED_IF}</div>
+                    <div>
+                        <select class="select" id="chif_edit" multiple ondblclick="moveOptions('chif_edit', 'prif_edit', 0);"></select>
+                    </div>
+                </span>
+            </td>
+        </tr>			
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="submitEditGroup();">
+        <input type="button" class="ngtos_button_middle window_button_cancel" value="{$Think.lang.CANCEL}" onClick="closeWindow('edit_page')">
+    </div>  
+</div>
+<script>
+     $(document).ready(function() {
+        $('#edit_group_id').val(param[0]);
+        $('#edit_group_show').html(param[0]);
+        if (param[1] == "master") {
+             $('#edit_group_mode').html("主");
+        } else {
+             $('#edit_group_mode').html("备");
+        }
+        if (param[2] == "enable") {
+            $('#edit_preempt_enable').attr("checked", "checked");
+        } else {
+            $('#edit_preempt_disable').attr("checked", "checked");
+        }
+        $('#edit_preempt_delay').val(param[3]);
+
+        var dev = $.trim(param[4]);
+        $('#dev_edit').val(dev);
+        edit_ha_group_init(dev, "prif_edit", "chif_edit");
+    });
+</script>

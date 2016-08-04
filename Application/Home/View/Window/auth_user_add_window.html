@@ -1,0 +1,426 @@
+<div>
+<form id="user_form">
+    <table id="setstyles" class="ngtos_form_pop">
+        <tr>
+            <td colspan="2" class="window_subtitle"><b>{$Think.lang.BASIC_INFO}</b></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net" style="width:120px;">{$Think.lang.USERNAME}</td>
+            <td>
+                <input type="text" name="auth_username" id="auth_username" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace']">
+                <!--<span class="form_comment">{$Think.lang.ALERT_ADD_USER}</span>-->
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.BELONG_USER_GROUP}</td>
+            <td>
+                <select id="user_sel_group"></select>
+                <div id="group_div"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+            <td>
+                <input type="text" size="20" name="auth_userdesc" id="auth_userdesc" class="easyui-textbox input_length" data-options="validType:['maxLength[125]','disableQuot']">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="window_subtitle"><b>{$Think.lang.AUTH_SERVER}</b></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.AUTH_SERVER}</td>
+            <td>
+                <select name="auth_server1" id='auth_server1'>
+                    <option value="1">{$Think.lang.FREE_AUTH}</option>
+                    <option value="2">{$Think.lang.LOCAL_AUTH}</option>
+                    <option value="3">{$Think.lang.REMOTE_AUTH}</option>
+                    <option value="4">{$Think.lang.UNRELATE}</option>
+                </select>
+                <span id="server_span1">
+                    <select name="auth_server2" id='auth_server2'></select>
+                </span>
+                <input type="hidden" name="auth_oldServer" id="auth_oldServer" value="">
+                <span id="server_span2">
+                    <select name="auth_server3" id='auth_server3'></select>
+                </span>
+            </td>
+        </tr>
+        <tr id="local_conf1">
+            <td class="tdlabel_net">{$Think.lang.LOCAL_AUTH_PWD}</td>
+            <td>
+                <input type="text" name="auth_server_pass" id="auth_server_pass">
+            </td>
+        </tr>
+        <tr id="local_conf2">
+            <td class="tdlabel_net">{$Think.lang.MAILBOX}</td>
+            <td>
+                <input type="text" name="auth_server_mail" id="auth_server_mail" class="easyui-textbox input_width150"  data-options="required:true,validType:'email'">
+            </td>
+        </tr>
+        <tr id="local_conf3">
+            <td class="tdlabel_net">{$Think.lang.PHONE_NUM}</td>
+            <td>
+                <input type="text" name="auth_server_phone" id="auth_server_phone" class="easyui-textbox input_width150" data-options="required:true,validType:'mobile'">
+            </td>
+        </tr>
+        <tr id="local_conf4">
+            <td class="tdlabel_net">{$Think.lang.ACCOUNT_EXPIRE_TIME}</td>
+            <td>
+                <input type="radio" name="expir_time" id="expir_time1" value="1" onClick="expi_time(1)" checked>
+                <label for="expir_time1">{$Think.lang.NEVER_EXPIRE}</label>
+            </td>
+        </tr>
+        <tr id="local_conf5">
+            <td class="tdlabel_net">&nbsp;</td>
+            <td>
+                <input type="radio" name="expir_time" id="expir_time2" value="2" onClick="expi_time(2)">
+                <label for="expir_time2">{$Think.lang.EXPIRE_TIME}</label>
+                <input id="st_date" name="expirdate" style="width: 120px">&nbsp;
+                <input id="st_time" name="expirtime"  type="text" data-options="width:100,min:'00:00',showSeconds:true,value:'00:00:00'">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="window_subtitle"><b>{$Think.lang.USER_ACCESS_POLICY}</b></td>
+        </tr>
+        <tr style="display: none;">
+            <td class="tdlabel_net">&nbsp;</td>
+            <td>
+                <input type="checkbox" name="able_more_login" id="able_more_login">
+                <label for="able_more_login">{$Think.lang.ALLOW_SAME_ACCOUNT}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ALLOW_LOGIN_ADDR}</td>
+            <td >
+                <select id="more_login_addr" name="state">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ALLOW_ONLINE_TIME}</td>
+            <td>
+                <select id="more_login_time" name="state">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ALLOW_LOGIN_REGION}</td>
+            <td >
+                <select id="more_login_area"></select>
+            </td>
+        </tr>
+        <tr id="auth_vrc">
+            <td class="tdlabel_net">
+                <input type="checkbox" name="able_vrc" id="able_vrc" onclick="vrc_disabled()">
+                <label for="able_vrc">{$Think.lang.VRC_PERMISSION}</label>
+            </td>
+            <td >
+                <input type="text" name="vrc_val" id="vrc_val" class="easyui-textbox input_width150">&nbsp;&nbsp;
+                <!--<a href="###" id="vrc_sel" class="easyui-linkbutton" data-options="disabled:true" plain="true" onClick="sel_vrc_mem('{lang tree_auth_select}')">选择…</a>-->
+                <a href="###" id="vrc_sel" plain="true" onClick="sel_vrc_mem('{$Think.lang.SELECT}')">{$Think.lang.SELECT_DOT}</a>
+            </td>
+        </tr>
+    </table>
+
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addUserInfo'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('userAdd_div')">
+    </div>
+</form>
+</div>
+<script>
+    var ADD = "{$Think.lang.ADD}";
+    $(function() {
+        $('#auth_server1').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 90,
+            onChange: sel_server_type,
+            multiple: false,
+            editable: false
+        });
+        $("#auth_server_pass").textbox({
+            width:156,
+            required:true
+        });
+        if (getLicense(0, 'IPSEC') && getLicense(0, 'IPSEC_VRC'))
+            $('#auth_vrc').css("display","");
+        else
+            $('#auth_vrc').css("display","none");
+
+        $("#addUserInfo").click(function() {
+            add_userinfo(user_tag);
+        });
+
+        make_user_group("user_sel_group","group_div","usergroup","gruser","search_group");
+        $('#auth_server2').combobox({
+            url: '?c=Auth/Server&a=localShowJsondata&type=localdb',
+            width:133,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            required:true,
+            novalidate:true,
+            multiple:false,
+            valueField:'text',
+            textField:'text'
+        });
+        $('#auth_server3').combobox({
+            url: '?c=Auth/Server&a=localShowJsondata&type=third',
+            width:133,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            required:true,
+            novalidate:true,
+            multiple:false,
+            valueField:'text',
+            textField:'text'
+        });
+        if (typeof(grtag)!='undefined' && grtag==6) {
+            $('#more_login_addr').combotree({
+                url: '?c=Auth/User&a=callFun',
+                parent_checked:false,
+                panelHeight: 'auto',
+                panelMaxHeight: 198,
+                width: 156,
+                required:false,
+                multiple:false,
+                editable:true,
+                queryParams:{
+                    fun: 'comboTree',
+                    parentNode: 'Address,AddressGroup',
+                    Address: 'define host,define range,define subnet',
+                    AddressGroup: 'define group_address'
+                }
+            });
+
+            $('#more_login_time').combotree({
+                url: '?c=Auth/User&a=callFun',
+                parent_checked:false,
+                panelHeight: 'auto',
+                panelMaxHeight: 198,
+                width: 156,
+                required:false,
+                multiple:false,
+                editable:true,
+                queryParams:{
+                    fun: 'comboTree',
+                    parentNode: 'Time,TimeGroup',
+                    Time: 'define schedule',
+                    TimeGroup: 'define group_schedule'
+                }
+            });
+
+            $('#more_login_area').combobox({
+                url: '?c=Resource/Region&a=comboBox',
+                panelHeight: 'auto',
+                panelMaxHeight: 198,
+                width: 156,
+                required:false,
+                multiple:false,
+                valueField:'name',
+                textField:'name',
+                queryParams:{
+                    mod: 'define area'
+                }
+            });
+        } else {
+             $('#more_login_addr').combotree({
+                 url: '?c=Auth/User&a=callFun',
+                 parent_checked:false,
+                 panelHeight: 'auto',
+                 panelMaxHeight: 198,
+                 width: 156,
+                 required:false,
+                 multiple:false,
+                 editable:true,
+                 queryParams:{
+                     fun: 'comboTree',
+                     parentNode: 'Address,AddressGroup',
+                     Address: 'define host,define range,define subnet',
+                     AddressGroup: 'define group_address'
+                 }
+            });
+            if($("toolbar3").size() == 0) {
+                $("#more_login_addr").combotree('panel').after(comboBut("add_loginAddr('"+$LANG.ADD+"','more_login_addr')","toolbar3"));
+            }
+            
+            $('#more_login_time').combotree({
+                url: '?c=Auth/User&a=callFun',
+                parent_checked:false,
+                panelHeight: 'auto',
+                panelMaxHeight: 198,
+                width: 156,
+                required:false,
+                multiple:false,
+                editable:true,
+                queryParams:{
+                    fun: 'comboTree',
+                    parentNode: 'Time,TimeGroup',
+                    Time: 'define schedule',
+                    TimeGroup: 'define group_schedule'
+                }
+            });
+            if($("toolbar2").size() == 0) {
+                $("#more_login_time").combotree('panel').after(comboBut("add_loginTime('"+$LANG.ADD+"','more_login_time')","toolbar2"));
+            }
+
+            $('#more_login_area').combobox({
+                url: '?c=Resource/Region&a=comboBox',
+                panelHeight: 'auto',
+                panelMaxHeight: 198,
+                width: 156,
+                valueField:'name',
+                textField:'name',
+                queryParams:{
+                    mod: 'define area'
+                }
+            });
+            if($("toolbar1").size() == 0) {
+                 $("#more_login_area").combotree('panel').after(comboBut("add_region('"+$LANG.ADD+"','more_login_area')","toolbar1"));
+            }
+        }
+
+
+        $('#auth_server1').combobox('setValue',1);
+        sel_server_type();
+        expi_time(1);
+        if(user_tag == 1) {
+            var usergroup = "/";
+            $("input[type='checkbox'][name='usergroup']").each(function() {
+                $(this).attr("checked", false);
+                
+            });
+            if(group_node != "/")
+                usergroup =  usergroup + "," + group_node
+
+            set_group(usergroup);
+        } else {
+        if(param[2] == "null")
+                param[2] = "/";
+            else
+                param[2] = "/," + param[2];
+            $("input[type='checkbox'][name='usergroup']").each(function() {
+                $(this).attr("checked", false);
+            });
+
+            set_group(param[2]);
+            $('#auth_username').val(param[0]);
+            $("#auth_username").attr('disabled','disabled');
+            if(param[1] == "null")
+                param[1] = "";
+            $('#auth_userdesc').val(param[1]);
+
+            var addr_id;
+            if(param[3] == "null")
+                $('#more_login_addr').combotree('setValue','');
+            else {
+                $.getJSON(
+                    "?c=Resource/Address&a=getAddressId&name="+encodeURI(param[3]),
+                    function(data) {
+                        if(data.rows) {
+                            $(data.rows).each(function(key,value) {
+                                addr_id = value.id;
+                            })
+                            $('#more_login_addr').combotree('setValue',addr_id);
+                        }
+                    });
+                }
+
+            var time_id;
+            if(param[4] == "null")
+                $('#more_login_time').combotree('setValue','');
+            else {
+                $.getJSON(
+                    "?c=Resource/Time&a=getTimeId&name="+encodeURI(param[4]),
+                    function(data){
+                        if(data.rows) {
+                            $(data.rows).each(function(key,value) {
+                                time_id = value.id;
+                            })
+                            $('#more_login_time').combotree('setValue',time_id);
+                        }
+                    });
+                }
+
+            if(param[7] == "null")
+                param[7] = "";
+            $('#more_login_area').combobox('setValue',param[7]);
+
+            if(param[5] == "anonymity")
+                $("#able_more_login").attr('checked','checked');
+
+            if(param[6] == "null") {
+                if(param[5] == "anonymity")
+                    $('#auth_server1').combobox('setValue',1);
+                else
+                    $('#auth_server1').combobox('setValue',4);
+                sel_server_type();
+            } else {
+                $.ajax({
+                    url: "?c=Auth/User&a=authUser",
+                    type: 'GET',
+                    dataType: 'json',
+                    async: false,
+                    data: {
+                        ser_name:encodeURI(param[6]),
+                        usr_name:encodeURI(param[0])
+                    },
+                    success: function(data, textStatus) {
+                        if(data.total < 1) {
+                            $('#auth_server1').combobox('setValue',3);
+                            $('#auth_server3').combobox('setValue',param[6]);
+                        } else {
+                            auth_tag = 2;
+                            $('#auth_server1').combobox('setValue',2);
+                            $('#auth_server2').combobox('setValue',param[6]);
+                            $('#auth_oldServer').val(param[6]);
+                            //$('#auth_server_pass').textbox('setValue',data.rows[0]['passwd']);
+                            if(data.rows[0]['mail'] != "null")
+                                $('#auth_server_mail').textbox('setValue',data.rows[0]['mail']);
+                            if(data.rows[0]['phone'] != "null")
+                                $('#auth_server_phone').textbox('setValue',data.rows[0]['phone']);
+                            if(data.rows[0]['account_end_time'] == "") {
+                                $("input[name='expir_time'][value='1']").attr("checked",true);
+                                expi_time(1);
+                            } else {
+                                $("input[name='expir_time'][value='2']").attr("checked",true);
+                                expi_time(2);
+                                var etime = data.rows[0]['account_end_time'];
+                                $('#st_date').datebox('setValue',etime.substr(0,10));
+                                $('#st_time').timespinner('setValue',etime.substr(11,8));
+                            }
+                        }
+                    }
+                });
+                sel_server_type();
+            }
+
+            $.ajax({
+                url: "?c=Auth/User&a=datagridShow",
+                type: 'GET',
+                dataType: 'json',
+                async: false,
+                data: {
+                    mod:'vpn vrc user_access',
+                    act:'showwebui',
+                    param:encodeURI(param[0]),
+                    parKey:'name',
+                    npage:1
+                },
+                success: function(data, textStatus) {
+                    param = [];
+                    //var obj = jQuery.parseJSON(data);
+                    if(data.total > 0) {
+                        $("#able_vrc").attr('checked','checked');
+                        for(var i=0;i<data.rows.length;i++) {
+                            param.push(data.rows[i].name);
+                        }
+                        var mem = param.join(',');
+                        $("#vrc_val").val(mem);
+                    }
+                }
+            });
+        }
+        vrc_disabled();
+    });
+</script>

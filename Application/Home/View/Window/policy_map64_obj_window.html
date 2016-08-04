@@ -1,0 +1,190 @@
+<div id='selObj'>
+    <table >
+        <tr>
+            <td>
+            <span class="select_margin">
+                <div><input type="text" name="source_tag" id="source_tag" style="width:217px"  onkeyup="doSearchBlock($(this).val(), event, 'sel1',2)">
+                    <img src="{$Think.config.NG_PATH}Public/images/icon/icon_search.png" width="16" height="16" /></div>
+                <select class="select middle_selObj height_selObj" id="sel1"  name='2' multiple ondblclick="moveOptions('sel1','sel2', 0);" style="height: 280px">
+                </select>
+                <div style="border:1px solid #000;height: 20px;font-size: 12px" id='new_obj_div'></div>
+                <div><a href="###" class="easyui-linkbutton" iconCls="icon-sort" plain="true" onClick="sortSelBefore();">{$Think.lang.SORT}</a></div>
+            </span>
+            <span class="input_margin_selObj">
+                <input type="button" onClick="moveOptions('sel1','sel2', 0);" value=" > " ><br><br>
+                <input type="button" onClick="moveOptions('sel2','sel1', 0);" value=" < " >
+            </span>
+            <span class="select_margin">
+                <div><input type="text" name="source_tag" id="source_tag" style="width:217px" onkeyup="doSearchBlock($(this).val(), event, 'sel2',2)">
+                    <img src="{$Think.config.NG_PATH}Public/images/icon/icon_search.png" width="16" height="16" /></div>
+                <select class="select middle_selObj height_selObj" id="sel2"  name='2'  multiple ondblclick="moveOptions('sel2','sel1', 0);">
+                </select>
+                <div><a href="###" class="easyui-linkbutton" iconCls="icon-sort" plain="true" onClick="sortSelAfter();">{$Think.lang.SORT}</a></div>
+            </span>
+            </td></tr></table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" onClick="addObjectVal()" value="{$Think.lang.CONFIRM}">
+        <input type="button" class="ngtos_button_middle" onClick="closeWindow('nat_obj_public')" value="{$Think.lang.CANCEL}">
+    </div>
+</div>
+<script>
+    //定义一个数组，用于存储前缀长度
+    var preArr = ['32','40','48','56','64','96'];
+    //获取当前转换类型的值
+    var type = $('input:radio[name="mode"]:checked').val();
+    //定义一个显示存储ipv6地址的数组
+    var ipV6 = [];
+    //$(function() {
+    if($.trim(modules).indexOf('area')>1)
+        $('#new_obj_div').html("<a href='###' class='add_ser' onClick=\"add_region('{$Think.lang.ADD_REGION}');\" style='position: relative; left: 98px'>{$Think.lang.ADD_REGION}</a>");
+    else if($.trim(modules)=='host') {
+        $('#new_obj_div').html("<a href='###' class='add_ser' onClick=\"addr_map_64('{$Think.lang.ADD_ADDR_ATTR}','notmac');\" style='position: relative; left: 45px'>{$Think.lang.ADD_ADDR}</a>"+
+                "<a href='###' class='add_ser_group' onClick=\"add_addrGroup('{$Think.lang.ADD_ADDR_ATTR}');\" style='position: relative; left: 85px'>{$Think.lang.ADD_ADDR_GROUP}</a>");
+    } else if($.trim(modules)=='service') {
+        $('#new_obj_div').html("<a href='###' class='add_ser' onClick=\"add_serv('{$Think.lang.ADD_SERVICE}');\" style='position: relative; left: 45px'>{$Think.lang.ADD_SERVICE}</a>"+
+                "<a href='###' class='add_ser_group' onClick=\"add_serv_group('{$Think.lang.ADD_SERVICE_GROUP}');\" style='position: relative; left: 85px'>{$Think.lang.ADD_SERVICE_GROUP}</a>");
+    } else if($.trim(modules)=='schedule') {
+        $('#new_obj_div').html("<a href='###' class='add_ser' onClick=\"add_times('{$Think.lang.ADD_TIME}');\" style='position: relative; left: 45px'>{$Think.lang.ADD_TIME}</a>"+
+                "<a href='###' class='add_ser_group' onClick=\"add_time_group('{$Think.lang.ADD_TIME_GROUP}');\" style='position: relative; left: 85px'>{$Think.lang.ADD_TIME_GROUP}</a>");
+    } else if($.trim(modules).indexOf('vlan')>1) {
+        $('#new_obj_div').html("<a href='###' class='add_ser' onClick=\"addVlanRow();\" style='position: relative; left: 98px'>{$Think.lang.ADD_VLAN}</a>");
+    }
+
+    if($('#'+addInput).textbox('getValue')) {
+        var sel_arr=$.trim($('#'+addInput).textbox('getValue')).split(' ');
+    } else {
+        var sel_arr = [];
+    }
+
+    $.ajax({
+        url: "?c=Policy/Interview&a=policyObjShow",
+        type: 'POST',
+        dataType:'json',
+        async:false,
+        data: {
+            module1:modules,
+            action1 :action
+        },
+        success: function(data) {
+            if(data.rows){
+                if(modules=='network vlan') {
+                    $.each(data.rows,function() {
+                        var text;
+                        if(this.vlanid < 10) {
+                            text="vlan.000"+this.vlanid;
+                        } else if(this.vlanid >= 10 && this.vlanid <100) {
+                            text="vlan.00"+this.vlanid;
+                        } else if(this.vlanid >= 100 && this.vlanid <1000) {
+                            text="vlan.0"+this.vlanid;
+                        } else {
+                            text="vlan."+this.vlanid;
+                        }
+                        var opp = new Option(text,text);
+                        opp.title = text;
+                        $(isArrayValue(sel_arr,text)?'#sel2':'#sel1')[0].add(opp);
+                    });
+                } else if(modules=='host') {
+                    var i = 0;
+                    $.each(data.rows,function(){
+                        if(this.family == 10){
+                            //判断当前转换时候为前缀转换中的目的地址
+                            if(type == 2 && dstval == 'dst_address'){
+                                //判断当前类型为子网类型
+                                if(this.ip){
+                                    var a = this['ip'].split('/');
+                                    if($.inArray(a[1],preArr) >= 0){
+                                        var opp = new Option(this.name+(this.type_value==1?' ['+$LANG.HOST+']':(this.type_value==2?' ['+$LANG.SUBNET+']':(this.type_value==3?' ['+$LANG.RANGE+']':(this.type_value==4?' ['+$LANG.MAC_ADDR+']':'')))),this.name)
+                                        opp.title = this.name+(this.type_value==1?' ['+$LANG.HOST+'] ip: '+this.ipaddr:(this.type_value==2?' ['+$LANG.SUBNET+'] ip: '+this.ip:(this.type_value==3?' ['+$LANG.RANGE+'] ip: '+this.ip:(this.type_value==4?' ['+$LANG.MAC_ADDR+']':''))))
+                                        $(isArrayValue(sel_arr,this.name)?'#sel2':'#sel1')[0].add(opp);
+                                    }
+                                }
+                            }else{
+                                ipV6[i] = this.name;
+                                //过滤子网中前缀不在范围中的子网地址
+                                if(this.ip){
+                                    var a = this['ip'].split('/');
+                                    if($.inArray(a[1],preArr) >= 0){
+                                        var opp = new Option(this.name+(this.type_value==1?' ['+$LANG.HOST+']':(this.type_value==2?' ['+$LANG.SUBNET+']':(this.type_value==3?' ['+$LANG.RANGE+']':(this.type_value==4?' ['+$LANG.MAC_ADDR+']':'')))),this.name)
+                                        opp.title = this.name+(this.type_value==1?' ['+$LANG.HOST+'] ip: '+this.ipaddr:(this.type_value==2?' ['+$LANG.SUBNET+'] ip: '+this.ip:(this.type_value==3?' ['+$LANG.RANGE+'] ip: '+this.ip:(this.type_value==4?' ['+$LANG.MAC_ADDR+']':''))))
+                                        $(isArrayValue(sel_arr,this.name)?'#sel2':'#sel1')[0].add(opp);
+                                    }
+                                }else{
+                                    var opp = new Option(this.name+(this.type_value==1?' ['+$LANG.HOST+']':(this.type_value==2?' ['+$LANG.SUBNET+']':(this.type_value==3?' ['+$LANG.RANGE+']':(this.type_value==4?' ['+$LANG.MAC_ADDR+']':'')))),this.name)
+                                    opp.title = this.name+(this.type_value==1?' ['+$LANG.HOST+'] ip: '+this.ipaddr:(this.type_value==2?' ['+$LANG.SUBNET+'] ip: '+this.ip:(this.type_value==3?' ['+$LANG.RANGE+'] ip: '+this.ip:(this.type_value==4?' ['+$LANG.MAC_ADDR+']':''))))
+                                    $(isArrayValue(sel_arr,this.name)?'#sel2':'#sel1')[0].add(opp);
+                                }
+                                i++;
+                            }
+
+                        }
+
+                    });
+                } else if(modules=='service') {
+                    $.each(data.rows,function(){
+                        var opp = new Option(this.name,this.name)
+                        opp.title = this.name
+                        $(isArrayValue(sel_arr,this.name)?'#sel2':'#sel1')[0].add(opp);
+                    });
+                } else {
+                    $.each(data.rows,function(){
+                        var opp = new Option(this.name,this.name)
+                        opp.title = this.name
+                        $(isArrayValue(sel_arr,this.name)?'#sel2':'#sel1')[0].add(opp);
+                    });
+                }
+            }
+        }
+    });
+
+    if(groupMod){
+        $.ajax({
+            url: "?c=Policy/Interview&a=policyObjShow",
+            type: 'POST',
+            dataType: 'json',
+            async: false,
+            data: {
+                module1:groupMod,
+                action1 :action
+            },
+            success: function(data, textStatus) {
+                if(data.rows) {
+                    $.each(data.rows,function() {
+                        var val = 1;
+                        if(this.member.indexOf(',') > 0){
+                            var arr = this.member.split(',');
+                        }else{
+                            var arr = [];
+                            arr[0] = this.member;
+                        }
+                        for(var i in arr){
+                          if(jQuery.inArray(arr[i],ipV6)<0){
+                               val = 0;
+                              break;
+                           }
+                        }
+                        if(val == 1){
+                            var opp = new Option(this.name+' ['+$LANG.GROUP+']',this.name);
+                            opp.title = this.name+' ['+$LANG.GROUP+']';
+                            $(isArrayValue(sel_arr,this.name)?'#sel2':'#sel1')[0].add(opp);
+                        }
+                    });
+                }
+            }
+        });
+    }
+    //});
+    function addObjectVal() {
+        var b=$('#sel2')[0];
+        var b_len=b.length;
+        if(b_len>128) {
+            ngtosPopMessager("error", $LANG.MAX_SELECT128);
+            return;
+        }
+        var b_value='';
+        for(var i=0; i<b_len;i++) {
+            b_value+=b.options[i].value+' ';
+        }
+        $("#nat_obj_public").window('close');
+        $("#"+addInput).textbox('setValue',b_value);
+    }
+</script>

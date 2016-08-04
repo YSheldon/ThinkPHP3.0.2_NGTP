@@ -1,0 +1,108 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/policy/proxy.js" type="text/javascript"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false">
+    <table id="http"></table>
+</div>
+</div>
+</div>
+</body>
+</html>
+<script>
+    var taghttp;
+    var param = [];
+    $(function(){
+        $('#http').datagrid({
+            fit:true,
+            fitColumns:true,
+            border:false,
+            striped: true,
+            rownumbers:true,
+            url:'?c=Policy/HTTP&a=datagridShow',
+            queryParams:{
+                mod:'proxy http_profile'
+            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns:[[
+                {field:'id',title:$LANG.ID,width:50},
+                {field:'name',title:$LANG.NAME,width:50},
+                {field:'vs_name',title:$LANG.VIRTUAL_SERVER_NAME+'66',width:100},
+                {field:'max_request_len',title:$LANG.MAXMUM_REQUEST_HEADER,width:100,
+                    formatter: function(rowIndex, rowData) {
+                        return rowData.max_request_len+'K';
+                    }
+                },
+                {field:'max_body_len',title:$LANG.MAXIMUM_BODY_LENGTH,width:100,
+                    formatter: function(rowIndex, rowData) {
+                        return rowData.max_body_len+'K';
+                    }
+                },
+                {field:'ignore_invalid_header',title:$LANG.IGNORE_ILLEGAL_REQUEST_HEADER_INFORMATION,width:100,
+                    formatter:function(rowIndex,rowData){
+                        if(rowData.ignore_invalid_header == 'on')
+                            return $LANG.ENABLE;
+                        else
+                            return $LANG.STOP;
+                    }
+                },
+                {field:'content_type',title:$LANG.BLOCKING_HTTP_HEADER_TYPE,width:100},
+                {field:'uri',title:$LANG.BLOCKING_HTTP_REQUEST_HEADER_URI,width:100},
+                {field:'keyword',title:$LANG.BLOCKING_KEY,width:100},
+                {field:'set-cookie',title:$LANG.SET_COOKINE,width:80},
+                {field:'rewrite_request_head',title:$LANG.OVERRIDE_HTTP_REQUEST_HEADER,width:100,
+                    formatter:function(rowIndex,rowData){
+                        if(rowData.rewrite_request_head == 'on')
+                            return $LANG.ENABLE;
+                        else
+                            return $LANG.STOP;
+                    }
+                }
+            ]],
+            checkOnSelect:true,
+            pagination:true,
+            pageSize:20,
+            pageList:[20,50,100],
+            loadMsg:$LANG.WAITING,
+            onCheck: setHttp,
+            onUncheck: setHttp,
+            onCheckAll: setHttp,
+            onUncheckAll: setHttp,
+            onLoadSuccess: setHttp,
+            onDblClickRow:function(value,rowData){
+                editHttp(rowData.id,rowData.name,rowData.vs_name,rowData.max_request_len,rowData.max_body_len,rowData.ignore_invalid_header,rowData.content_type,rowData.uri,rowData.keyword,rowData['set-cookie'],rowData.rewrite_request_head);
+            }
+        });
+        if (getPrivilege("proxy") != false){
+            $('#http').datagrid({
+                toolbar: [{
+                    id: 'icon-add',
+                    text: $LANG.ADD,
+                    iconCls: 'icon-add',
+                    handler: addHttp
+                },  {
+                    id: "icon-edit",
+                    text: $LANG.EDIT,
+                    iconCls: 'icon-edit',
+                    handler: editHttpRow
+                }, {
+                    id: 'icon-delete',
+                    text: $LANG.DELETE,
+                    iconCls: 'icon-delete',
+                    handler: deleteHttp
+                }, {
+                    id: 'icon-clear',
+                    text:$LANG.CLEAR,
+                    iconCls: 'icon-clear',
+                    handler: clearHttp
+                }]
+            });
+        }
+    })
+</script>

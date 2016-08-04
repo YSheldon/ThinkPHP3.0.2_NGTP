@@ -1,0 +1,100 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css" type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/policy/policy.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/policy/map66.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/address.js" type="text/javascript"></script>
+<table id="tt"></table>
+<!-- 菜单栏-->
+<div id="tb">
+    <a href="###" onClick="addNatMap66();" class="easyui-linkbutton" iconCls="icon-add" plain="true">
+        {$Think.lang.ADD}
+    </a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-edit" id='icon_edit' plain="true" onClick="editMap66Nat();">{$Think.lang.EDIT}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-delete" id='icon_delete' plain="true" onClick="delMap66Row();">{$Think.lang.DELETE}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onClick="clearMap66Row();">{$Think.lang.CLEAR}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-move" id='icon_move' plain="true" onClick="moveNatMap66();">{$Think.lang.MOVE}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-enable" id='icon_enable' plain="true" onClick="enableRowMap66('yes');">{$Think.lang.ENABLE}</a>
+    <a href="###" class="easyui-linkbutton" iconCls="icon-disable" id='icon_disable' plain="true" onClick="enableRowMap66('no');">{$Think.lang.DISABLE}</a>
+</div>
+<!--添加NAT-->
+<div id='nat_admin1' style="width:550px;display:none"> </div>
+<!--移动-->
+<div id='nat_move' style="width:500px;display:none"> </div>
+<!--地址对象单选新建-->
+<div id='addr_div' style="width:550px; display:none;"></div>
+<!--公用添加对象弹出框-->
+<div id='nat_obj_public' style="width:550px; display:none;"></div>
+
+<script>
+    var ip_num = 0;
+    var ip_init_num = 0;
+    var mac_num = 0;
+    var grtag = 9;
+    var addr_tag = 1;
+    var gaddr_tag = 1; //新建地址对象时表明是“添加”（与对象中的对象编辑区分）
+    var region_tag = 1; //新建区域对象时表明是“添加”（与对象中的对象编辑区分）
+    var time_tag = 1;//新建时间组对象时表明是“添加”（与对象中的对象编辑区分）
+    var circle_tag = 1;//新建时间对象时表明是“添加”（与对象中的对象编辑区分）
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            rownumbers: false,
+            remoteSort: true,
+            collapsible: true,
+            autoRowHeight: true,
+            url: '?c=Policy/Map66&a=datagridShow',
+            queryParams:{
+                mod:'nat map66policy_webui'
+            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                {field: 'nat_id', title: $LANG.ID, width: 50, sortable: false, resizable: true},
+                {field: 'orig_src', title: $LANG.SRC_ADDR, width: 80, resizable: true,
+                    formatter: function(value, row) {
+                        return valueRowLineTooltip(value, ' ', 'address');
+                    }
+                },
+                {field: 'trans_src', title: $LANG.TRANSFORM, width: 50, sortable: false, resizable: true}
+            ]],
+            checkOnSelect: true,
+            selectOnCheck: true,
+            pagination: true,
+            pageSize: 10,
+            pageList: [10, 20, 50],
+            loadMsg: $LANG.WAITING,
+            toolbar: '#tb',
+            onCheck: setToolBar,
+            onUncheck: setToolBar,
+            onClickRow: setToolBar,
+            onCheckAll: setToolBar,
+            onUncheckAll: setToolBar,
+            onSelect: setToolBar,
+            onUnselect: setToolBar,
+            onLoadSuccess: function(data) {
+                $('#icon_delete').linkbutton('disable');
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_move').linkbutton('disable');
+                $('#icon_enable').linkbutton('disable');
+                $('#icon_disable').linkbutton('disable');
+            },
+            onDblClickRow: function(index, row) {
+                datagirdDbclick('tt', index);
+                editMap66row(row.nat_id, row.orig_src,row.trans_src,row.enable);
+            },
+            rowStyler: function(index, row) {
+                if (row.enable != 'yes')
+                    return 'background-color:#d5d5d5;';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

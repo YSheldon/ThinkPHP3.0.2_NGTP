@@ -1,0 +1,70 @@
+#leftdiv{
+	width:230px;
+	margin-top:10px;
+}
+#main_close{
+	display:block;
+	position:fixed;
+	top:50%;
+	left:13%;
+	cursor:pointer;
+	z-index:1;
+	height: 40px;
+	width: 12px;
+}
+#main_open{
+	display:none;
+	position:fixed;
+	top:50%;
+	left:3.5%;
+	cursor:pointer;
+	z-index:1;
+	height: 40px;
+	width: 12px;
+}
+
+#Prompt_2{
+	color:#ffffff;
+	z-index:1;
+}
+#Prompt_1{
+	z-index:1;
+}
+.tb-toolbar-item-tip {
+	position:absolute;
+    left:60px;
+    top: 4px;
+	display:none;
+	z-index:10;
+	width:70px;
+	height:30px;
+	font-size:12px;
+	line-height:30px;
+	border-radius:3px;
+	font-family:tahoma,arial,'Hiragino Sans GB',simsun,sans-serif;
+	text-align:center;
+	/*background: rgba(72,67,67,0.5);*/
+	background: rgba(72,67,67,1);
+	-webkit-animation:leftFadeIn .3s ease-out;
+	-moz-animation:leftFadeIn .3s ease-out;
+	animation:leftFadeIn .3s ease-out
+
+}
+.tb-toolbar-item-hd:hover .tb-toolbar-item-tip {
+	display:block
+}
+.tb-toolbar-item-arrow {
+	position:absolute;
+	width:10px;
+	height:10px;
+	padding:0px;
+    left: -9px;
+    top: 0;
+    font-size: 20px;
+    /*color: rgba(72,67,67,0.5);*/
+    color: rgba(72,67,67,1);
+    -webkit-left: -9px;
+    -moz-left: -15px;
+}
+
+

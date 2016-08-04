@@ -1,0 +1,206 @@
+<include file='Index:main'/>
+<style>
+    .datagrid .datagrid-pager{width:85%;}
+    .tab_tag_table {background-color:#fff;border:none;border-bottom:1px solid #000;}
+    .select_margin{margin-left:4px;float:left;}
+    .input_margin{margin-left:4px;margin-top:20px;float:left;}
+    .select{padding:0 0 0 2px;height:200px;width:180px;}
+    .tab_tag_black1{border:none;background-color:#f5f5f5;}
+    #pcenter{overflow: hidden;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/system/ha.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<div style="padding:20px 0 0 20px">
+    <form  action="" name="system_parameters_form" method="post">
+        <table class="ngtos_form_table">                        
+            <tr>
+                <th colspan="2" class="tdlabel_net">{$Think.lang.GLOBAL_CONFIG}</th>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.MODE}</td>
+                <td class="ngtos_width_85pc">
+                    <select id="ha_mode_id" onchange="change_ha_mode()" style="width:155px" class="easyui-combobox" data-options="panelHeight:'auto',panelMaxHeight:198">
+                        <option value="as">{$Think.lang.MINE_MODE}</option>
+                        <option value="sp">{$Think.lang.CONNECT_PROTECTION}</option>
+                        <option value="aa">{$Think.lang.BALANCE}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.HEART_RATE}</td>
+                <td class="ngtos_width_85pc">
+                    <select name="interface" id="interface" style="width:155px" class="easyui-combobox" 
+                            data-options="panelHeight:'auto',panelMaxHeight:198">
+                        <volist name="dev" id="vo">
+                            <option value="{$vo.dev}">{$vo.dev}</option>
+                        </volist>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.THIS}IP</td>
+                <td><input type="text" name="local" id="local" class="easyui-textbox global_input" /> </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.OPPOSITE}IP</td>
+                <td>
+                <input type="text" name="remote" id="remote" class="easyui-textbox global_input"/> </td>
+            </tr>
+            <tr>
+                <th colspan="2" class="tdlabel_net">HA{$Think.lang.STATE}</th>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.CURRENT_STATE}:<span id="ha_status_id">{$Think.lang.ON}</span></td>
+                <td><input type="button" value="{$Think.lang.LAUNCH}" id="ha_start_id" class="ngtos_button_small" onClick="ha_start()"/>
+                    <input type="button" value="{$Think.lang.STOP}" id="ha_stop_id" class="ngtos_button_small" onClick="ha_stop()"/></td>
+            </tr>
+            <tr>
+                <th colspan="2" class="tdlabel_net">{$Think.lang.OPERATION}</th>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.CONFIG_SYNC_OPPOSITE}</td>
+                <td><input type="button" value="{$Think.lang.IMMEDIATELY_SYNC}" id="sync_to_peer" class="ngtos_button_small " onClick="ha_sync()"/></td>
+            </tr>
+        </table>
+        <div class="btn_config" style="margin-left:190px">
+            <input type="button" value="{$Think.lang.APPLY}" id="ha_save_id" class="ngtos_button_large confirmenable" onClick="ha_save()"/>
+        </div>
+    </form>
+    <table  width=100% class="tab_tag_table">
+        <tr>
+            <td>
+                <ul class="resp-tabs-list hor_1"> 
+                    <li id="ipv_4" class="tab_tag_black1">
+                        {$Think.lang.MANAGEMENTGROUP_SET}
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <table id="tt" style="height:265px"></table>
+</div>
+<script type="text/javascript">
+    var max_group_num = 255;
+    var origin_data = [];
+    var ha_enable = false;
+    var param = [];
+    $(function() {
+        $('#tt').datagrid({
+            fitColumns: true,
+            striped: true,
+            nowrap: false,
+            border: false,
+            remoteSort: false,
+            singleSelect: false,
+            autoRowHeight: true,
+            showFooter: false,
+            sortName: 'group',
+            sortOrder: 'asc',
+            toolbar: '#table_topbar',
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[{
+                        field: 'group',
+                        title: $LANG.GROUP+'ID',
+                        width: 80,
+                        sortable: true
+                    }, {
+                        field: 'actor',
+                        title: $LANG.CONFIG_ROLE,
+                        width: 80
+                    }, {
+                        field: 'state',
+                        title: $LANG.CURRENT_RUNNING_STATE,
+                        width: 80
+                    }, {
+                        field: 'preempt',
+                        title: $LANG.START_SEIZE,
+                        width: 100,
+                        sortable: true
+                    }, {
+                        field: 'preempt-delay',
+                        title: $LANG.PREEMPTON_DELAY_T,
+                        width: 100,
+                        sortable: true
+                    }, {
+                        field: 'interface',
+                        title: $LANG.MONITOR_INTERFACE,
+                        width: 100,
+                        sortable: true,
+                        formatter: function(value) {
+                            if (value != "" && value != null) {
+                                var ret = value.split(',').join(' ');
+                                if (ret.length > 50)
+                                    return "<a href='###' title='" + ret + "'>" + ret.substr(0, 49) + "…</a>";
+                                else
+                                    return ret;
+                            } else {
+                                return '';
+                            }
+                        }
+                    }
+                ]],
+            pagination: true,
+            rownumbers: true,
+            pageSize: 10,
+            pageList: [10, 20, 50],
+            onDblClickRow: function(index, row) {
+                edit_ha_group(row.group, row.actor, row.preempt, row['preempt-delay'], row.interface);
+            },
+            onClickRow: set_ha_toolbar,
+            onCheck: set_ha_toolbar,
+            onUncheck: set_ha_toolbar,
+            onCheckAll: set_ha_toolbar,
+            onUncheckAll: set_ha_toolbar,
+            onSelect: set_ha_toolbar,
+            onUnselect: set_ha_toolbar,
+            onLoadSuccess: set_ha_toolbar
+        });
+        if (getPrivilege("ha") != false) {
+            $('#tt').datagrid({
+                   toolbar: [{
+                           id: 'icon-add',
+                           text: $LANG.ADD,
+                           iconCls: 'icon-add',
+                           handler: add_ha_group
+                       }, {
+                           id: 'icon-edit',
+                           text: $LANG.MODIFY,
+                           iconCls: 'icon-edit',
+                           handler: edit_ha_group
+                       }, {
+                           id: 'icon-delete',
+                           text: $LANG.DELETE,
+                           iconCls: 'icon-delete',
+                           handler: del_ha_group
+                       }]
+               });
+       }
+
+
+        $.ajax({
+            url: "?c=System/Ha&a=haShow",
+            type: 'POST',
+            async: false,
+            success: function(data) {
+                if (data == '') {
+                    ngtosPopMessager("error", $LANG.LOGIN_TIMEOUT, 'login');
+                } else {
+                    var obj = jQuery.parseJSON(data);
+                    init_ha_page(obj["rows"][0]);
+                }
+            }
+        });
+        if (getPrivilege("ha") == false) {
+
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+        }
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

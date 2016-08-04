@@ -1,0 +1,1039 @@
+<div id="serverDiv">
+<form id="auth_server_form">
+<div id="serverDiv2">
+    <table id="setstyles" class="ngtos_form_pop" scrolling="auto">
+    <tr>
+        <td colspan="2" class="window_subtitle"><b>{$Think.lang.SERVER_TYPE}</b></td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <input type="radio" name="serv_type" id="type_1" onClick="change_server_type(1)" value="localdb" checked>
+            <label for="type_1">{$Think.lang.LOCAL_SERVER}</label>&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="serv_type" id="type_2"  onClick="change_server_type(2)" value="radius">
+            <label for="type_2">{$Think.lang.RADIUS_SERVER}</label>&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="serv_type" id="type_3"  onClick="change_server_type(3)" value="ldap">
+            <label for="type_3">{$Think.lang.LDAP_SERVER}</label>&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="serv_type" id="type_4"  onClick="change_server_type(4)" value="tacacs">
+            <label for="type_4">{$Think.lang.TACACS_SERVER}</label>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="window_subtitle"><b>{$Think.lang.BASIC_CONFIG}</b></td>
+    </tr>
+    <tr>
+        <td width="170px" class="tdlabel">{$Think.lang.SERVER_NAME}</td>
+        <td>
+            <input type="text" name="serv_name" id="serv_name" class="easyui-textbox" data-options="width:150,required:true,validType:['notChinese','unnormal','notInt','maxLength[30]']">
+        </td>
+    </tr>
+    <tr id="local_addr" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.SERVER_ADDR}</td>
+        <td>
+            <input type="text" name="serv_addr" id="serv_addr">
+        </td>
+    </tr>
+    <tr id="local_port" style="display:none">
+        <td class="tdlabel">{$Think.lang.SERVER_PORT}</td>
+        <td>
+            <input type="text" name="serv_port" id="serv_port">
+            <span id="port_notice" class="form_comment">[1-65535]</span>
+        </td>
+    </tr>
+    <tr id="radius1" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.AUTH_METHOD}</td>
+        <td>
+            <select name="radius_auth" id='radius_auth' class="easyui-combobox" data-options="width:150,panelHeight:'auto',editable:false">
+                <option value="pap">PAP</option>
+                <option value="chap">CHAP</option>
+            </select>
+        </td>
+    </tr>
+    <tr id="radius2" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.PRESHARE_KEY}</td>
+        <td>
+            <input type="text" name="serv_sharesecret" id="serv_sharesecret">
+        </td>
+    </tr>
+    <tr id="radius3" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.CLIENT_IP}</td>
+        <td>
+            <input type="text" name="serv_clientip" id="serv_clientip" class="easyui-textbox" data-options="width:150,validType:'ipFourOripSix'">
+        </td>
+    </tr>
+    <tr id="ldap" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.GRANT_TYPE}</td>
+        <td>
+            <select name="tree_auth_type" id='tree_auth_type'>
+                <option value="actuality">{$Think.lang.REAL_NAME}</option>
+                <option value="anonymity">{$Think.lang.ANONYMOUS}</option>
+            </select>
+        </td>
+    </tr>
+    <tr id="ldap1" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.SERVER_DN}</td>
+        <td>
+            <input type="text" name="serv_ldap_dn" id="serv_ldap_dn">
+            <span id="example_msg" class="form_comment">{$Think.lang.FORMAT_MS_AD_DC}</span>
+        </td>
+    </tr>
+    <tr id="ldap3" style="display:none">
+        <td width="170px" class="tdlabel">
+            <!--<input type="checkbox" name="ldap_check" id="ldap_check" onclick="account_disabled()">-->
+            {$Think.lang.QUERY_ACCOUNT}
+        </td>
+        <td>
+            <input type="text" name="serv_ldap_name" id="serv_ldap_name">
+        </td>
+    </tr>
+    <tr id="ldap4" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.QUERY_PWD}</td>
+        <td>
+            <input type="text" name="serv_ldap_pass" id="serv_ldap_pass">
+        </td>
+    </tr>
+    <tr id="ldap2" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.SERVER_TYPE}</td>
+        <td>
+            <select name="ldap_type" id='ldap_type'>
+                <option value="ad">MS-AD</option>
+                <option value="novell">NOVELL</option>
+                <option value="sun">SUN ONE</option>
+                <option value="other">other</option>
+            </select>
+        </td>
+    </tr>
+
+
+    <tr id="ldap5" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.USER_FILTER_CONDITION}</td>
+        <td><input type="text" name="serv_ldap_filter" id="serv_ldap_filter" class="easyui-textbox" data-options="width:150"></td>
+    </tr>
+    <tr id="ldap6" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.QUERY_RANGE}</td>
+        <td>
+            <select name="ldap_range" id='ldap_range' class="easyui-combobox" data-options="width:150,panelHeight:'auto',editable:false">
+                <option value="subtree">subtree</option>
+                <option value="onelevel">one level</option>
+            </select>
+        </td>
+    </tr>
+    <tr id="ldap7_user1" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.USERNAME}</td>
+        <td>
+            <select id="ldap_user1">
+                <option value="sAMAccountName">sAMAccountName</option>
+                <option value="other">{$Think.lang.CUSTOM}</option>
+            </select>
+            <span id="other_div1" style="margin-left: 10px;">
+                <input class="text" type="text" id="ldap_user_othervalue1" value="">
+            </span>
+        </td>
+    </tr>
+    <tr id="ldap7_user2" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.USERNAME}</td>
+        <td>
+            <select id="ldap_user2">
+                <option value="cn"  >cn</option>
+                <option value="other"  >{$Think.lang.CUSTOM}</option>
+            </select>
+            <span id="other_div2" style="margin-left: 10px;">
+                <input class="text" type="text" id="ldap_user_othervalue2" value="">
+            </span>
+        </td>
+    </tr>
+    <tr id="ldap7_user3" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.USERNAME}</td>
+        <td>
+            <select id="ldap_user3">
+                <option value="uid"  >uid</option>
+                <option value="other"  >{$Think.lang.CUSTOM}</option>
+            </select>
+            <span id="other_div3" style="margin-left: 10px;">
+                <input class="text" type="text" id="ldap_user_othervalue3" value="">
+            </span>
+        </td>
+    </tr>
+    <tr id="ldap7_user4" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.USERNAME}</td>
+        <td>
+            <input class="text" type="text" id="ldap_user_othervalue4" value="">
+        </td>
+    </tr>
+    <tr id="ldap8_role1" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.RELATE_USER_GROUP}</td>
+        <td>
+            <select id="ldap_user_group1">
+                <option value="memberOf">memberOf</option>
+                <option value="other">{$Think.lang.CUSTOM}</option>
+            </select>
+            <span id="ldap_role_id" style="margin-left: 10px;">
+                <input class="text" type="text" id="ldap_attr_role_othervalue" value="">
+            </span>
+        </td>
+    </tr>
+    <tr id="ldap8_role2" style="display:none">
+        <td width="170px" class="tdlabel">{$Think.lang.RELATE_USER_GROUP}</td>
+        <td>
+            <input class="text" type="text" id="ldap_attr_role" value="">
+        </td>
+    </tr>
+    <tr id="local_adv" style="display:none">
+        <td colspan="2" class="window_subtitle">
+            <a href="javascript:void(0)" onClick="advanced_local();">
+                <span id="local_img"><img src="{$Think.config.NG_PATH}Public/images/icon/arrow_down.gif"/></span>
+                <b>&nbsp;{$Think.lang.RELATE_USER_OR_GROUP}</b>
+            </a>
+        </td>
+    </tr>
+    <!--本地服务器用户组-->
+    <tr  id="adv_local_conf" style="display:none;margin:0;padding:0">
+        <td colspan="2">
+            <table>
+                <div class="select_div left80">
+                    <div class="select_ldiv">
+                        <div class="select_ldiv_bottom border_bottom0">
+                            <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                                <span class="searchbox width100">
+                                    <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'guser_item_cid',0)">
+                                    <span class="searchbox-button"></span>
+                                </span>
+                        </div>
+                        <select class="select middle2" style="height:216px" id="guser_item_cid" multiple ondblclick="move_options('guser_item_cid','d_guser_item_cid','1','sel_auser_num');">
+                        </select>
+                    </div>
+                    <div class="select_cdiv">
+                        <input type="button" class="width40" onClick="move_options('guser_item_cid','d_guser_item_cid','1','sel_auser_num');" value=" > ">
+                        <br/><br/>
+                        <input type="button" class="width40" onClick="move_options('d_guser_item_cid','guser_item_cid','0','sel_auser_num');" value=" < ">
+                    </div>
+                    <div class="select_rdiv">
+                        <div id="sel_auser_num" class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+
+                        </div>
+                        <select class="select middle2" style="height:190px" id="d_guser_item_cid" name="service_item[]" multiple ondblclick="move_options('d_guser_item_cid','guser_item_cid','0','sel_auser_num');">
+                        </select>
+                        <div class="select_ldiv_bottom border_top0">
+                            <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_guser_item_cid','guser_item_cid','0','sel_auser_num');">{$Think.lang.CLEAR_ALL}</a>
+                        </div>
+                    </div>
+                </div>
+            </table>
+        </td>
+    </tr>
+    <tr id="radius_adv" style="display:none">
+        <td colspan="2" class="window_subtitle">
+            <a href="javascript:void(0)" onClick="advanced_radius();">
+                <span id="radius_img"><img src="{$Think.config.NG_PATH}Public/images/icon/arrow_down.gif"/></span>
+                <b>&nbsp;{$Think.lang.SENIOR_CONFIG}</b>
+            </a>
+        </td>
+    </tr>
+    <!--<tr  id="adv_radius_conf" style="display:none">-->
+    <!--<td colspan="2">-->
+        <!--<table>-->
+            <tr id="adv_radius_conf" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.TIMEOUT}</td>
+                <td>
+                    <input type="text" name="serv_radius_max" id="serv_radius_max" class="easyui-textbox" data-options="width:150,validType:'range[1,180]'">
+                    <span class="form_comment">{$Think.lang.SECCOND_1_180}</span>
+                </td>
+            </tr>
+            <tr id="adv_radius_conf2" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.AUTH_RETRY_TIME}</td>
+                <td>
+                    <input type="text" name="serv_radius_retry" id="serv_radius_retry" class="easyui-textbox" data-options="width:150,validType:'range[1,10]'">
+                    <span class="form_comment">{$Think.lang.SECCOND_1_10}</span>
+                </td>
+            </tr>
+            <tr id="adv_radius_conf3" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.ATTR_CHARS}</td>
+                <td>
+                    <select name="serv_radius_code" id='serv_radius_code' class="easyui-combobox" data-options="width:150,panelHeight:'auto',editable:false">
+                        <option value="utf-8">UTF-8</option>
+                        <option value="gbk">GBK</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="adv_radius_conf4" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.AUTO_ADD_USER_LOCAL}</td>
+                <td>
+                    <img id="auto_add" src="{$Think.config.NG_PATH}Public/images/image/start.png" onClick="changswitch1(this);" title="close" class="switch1"/>
+                </td>
+            </tr>
+            <tr id="adv_radius_conf5" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.CHARGE_FUNC}</td>
+                <td>
+                    <img id="auth_charge" src="{$Think.config.NG_PATH}Public/images/image/start.png" onClick="changswitch2(this);" title="close" class="switch1"/>
+                </td>
+            </tr>
+            <tr id="adv_radius_conf6" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.ATTR_SEPARATE}</td>
+                <td>
+                    <input type="text" name="serv_radius_sep" id="serv_radius_sep" class="easyui-textbox" data-options="width:150">
+                    <span class="form_comment">{$Think.lang.FORMAT_ATTR_SEPARATE}</span>
+                </td>
+            </tr>
+            <!--Radius服务器用户组-->
+            <tr  id="adv_radius_conf7" style="display:none;margin:0;padding:0">
+                <td colspan="2">
+                    <table>
+                        <div class="select_div left80">
+                            <div class="select_ldiv">
+                                <div class="select_ldiv_bottom border_bottom0">
+                                    <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                                        <span class="searchbox width100">
+                                            <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'guserRa_item_cid',0)">
+                                            <span class="searchbox-button"></span>
+                                        </span>
+                                </div>
+                                <select class="select middle2" style="height:216px" id="guserRa_item_cid" multiple ondblclick="move_options('guserRa_item_cid','d_guserRa_item_cid','1','selRa_auser_num');">
+                                </select>
+                            </div>
+                            <div class="select_cdiv">
+                                <input type="button" class="width40" onClick="move_options('guserRa_item_cid','d_guserRa_item_cid','1','selRa_auser_num');" value=" > ">
+                                <br/><br/>
+                                <input type="button" class="width40" onClick="move_options('d_guserRa_item_cid','guserRa_item_cid','0','selRa_auser_num');" value=" < ">
+                            </div>
+                            <div class="select_rdiv">
+                                <div id="selRa_auser_num" class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+
+                                </div>
+                                <select class="select middle2" style="height:190px" id="d_guserRa_item_cid" name="service_item[]" multiple ondblclick="move_options('d_guserRa_item_cid','guserRa_item_cid','0','selRa_auser_num');">
+                                </select>
+                                <div class="select_ldiv_bottom border_top0">
+                                    <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_guserRa_item_cid','guserRa_item_cid','0','selRa_auser_num');">{$Think.lang.CLEAR_ALL}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </table>
+                </td>
+            </tr>
+        <!--</table>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <tr id="ldap_adv" style="display:none;">
+        <td colspan="2" class="window_subtitle">
+            <a href="javascript:void(0)" onClick="advanced_ldap();">
+                <span id="ldap_img"><img src="{$Think.config.NG_PATH}Public/images/icon/arrow_down.gif"/></span>
+                <b>&nbsp;{$Think.lang.SENIOR_CONFIG}</b>
+            </a>
+        </td>
+    </tr>
+    <!--<tr id="adv_ldap_conf" style="display:none">-->
+    <!--<td colspan="2">-->
+        <!--<table>-->
+            <tr id="adv_ldap_conf" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.TIMEOUT}</td>
+                <td>
+                    <input type="text" name="serv_ldap_max" id="serv_ldap_max" class="easyui-textbox" data-options="width:150,validType:'range[1,180]'">
+                    <spam class="form_comment">{$Think.lang.SECCOND_1_180}</spam>
+                </td>
+            </tr>
+            <tr id="adv_ldap_conf2" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.ATTR_CHARS}</td>
+                <td>
+                    <select name="serv_ldap_code" id='serv_ldap_code' class="easyui-combobox" data-options="width:150,panelHeight:'auto',editable:false">
+                        <option value="utf-8">UTF-8</option>
+                        <option value="gbk">GBK</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="adv_ldap_conf3" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.AUTO_ADD_USER_LOCAL}</td>
+                <td>
+                    <img id="ldap_auto_add" src="{$Think.config.NG_PATH}Public/images/image/start.png" onClick="changswitch1(this);" title="close" class="switch1"/>
+                </td>
+            </tr>
+            <tr id="adv_ldap_conf4" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.ATTR_SEPARATE}</td>
+                <td>
+                    <input type="text" name="serv_ldap_sep" id="serv_ldap_sep" class="easyui-textbox" data-options="width:150">
+                    <span class="form_comment">{$Think.lang.FORMAT_ATTR_SEPARATE}</span>
+                </td>
+            </tr>
+            <!--ldap服务器用户组-->
+            <tr  id="adv_ldap_conf5" style="display:none;margin:0;padding:0">
+                <td colspan="2">
+                    <table>
+                        <div class="select_div left80">
+                            <div class="select_ldiv">
+                                <div class="select_ldiv_bottom border_bottom0">
+                                    <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                                        <span class="searchbox width100">
+                                            <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'guserLa_item_cid',0)">
+                                            <span class="searchbox-button"></span>
+                                        </span>
+                                </div>
+                                <select class="select middle2" style="height:216px" id="guserLa_item_cid" multiple ondblclick="move_options('guserLa_item_cid','d_guserLa_item_cid','1','selLa_auser_num');">
+                                </select>
+                            </div>
+                            <div class="select_cdiv">
+                                <input type="button" class="width40" onClick="move_options('guserLa_item_cid','d_guserLa_item_cid','1','selLa_auser_num');" value=" > ">
+                                <br/><br/>
+                                <input type="button" class="width40" onClick="move_options('d_guserLa_item_cid','guserLa_item_cid','0','selLa_auser_num');" value=" < ">
+                            </div>
+                            <div class="select_rdiv">
+                                <div id="selLa_auser_num" class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+
+                                </div>
+                                <select class="select middle2" style="height:190px" id="d_guserLa_item_cid" name="service_item[]" multiple ondblclick="move_options('d_guserLa_item_cid','guserLa_item_cid','0','selLa_auser_num');">
+                                </select>
+                                <div class="select_ldiv_bottom border_top0">
+                                    <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_guserLa_item_cid','guserLa_item_cid','0','selLa_auser_num');">{$Think.lang.CLEAR_ALL}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </table>
+                </td>
+            </tr>
+        <!--</table>-->
+    <!--</td>-->
+    <!--</tr>-->
+    <tr id="tacas_adv" style="display:none;">
+        <td colspan="2" class="window_subtitle">
+            <a href="javascript:void(0)" onClick="advanced_tacas();">
+                <span id="tacas_img"><img src="{$Think.config.NG_PATH}Public/images/icon/arrow_down.gif"/></span>
+                <b>&nbsp;{$Think.lang.SENIOR_CONFIG}</b>
+            </a>
+        </td>
+    </tr>
+    <!--<tr id="adv_tacas_conf" style="display:none">
+    <td colspan="2">
+        <table>-->
+            <tr id="adv_tacas_conf" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.TIMEOUT}</td>
+                <td>
+                    <input type="text" name="serv_tacas_max" id="serv_tacas_max" class="easyui-textbox" data-options="width:150,validType:'range[1,180]'">
+                    <span class="form_comment">{$Think.lang.SECCOND_1_180}</span>
+                </td>
+            </tr>
+            <tr id="adv_tacas_conf2" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.ATTR_CHARS}</td>
+                <td>
+                    <select name="serv_tacas_code" id='serv_tacas_code' class="easyui-combobox" data-options="width:150,panelHeight:'auto',editable:false">
+                        <option value="utf-8">UTF-8</option>
+                        <option value="gbk">GBK</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="adv_tacas_conf3" style="display: none">
+                <td width="170px" class="tdlabel">{$Think.lang.AUTO_ADD_USER_LOCAL}</td>
+                <td>
+                    <img id="tacas_auto_add" src="{$Think.config.NG_PATH}Public/images/image/start.png" onClick="changswitch1(this);" title="close" class="switch1"/>
+                </td>
+            </tr>
+            <!--Tacacs服务器用户组-->
+            <tr  id="adv_tacas_conf4" style="display:none;margin:0;padding:0">
+                <td colspan="2">
+                    <table>
+                        <div class="select_div left80">
+                            <div class="select_ldiv">
+                                <div class="select_ldiv_bottom border_bottom0">
+                                    <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                                        <span class="searchbox width100">
+                                            <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'guserTa_item_cid',0)">
+                                            <span class="searchbox-button"></span>
+                                        </span>
+                                </div>
+                                <select class="select middle2" style="height:216px" id="guserTa_item_cid" multiple ondblclick="move_options('guserTa_item_cid','d_guserTa_item_cid','1','selTa_auser_num');">
+                                </select>
+                            </div>
+                            <div class="select_cdiv">
+                                <input type="button" class="width40" onClick="move_options('guserTa_item_cid','d_guserTa_item_cid','1','selTa_auser_num');" value=" > ">
+                                <br/><br/>
+                                <input type="button" class="width40" onClick="move_options('d_guserTa_item_cid','guserTa_item_cid','0','selTa_auser_num');" value=" < ">
+                            </div>
+                            <div class="select_rdiv">
+                                <div id="selTa_auser_num" class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+
+                                </div>
+                                <select class="select middle2" style="height:190px" id="d_guserTa_item_cid" name="service_item[]" multiple ondblclick="move_options('d_guserTa_item_cid','guserTa_item_cid','0','selTa_auser_num');">
+                                </select>
+                                <div class="select_ldiv_bottom border_top0">
+                                    <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_guserTa_item_cid','guserTa_item_cid','0','selTa_auser_num');">{$Think.lang.CLEAR_ALL}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </table>
+                </td>
+            </tr>
+        <!--</table>-->
+    <!--</td>-->
+    <!--</tr>-->
+    </table>
+</div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id="addServer">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_server_div')">
+    </div>
+</form>
+</div>
+<script>
+    var USER = "{$Think.lang.USER}";
+    var GROUP = "{$Think.lang.GROUP}";
+    $(function(){
+        $("#serv_addr").textbox({
+            width:150,
+            required:true,
+            validType:'ipFourOripSix'
+        });
+        $("#serv_port").textbox({
+            width:150,
+            //required:true,
+            validType:'range[1,65535]'
+        });
+        $("#serv_sharesecret").textbox({
+            width:150,
+            required:true
+        });
+        $("#tree_auth_type").combobox({
+            width:150,
+            editable:false,
+            panelHeight:'auto',
+            onChange:tree_auth_change
+        });
+        $("#serv_ldap_dn").textbox({
+            width:150,
+            required:true
+        });
+        $("#serv_ldap_name").textbox({
+            width:150,
+            required:true
+        });
+        $("#serv_ldap_pass").textbox({
+            width:150,
+            required:true
+        });
+        $("#ldap_user_othervalue1").textbox({
+            width:150,
+            required:true
+        });
+        $("#ldap_user_othervalue2").textbox({
+            width:150,
+            required:true
+        });
+        $("#ldap_user_othervalue3").textbox({
+            width:150,
+            required:true
+        });
+        $("#ldap_user_othervalue4").textbox({
+            width:150,
+            required:true
+        });
+        $("#ldap_attr_role_othervalue").textbox({
+            width:150,
+            required:true
+        });
+        $("#ldap_user1").combobox({
+            width:150,
+            panelHeight:'auto',
+            editable:false,
+            onChange:other_option1
+        });
+        $("#ldap_user2").combobox({
+            width:150,
+            panelHeight:'auto',
+            editable:false,
+            onChange:other_option2
+        });
+        $("#ldap_user3").combobox({
+            width:150,
+            panelHeight:'auto',
+            editable:false,
+            onChange:other_option3
+        });
+        $("#ldap_user_group1").combobox({
+            width:150,
+            panelHeight:'auto',
+            editable:false,
+            onChange:other_option4
+        });
+        $("#ldap_attr_role").textbox({
+            width:150,
+            required:true
+        });
+        $("#ldap_type").combobox({
+            width:150,
+            editable:false,
+            panelHeight:'auto',
+            onChange:type_change
+        });
+        if (server_add_tag == '1') {
+            $("#addServer").click(function() {
+                add_auth_serv(server_add_tag);
+            });
+            change_server_type(1);
+            //account_disabled();
+            tree_auth_change();
+            $.getJSON(
+                "?c=Auth/User&a=userAndGroup",
+                function(data) {
+                    var options="";
+                    if (data) {
+                        $(data.rows).each(function(key,value) {
+                            if (value.gTag == undefined) {
+                                options += "<option value='" + value.name + "'>" + value.name +" ["+USER+"]</option>";
+                                var s = value.name + " ["+USER+"]";
+                                //parent.sourOptions.push(s);
+                            } else {
+                                options += "<option value='" + value.name + "'>" + value.name +"["+GROUP+"]</option>";
+                                var s = value.name + " ["+GROUP+"]";
+                                //parent.sourOptions.push(s);
+                            }
+                        })
+
+                        $('#guser_item_cid').html(options);
+                        get_mulselect_options('guser_item_cid','d_guser_item_cid');
+                        select_add_title("guser_item_cid");
+                    }
+                    get_auser_options('d_guser_item_cid','sel_auser_num');
+                });
+        } else {
+            var selName = '';
+            var selUser = '';
+            var selGroup = '';
+            $.ajaxSetup({async:false});
+            $.getJSON(
+                "?c=Auth/Server&a=userGroupJson&name="+encodeURI(param[0]),
+                function(data){
+                    $(data.rows).each(function(key,value) {
+                        if (value.name != "")
+                            selName = selName + value.name + ',';
+                    })
+                }
+            );
+            var sel_arr = $.trim(selName).split(",");
+            $.getJSON(
+                "?c=Auth/User&a=userAndGroup",
+                function(data){
+                    var options1 = "";
+                    var options2 = "";
+                    $(data.rows).each(function(key,value) {
+                        if (value.gTag == undefined) {
+                            if ( $.inArray(value.name, sel_arr) > -1 ) {
+                                selUser = selUser + value.name + ',';
+                                options2 += "<option value='" + value.name + "'>" + value.name +" ["+$LANG.USER+"]</option>";
+                                var s = value.name + " ["+$LANG.USER+"]";
+                                parent.selOptions.push(s);
+                            } else {
+                                options1 += "<option value='" + value.name + "'>" + value.name +" ["+$LANG.USER+"]</option>";
+                                var s = value.name + " ["+$LANG.USER+"]";
+                                parent.sourOptions.push(s);
+                            }
+                        } else {
+                            if ( $.inArray(value.name, sel_arr) > -1 ) {
+                                selGroup = selGroup + value.name + ',';
+                                options2 += "<option value='" + value.name + "'>" + value.name +" ["+$LANG.GROUP+"]</option>";
+                                var s = value.name + " ["+$LANG.GROUP+"]";
+                                parent.selOptions.push(s);
+                            } else {
+                                options1 += "<option value='" + value.name + "'>" + value.name +" ["+$LANG.GROUP+"]</option>";
+                                var s = value.name + " ["+$LANG.GROUP+"]";
+                                parent.sourOptions.push(s);
+                            }
+                        }
+                    })
+                    if(server_type_tag=='1'){
+                        $("input[name='serv_type'][value=localdb]").attr("checked",true);
+                        change_server_type(1);
+                        $('#type_1').attr("disabled", "disabed");
+                        $('#type_2').attr("disabled", "disabed");
+                        $('#type_3').attr("disabled", "disabed");
+                        $('#type_4').attr("disabled", "disabed");
+                        $('#serv_name').val(param[0]);
+                        $('#serv_name').attr('disabled','disabled');
+                        $('#guser_item_cid').html(options1);
+                        $('#d_guser_item_cid').html(options2);
+                        select_add_title("guser_item_cid");
+                        select_add_title("d_guser_item_cid");
+                        get_auser_options('d_guser_item_cid','sel_auser_num');
+                    }else if(server_type_tag=='2'){
+                        $("input[name='serv_type'][value=radius]").attr("checked",true);
+                        change_server_type(2);
+                        $('#type_1').attr("disabled", "disabed");
+                        $('#type_2').attr("disabled", "disabed");
+                        $('#type_3').attr("disabled", "disabed");
+                        $('#type_4').attr("disabled", "disabed");
+                        $('#serv_name').val(param[0]);
+                        $('#serv_name').attr('disabled','disabled');
+                        $('#serv_addr').textbox('setValue',param[1]);
+                        $('#serv_port').textbox('setValue',param[2]);
+                        $("#radius_auth").val(param[3]);
+                        $('#serv_sharesecret').textbox('setValue',param[4]);
+                        $('#serv_clientip').val(param[5]!='null'?param[5]:'');
+                        $('#serv_radius_max').val(param[6]);
+                        $('#serv_radius_retry').val(param[7]);
+                        $("#serv_radius_code").val(param[8]);
+                        $('#serv_radius_sep').val(param[11]);
+                        if (param[9] == "no") {
+                            $('#auto_add').attr("src", NG_PATH+"Public/images/image/stop.png");
+                            $('#auto_add').attr("title", "open");
+                        } else {
+                            $('#auto_add').attr("src", NG_PATH+"Public/images/image/start.png");
+                            $('#auto_add').attr("title", "close");
+                        }
+                        if (param[10] == "no") {
+                            $('#auth_charge').attr("src", NG_PATH+"Public/images/image/stop.png");
+                            $('#auth_charge').attr("title", "open");
+                        } else {
+                            $('#auth_charge').attr("src", NG_PATH+"Public/images/image/start.png");
+                            $('#auth_charge').attr("title", "close");
+                        }       
+                        $('#guserRa_item_cid').html(options1);
+                        $('#d_guserRa_item_cid').html(options2);
+                        select_add_title("guserRa_item_cid");
+                        select_add_title("d_guserRa_item_cid");
+                        get_auser_options('d_guserRa_item_cid','selRa_auser_num');
+                    }else if(server_type_tag=='3'){
+                        $("input[name='serv_type'][value=ldap]").attr("checked",true);
+                        change_server_type(3);
+                        $('#type_1').attr("disabled", "disabed");
+                        $('#type_2').attr("disabled", "disabed");
+                        $('#type_3').attr("disabled", "disabed");
+                        $('#type_4').attr("disabled", "disabed");
+                        $('#serv_name').val(param[0]);
+                        $('#serv_name').attr('disabled','disabled');
+                        $('#serv_addr').textbox('setValue',param[1]);
+                        $('#serv_port').textbox('setValue',param[2]);
+                        $('#serv_ldap_dn').textbox('setValue',param[3]);
+
+                        $("#ldap_type").combobox('setValue',param[4]);
+                        if (param[6] != '') {
+                            $('#tree_auth_type').combobox('select','actuality');
+                            //$('#tree_auth_type option[value="anonymity"]').attr("selected",false);
+                            $('#ldap3').css("display","");
+                            $('#ldap4').css("display","");
+                            $("#serv_ldap_name").textbox("enable");
+                            $("#serv_ldap_pass").textbox("enable");
+                            $("#example_msg").text($LANG.FORMAT_MS_AD_DC);
+                        } else {
+                            //$('#tree_auth_type option[value="actuality"]').attr("selected",false);
+                            $('#tree_auth_type').combobox('select','anonymity');
+                            $('#ldap3').css("display","none");
+                            $('#ldap4').css("display","none");
+                            $("#serv_ldap_name").textbox("disableValidation");
+                            $("#serv_ldap_name").textbox("disable");
+                            $("#serv_ldap_pass").textbox("disableValidation");
+                            $("#serv_ldap_pass").textbox("disable");
+                            $("#example_msg").text($LANG.FORMAT_MS_AD_VPN);
+                        }
+                        if (param[4] == 'ad') {
+                            if (param[15] == 'sAMAccountName')
+                                $("#ldap_user1").combobox('setValue',param[15]);
+                            else {
+                                $("#ldap_user1").combobox("setValue","other");
+                                $("#ldap_user_othervalue1").textbox('setValue',param[15]);
+                            }
+                            if (param[14] == 'memberOf')
+                                $("#ldap_user_group1").combobox("setValue",param[14]);
+                            else {
+                                $("#ldap_user_group1").combobox("setValue","other");
+                                $("#ldap_attr_role_othervalue").textbox("setValue",param[14]);
+                            }
+                        } else if (param[4] == 'novell') {
+                            if (param[15] == 'cn')
+                                $("#ldap_user2").combobox("setValue",param[15]);
+                            else {
+                                $("#ldap_user2").combobox("setValue","other");
+                                $("#ldap_user_othervalue2").textbox("setValue",param[15]);
+                            }
+                            $("#ldap_attr_role").textbox("setValue",param[14]);
+                        } else if(param[4] == 'sun') {
+                            if (param[15] == 'uid')
+                                $("#ldap_user3").combobox("setValue",param[15]);
+                            else {
+                                $("#ldap_user3").combobox("setValue","other");
+                                $("#ldap_user_othervalue3").textbox("setValue",param[15]);
+                            }
+                            $("#ldap_attr_role").textbox("setValue",param[14]);
+                        } else if(param[4] == 'other') {
+                            $("#ldap_user_othervalue4").textbox("setValue",param[15]);
+                            $("#ldap_attr_role").textbox("setValue",param[14]);
+                        }
+                        type_change();
+
+                        if (param[5] == "no")
+                            $("#ldap_check").attr("checked",false);
+                        else
+                            $("#ldap_check").attr('checked','checked');
+                        $('#serv_ldap_name').textbox("setValue",param[6]);
+                        $('#serv_ldap_pass').textbox("setValue",param[7]);
+                        $('#serv_ldap_filter').val(param[8]);
+                        $('#ldap_range').val(param[9]);
+                        $('#serv_ldap_max').val(param[10]);
+                        $('#serv_ldap_code').val(param[11]);
+                        if (param[12] == "no") {
+                            $('#ldap_auto_add').attr("src", NG_PATH+"Public/images/image/stop.png");
+                            $('#ldap_auto_add').attr("title", "open");
+                        } else {
+                            $('#ldap_auto_add').attr("src", NG_PATH+"Public/images/image/start.png");
+                            $('#ldap_auto_add').attr("title", "close");
+                        }
+                        $('#serv_ldap_sep').val(param[13]);
+        //                account_disabled();
+                        tree_auth_change();
+                        $('#guserLa_item_cid').html(options1);
+                        $('#d_guserLa_item_cid').html(options2);
+                        select_add_title("guserLa_item_cid");
+                        select_add_title("d_guserLa_item_cid");
+                        get_auser_options('d_guserLa_item_cid','selLa_auser_num');
+                    }else{
+                        $("input[name='serv_type'][value=tacacs]").attr("checked",true);
+                        change_server_type(4);
+                        $('#type_1').attr("disabled", "disabed");
+                        $('#type_2').attr("disabled", "disabed");
+                        $('#type_3').attr("disabled", "disabed");
+                        $('#type_4').attr("disabled", "disabed");
+                        $('#serv_name').val(param[0]);
+                        $('#serv_name').attr('disabled','disabled');
+                        $('#serv_addr').textbox('setValue',param[1]);
+                        $('#serv_port').textbox("setValue",param[2]);
+                        $("#radius_auth").val(param[3]);
+                        $('#serv_sharesecret').textbox("setValue",param[4]);
+                        $('#serv_tacas_max').val(param[5]);
+                        $('#serv_tacas_code').val(param[6]);
+                        if(param[7] == "no") {
+                            $('#tacas_auto_add').attr("src", NG_PATH+"Public/images/image/stop.png");
+                            $('#tacas_auto_add').attr("title", "open");
+                        } else {
+                            $('#tacas_auto_add').attr("src", NG_PATH+"Public/images/image/start.png");
+                            $('#tacas_auto_add').attr("title", "close");
+                        }
+                        $('#guserTa_item_cid').html(options1);
+                        $('#d_guserTa_item_cid').html(options2);
+                        select_add_title("guserTa_item_cid");
+                        select_add_title("d_guserTa_item_cid");
+                        get_auser_options('d_guserTa_item_cid','selTa_auser_num');
+                    }
+                }
+            );
+        //local server
+        if (server_type_tag == '1') {
+            
+//            $("input[name='serv_type'][value=localdb]").attr("checked",true);
+//            change_server_type(1);
+//            $('#type_1').attr("disabled", "disabed");
+//            $('#type_2').attr("disabled", "disabed");
+//            $('#type_3').attr("disabled", "disabed");
+//            $('#type_4').attr("disabled", "disabed");
+//            $('#serv_name').val(param[0]);
+//            $('#serv_name').attr('disabled','disabled');
+
+//            var selName = '';
+//            var selUser = '';
+//            var selGroup = '';
+//            $.ajaxSetup({async:false});
+//            $.getJSON(
+//                "?c=Auth/Server&a=userGroupJson&name="+encodeURI(param[0]),
+//                function(data){
+//                    $(data.rows).each(function(key,value) {
+//                        if (value.name != "")
+//                            selName = selName + value.name + ',';
+//                    })
+//                });
+//            var sel_arr = $.trim(selName).split(",");
+//            $.getJSON(
+//                "?c=Auth/User&a=userAndGroup",
+//                function(data){
+//                    var options1 = "";
+//                    var options2 = "";
+//                    $(data.rows).each(function(key,value) {
+//                        if (value.gTag == undefined) {
+//                            if ( $.inArray(value.name, sel_arr) > -1 ) {
+//                                selUser = selUser + value.name + ',';
+//                                options2 += "<option value='" + value.name + "'>" + value.name +" ["+$LANG.USER+"]</option>";
+//                                var s = value.name + " ["+$LANG.USER+"]";
+//                                parent.selOptions.push(s);
+//                            } else {
+//                                options1 += "<option value='" + value.name + "'>" + value.name +" ["+$LANG.USER+"]</option>";
+//                                var s = value.name + " ["+$LANG.USER+"]";
+//                                parent.sourOptions.push(s);
+//                            }
+//                        } else {
+//                            if ( $.inArray(value.name, sel_arr) > -1 ) {
+//                                selGroup = selGroup + value.name + ',';
+//                                options2 += "<option value='" + value.name + "'>" + value.name +" ["+$LANG.GROUP+"]</option>";
+//                                var s = value.name + " ["+$LANG.GROUP+"]";
+//                                parent.selOptions.push(s);
+//                            } else {
+//                                options1 += "<option value='" + value.name + "'>" + value.name +" ["+$LANG.GROUP+"]</option>";
+//                                var s = value.name + " ["+$LANG.GROUP+"]";
+//                                parent.sourOptions.push(s);
+//                            }
+//                        }
+//                    })
+//
+//                    $('#guser_item_cid').html(options1);
+//                    $('#d_guser_item_cid').html(options2);
+//                    select_add_title("guser_item_cid");
+//                    select_add_title("d_guser_item_cid");
+//                    get_auser_options('d_guser_item_cid','sel_auser_num');
+//                });
+                $.ajaxSetup({async:true});
+                $("#addServer").click(function() {
+                    add_auth_serv(server_add_tag,selUser,selGroup);
+                });
+            } else if (server_type_tag == '2') {     //radius server
+                $.ajaxSetup({async:true});
+                $("#addServer").click(function(){
+//                    add_auth_serv(server_add_tag);
+                     add_auth_serv(server_add_tag,selUser,selGroup);
+                });
+//                $("input[name='serv_type'][value=radius]").attr("checked",true);
+//                change_server_type(2);
+//                $('#type_1').attr("disabled", "disabed");
+//                $('#type_2').attr("disabled", "disabed");
+//                $('#type_3').attr("disabled", "disabed");
+//                $('#type_4').attr("disabled", "disabed");
+//                $('#serv_name').val(param[0]);
+//                $('#serv_name').attr('disabled','disabled');
+//                $('#serv_addr').textbox('setValue',param[1]);
+//                $('#serv_port').textbox('setValue',param[2]);
+//                $("#radius_auth").val(param[3]);
+//                $('#serv_sharesecret').textbox('setValue',param[4]);
+//                $('#serv_clientip').val(param[5]!='null'?param[5]:'');
+//                $('#serv_radius_max').val(param[6]);
+//                $('#serv_radius_retry').val(param[7]);
+//                $("#serv_radius_code").val(param[8]);
+//                $('#serv_radius_sep').val(param[11]);
+//                if (param[9] == "no") {
+//                    $('#auto_add').attr("src", NG_PATH+"Public/images/image/stop.png");
+//                    $('#auto_add').attr("title", "open");
+//                } else {
+//                    $('#auto_add').attr("src", NG_PATH+"Public/images/image/start.png");
+//                    $('#auto_add').attr("title", "close");
+//                }
+//                if (param[10] == "no") {
+//                    $('#auth_charge').attr("src", NG_PATH+"Public/images/image/stop.png");
+//                    $('#auth_charge').attr("title", "open");
+//                } else {
+//                    $('#auth_charge').attr("src", NG_PATH+"Public/images/image/start.png");
+//                    $('#auth_charge').attr("title", "close");
+//                }
+//                get_auser_options('d_guserRa_item_cid','selRa_auser_num');
+            } else if(server_type_tag == '3') {        //ldap server
+                $.ajaxSetup({async:true});
+                $("#addServer").click(function(){
+//                    add_auth_serv(server_add_tag);
+                     add_auth_serv(server_add_tag,selUser,selGroup);
+                });
+//                $("input[name='serv_type'][value=ldap]").attr("checked",true);
+//                change_server_type(3);
+//                $('#type_1').attr("disabled", "disabed");
+//                $('#type_2').attr("disabled", "disabed");
+//                $('#type_3').attr("disabled", "disabed");
+//                $('#type_4').attr("disabled", "disabed");
+//                $('#serv_name').val(param[0]);
+//                $('#serv_name').attr('disabled','disabled');
+//                $('#serv_addr').textbox('setValue',param[1]);
+//                $('#serv_port').textbox('setValue',param[2]);
+//                $('#serv_ldap_dn').textbox('setValue',param[3]);
+//
+//                $("#ldap_type").combobox('setValue',param[4]);
+//                if (param[6] != '') {
+//                    $('#tree_auth_type').combobox('select','actuality');
+//                    //$('#tree_auth_type option[value="anonymity"]').attr("selected",false);
+//                    $('#ldap3').css("display","");
+//                    $('#ldap4').css("display","");
+//                    $("#serv_ldap_name").textbox("enable");
+//                    $("#serv_ldap_pass").textbox("enable");
+//                    $("#example_msg").text($LANG.FORMAT_MS_AD_DC);
+//                } else {
+//                    //$('#tree_auth_type option[value="actuality"]').attr("selected",false);
+//                    $('#tree_auth_type').combobox('select','anonymity');
+//                    $('#ldap3').css("display","none");
+//                    $('#ldap4').css("display","none");
+//                    $("#serv_ldap_name").textbox("disableValidation");
+//                    $("#serv_ldap_name").textbox("disable");
+//                    $("#serv_ldap_pass").textbox("disableValidation");
+//                    $("#serv_ldap_pass").textbox("disable");
+//                    $("#example_msg").text($LANG.FORMAT_MS_AD_VPN);
+//                }
+//                if (param[4] == 'ad') {
+//                    if (param[15] == 'sAMAccountName')
+//                        $("#ldap_user1").combobox('setValue',param[15]);
+//                    else {
+//                        $("#ldap_user1").combobox("setValue","other");
+//                        $("#ldap_user_othervalue1").textbox('setValue',param[15]);
+//                    }
+//                    if (param[14] == 'memberOf')
+//                        $("#ldap_user_group1").combobox("setValue",param[14]);
+//                    else {
+//                        $("#ldap_user_group1").combobox("setValue","other");
+//                        $("#ldap_attr_role_othervalue").textbox("setValue",param[14]);
+//                    }
+//                } else if (param[4] == 'novell') {
+//                    if (param[15] == 'cn')
+//                        $("#ldap_user2").combobox("setValue",param[15]);
+//                    else {
+//                        $("#ldap_user2").combobox("setValue","other");
+//                        $("#ldap_user_othervalue2").textbox("setValue",param[15]);
+//                    }
+//                    $("#ldap_attr_role").textbox("setValue",param[14]);
+//                } else if(param[4] == 'sun') {
+//                    if (param[15] == 'uid')
+//                        $("#ldap_user3").combobox("setValue",param[15]);
+//                    else {
+//                        $("#ldap_user3").combobox("setValue","other");
+//                        $("#ldap_user_othervalue3").textbox("setValue",param[15]);
+//                    }
+//                    $("#ldap_attr_role").textbox("setValue",param[14]);
+//                } else if(param[4] == 'other') {
+//                    $("#ldap_user_othervalue4").textbox("setValue",param[15]);
+//                    $("#ldap_attr_role").textbox("setValue",param[14]);
+//                }
+//                type_change();
+//
+//                if (param[5] == "no")
+//                    $("#ldap_check").attr("checked",false);
+//                else
+//                    $("#ldap_check").attr('checked','checked');
+//                $('#serv_ldap_name').textbox("setValue",param[6]);
+//                $('#serv_ldap_pass').textbox("setValue",param[7]);
+//                $('#serv_ldap_filter').val(param[8]);
+//                $('#ldap_range').val(param[9]);
+//                $('#serv_ldap_max').val(param[10]);
+//                $('#serv_ldap_code').val(param[11]);
+//                if (param[12] == "no") {
+//                    $('#ldap_auto_add').attr("src", NG_PATH+"Public/images/image/stop.png");
+//                    $('#ldap_auto_add').attr("title", "open");
+//                } else {
+//                    $('#ldap_auto_add').attr("src", NG_PATH+"Public/images/image/start.png");
+//                    $('#ldap_auto_add').attr("title", "close");
+//                }
+//                $('#serv_ldap_sep').val(param[13]);
+////                account_disabled();
+//                tree_auth_change();
+//                get_auser_options('d_guserLa_item_cid','selLa_auser_num');
+            } else if(server_type_tag == '4') {        //tacas server
+                $.ajaxSetup({async:true});
+                $("#addServer").click(function(){
+//                    add_auth_serv(server_add_tag);
+                      add_auth_serv(server_add_tag,selUser,selGroup);
+                });
+//                $("input[name='serv_type'][value=tacacs]").attr("checked",true);
+//                change_server_type(4);
+//                $('#type_1').attr("disabled", "disabed");
+//                $('#type_2').attr("disabled", "disabed");
+//                $('#type_3').attr("disabled", "disabed");
+//                $('#type_4').attr("disabled", "disabed");
+//                $('#serv_name').val(param[0]);
+//                $('#serv_name').attr('disabled','disabled');
+//                $('#serv_addr').textbox('setValue',param[1]);
+//                $('#serv_port').textbox("setValue",param[2]);
+//                $("#radius_auth").val(param[3]);
+//                $('#serv_sharesecret').textbox("setValue",param[4]);
+//                $('#serv_tacas_max').val(param[5]);
+//                $('#serv_tacas_code').val(param[6]);
+//                if(param[7] == "no") {
+//                    $('#tacas_auto_add').attr("src", NG_PATH+"Public/images/image/stop.png");
+//                    $('#tacas_auto_add').attr("title", "open");
+//                } else {
+//                    $('#tacas_auto_add').attr("src", NG_PATH+"Public/images/image/start.png");
+//                    $('#tacas_auto_add').attr("title", "close");
+//                }
+//                get_auser_options('d_guserTa_item_cid','selTa_auser_num');
+            }
+        }
+    });
+</script>

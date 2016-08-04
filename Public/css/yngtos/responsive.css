@@ -1,0 +1,146 @@
+@charset "utf-8";
+/* CSS Document */
+
+img{max-width:100%;}
+
+@media only screen and (max-width: 1280px) {
+	ul.nav-dash{margin-left:20px;}
+	ul.right-nav{padding: 0 5px;}
+	.user {
+    	margin-right: 10px;
+	}
+	ul.right-nav li a{font-size: 15px;
+    padding: 3px 6px;}
+	ul.right-nav li:last-child{padding-right:0;}
+}
+@media only screen and (max-width: 1200px) {
+	.menu-toggle{
+		display:block; position:relative;
+	}
+	ul.nav-dash{
+		display:none;
+		position:absolute;
+		height:auto;
+		background-image:none;
+		background-color:#fff;
+		box-shadow:0 2px 4px #555;
+		border-radius:0 0 5px 5px;
+		right:50px;
+		left:50px;
+		top:64px;
+		width:auto;
+		margin-left:0;
+		z-index:1;
+	}
+	ul.nav-dash li{
+    width:100%;
+	list-style:none;
+	float:left;
+	}
+	ul.nav-dash li a {
+		color:#000;
+		display:block;
+		line-height:normal;
+		font-size:13px;
+		padding:9px 15px 15px;
+		text-decoration:none;
+		text-transform:uppercase;
+	}
+	nav .logo-dashboard{position:relative;}
+	.toggle-xy{float:left; margin-left:5px; margin-right:0;}
+	.left-panel-wrap .btn-anchor{width:auto;}
+	.left-panel-wrap{width:25%;}
+	.flotRight{width:73%;}
+	#wrapper-login{ position:relative; margin:0 auto; top:50px; left:0;}
+	
+	.dropdown-dash i.fa-angle-down,.dropdown-dash i.fa-angle-up{background: #f7f7f7 none repeat scroll 0 0;
+    border-radius: 3px;
+    float: right;
+    font-size: 18px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    width: 30px;
+	}
+	.mega-menu{width:100%; position:absolute; top:85px; left:0; right:0;}
+	.middle-tab-wrap ul.resp-tabs-list li{width:auto;}
+}
+
+@media only screen and (max-width: 800px) {
+	.mega-menu{z-index:10000}
+	table {
+		overflow-x: auto;
+		display: block;
+		border-collapse: collapse;
+    border-spacing: 0;
+	}
+	.tools-rgt{margin-top:10px;}
+	
+}
+
+@media only screen and (max-width: 767px) {
+	
+	#sidebar{width:100%; position:static; margin-top:0;}
+	.sidebar-wrapper{width:100%; position:static;}
+	.navigation-aside{width:100%;}
+	#sidebar:hover{width:100%;}
+	.top-nav{position:relative;}
+	.toggle-xy{display:none;}
+	#sidebar:hover + section#main-content, .sidebar-wrapper:hover + section#main-content{
+		margin-left:0px !important;
+	}
+	#main-content{margin-left:0; position:relative; top:20px; display:inline-block; width:100%;}   
+	ul#navigation li a span.title{display:block; color:#fff; width:90%; float:left;}
+	ul#navigation li a:hover span.title{color:#eee;}
+	ul#navigation li ul.sub-nav{width:100%; position:static; left:0; padding-left:50px; box-sizing:border-box;}
+	ul#navigation li ul.sub-nav li a{color:#ccc;}
+	.sidebar-wrapper {box-shadow:none;}
+	#main-dashboard{top:0;}
+	.half-box-module{width:100%;}
+	.resp-tabs-container .tools-lft{width:100%;}
+	.resp-tabs-container .tools-rgt{ float:left; width:100%;}
+	.resp-arrow{padding:0;}
+	.tools-lft{width:100%;}
+	.left-panel-wrap{width:96%; margin-right:10px;}
+	.flotRight{box-sizing: border-box;
+    padding: 10px;
+    width: 100%;}
+	ul#navigation li a span.title{display:block !important;}
+	
+}
+
+@media only screen and (max-width:640px) {
+	
+	.menu-toggle{font-size:14px;}
+	ul.right-nav{padding:0 10px;}
+	ul#navigation li a span.title{width:85%; display:block;}
+	ul.right-nav li a{padding:5px 8px; font-size:15px;}
+	.user{margin-right:10px;}
+	.user ul li a{font-size:13px;}
+	.header-top-nav{width:30%;}
+	.logo-dashboard{width:100%;}
+	.btn-anchor{width:25%;}
+	
+	#wrapper-login{ width:70%;}
+	.login-form{ width:100%;}
+	.user-icon{top:125px;}
+	.pass-icon{top:200px;}
+	.login-form .content .input{width:100%; box-sizing:border-box;}
+			
+}
+@media only screen and (max-width:480px) {
+	
+	ul#navigation li a span.title{width:80%;}	
+	.header-top-nav{width:auto; text-align:center; padding-right:10px;}
+	#sidebar{float:left;}
+	.top-nav{height:auto;}
+	.menu-toggle{ float:right; font-size:17px;}
+	ul.nav-dash{right:5px;}
+	.right-top-nav{width:100%; background:#f6f6f6 none repeat scroll 0 0;}
+	ul.right-nav{height:auto;}
+	.btn-anchor{width:40%;}
+	
+}
+@media only screen and (max-width:320px) {
+		ul#navigation li a span.title{width:78%;}
+}

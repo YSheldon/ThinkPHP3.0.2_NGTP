@@ -1,0 +1,86 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/resource_region.css" 
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/region.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="dlg-toolbar" style="padding:2px 0">
+    <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true" onClick="add_region('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+    <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" onClick="editRegionRow('{$Think.lang.EDIT}');">{$Think.lang.EDIT}</a>
+    <a href="#" class="easyui-linkbutton" id="icon_del" data-options="iconCls:'icon-delete',plain:true" onClick="addressDelete()">{$Think.lang.DELETE}</a>
+    <a href="#" class="easyui-linkbutton" id="icon_clear" data-options="iconCls:'icon-clear',plain:true" onClick="clearRegionItem()">{$Think.lang.CLEAR}</a>
+</div>
+<script>
+    //要隐藏的行的索引集合.
+    function endEdit() {
+        var rows = $('#tt').datagrid('getRows');
+        for (var i = 0; i < rows.length; i++) {
+            $('#tt').datagrid('endEdit', i);
+        }
+    }
+    var region_tag;
+    var param = [];
+    var grtag = 1;
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: false,
+            border: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'name',
+            sortOrder: 'asc',
+            url: '?s=Home/Resource/Region&mod=area',
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'name', title: $LANG.NAME, width: 225, sortable: true},
+                    {field: 'attribute', title: $LANG.BIND_IF, width: 200},
+                    {field: 'shared', title: $LANG.SHARE, width: 200,
+                        formatter: function(value, rowData) {
+                            if (rowData.shared == "on")
+                                return $LANG.YES;
+                            else
+                                return $LANG.NO;
+                        }
+                    },
+                    {field: 'comment', title: $LANG.DESCRIPTION, width: 425}
+                ]],
+            checkOnSelect: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar",
+            onCheck: setRegionToolBar,
+            onUncheck: setRegionToolBar,
+            onClickRow: setRegionToolBar,
+            onCheckAll: setRegionToolBar,
+            onUncheckAll: setRegionToolBar,
+            onSelect: setRegionToolBar,
+            onUnselect: setRegionToolBar,
+            onDblClickRow: function(rowindex, rowData) {
+                if(!isShared() || (isShared() && rowData.shared != "on") ){
+                    edit_group_name(rowData.name, rowData.attribute, rowData.shared, $.trim(rowData.comment), $LANG.EDIT);
+                }
+            },
+            onLoadSuccess: function(data) {
+                $('#tt').datagrid('fixRownumber');
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_del').linkbutton('disable');
+            }
+
+        });
+
+        if (getPrivilege("define") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable')
+        }
+    });
+</script>
+
+</body>
+</html>

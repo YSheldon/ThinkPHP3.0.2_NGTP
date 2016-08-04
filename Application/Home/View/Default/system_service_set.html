@@ -1,0 +1,90 @@
+<include file='Index:main'/>
+<div class="ngtos_form">
+    <table class="ngtos_form_table" style="width:350px;">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SSHD_SERVER}</td>
+            <td>
+                <input type="radio" name="ssh_radio" id="ssh_on" checked/>
+                <label for="ssh_on">{$Think.lang.ON}</label>&nbsp;
+                <input type="radio" name="ssh_radio" id="ssh_off"/>
+                <label for="ssh_off">{$Think.lang.OFF}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.TELNETD_SERVER}</td>
+            <td>
+                <input type="radio" name="telnetd_radio" id="telnetd_on" checked/>
+                <label for="telnetd_on">{$Think.lang.ON}</label>&nbsp;
+                <input type="radio" name="telnetd_radio" id="telnetd_off" />
+                <label for="telnetd_off">{$Think.lang.OFF}</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.HTTPD_SERVER}</td>
+            <td>
+                <input type="radio" name="httpd_radio" id="httpd_on" checked/>
+                <label for="httpd_on">{$Think.lang.ON}</label>&nbsp;
+                <input type="radio" name="httpd_radio" id="httpd_off" />
+                <label for="httpd_off">{$Think.lang.OFF}</label>
+            </td>
+        </tr>
+    </table>
+    <td>
+        <input type="button" value="{$Think.lang.APPLY}" class="ngtos_button_large confirmenable" onClick="return form_submit();" style="margin-left:124px;margin-top:15px"/>
+    </td>
+    <td>
+        <input type="button" value="{$Think.lang.RESET}" class="ngtos_button_large confirmenable" onClick="return default_submit();"/>
+    </td>
+</div>
+<script>
+    $(document).ready(function() {
+        if ("{$outcome['sshd']}" == 'off')
+            $('#ssh_off')[0].checked = true;
+
+        if ("{$outcome['telnetd']}" == 'off')
+            $('#telnetd_off')[0].checked = true;
+
+        if ("{$outcome['httpd']}" == 'off')
+            $('#httpd_off')[0].checked = true;
+
+    });
+    function form_submit() {
+        $.ajax({
+            url: "?c=System/Service",
+            type: 'put',
+            dataType: 'text',
+            data: {
+                sshd: $('#ssh_on')[0].checked ? ("{$outcome['sshd']}" == 'on' ? '' : 'on') : ("{$outcome['sshd']}" == 'off' ? '' : 'off'),
+                telnetd: $('#telnetd_on')[0].checked ? ("{$outcome['telnetd']}" == 'on' ? '' : 'on') : ("{$outcome['telnetd']}" == 'off' ? '' : 'off'),
+                httpd: $('#httpd_on')[0].checked ? ("{$outcome['httpd']}" == 'on' ? '' : 'on') : ("{$outcome['httpd']}" == 'off' ? '' : 'off')
+            },
+            success: function(data) {
+                if (data == 0) {
+                    ngtosPopMessager("success", $LANG.CHANGE_SUCCESS);
+                    window.location.reload();
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+    function default_submit() {
+        $.ajax({
+            url: "?c=System/Service&default=1",
+            type: 'put',
+            dataType: 'text',
+            success: function(data) {
+                if ($.trim(data) == 0) {
+                    ngtosPopMessager("success", $LANG.RESET_SUCCESSFULLY);
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+                window.location.reload();
+            }
+        });
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<include file='Index:main'/>
+<script src="{$Think.config.NG_PATH}Public/modules/system/resource.js" type="text/javascript"></script>
+<div class="ngtos_form">
+    <form id="resource_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.CPU_THRESHOLD}</td>
+            <td>
+                <input type="text" class="easyui-textbox global_input" data-options="required:true,validType:'range[0,100]'" id='add_cpu' name='port' >&nbsp;{$Think.lang.RESOURCE_1_100}
+            </td>
+        </tr>
+         <tr>
+            <td class="tdlabel_net">{$Think.lang.MEMORY_THRESHOLD}</td>
+            <td>
+                <input type="text" class="easyui-textbox global_input" data-options="required:true,validType:'range[0,100]'" id='add_memory' name='port'>&nbsp;{$Think.lang.RESOURCE_1_100}
+            </td>
+        </tr>
+         <tr>
+            <td class="tdlabel_net">{$Think.lang.DISK_THRESHOLD}</td>
+            <td>
+                <input type="text" class="easyui-textbox global_input" data-options="required:true,validType:'range[0,100]'" id='add_disk' name='port'>&nbsp;{$Think.lang.RESOURCE_1_100}
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.PROCESS_SWITCH}</td>
+            <td>
+                <input type="radio" name="process" id="process_on"  onClick="resource_switch('disable')"><label for="process_on">{$Think.lang.ON}</label>
+                <input type="radio" name="process" id="process_off" onClick="resource_switch('enable')" style="margin-left:50px"><label for="process_off">{$Think.lang.OFF}</label>
+            </td>
+        </tr>
+    </table>
+    <div  style=" margin-top:20px">
+        <input name="add_new" type="button" title="" value="{$Think.lang.APPLY}" class="ngtos_button_large confirmenable" onClick="resourcesub();" style=" margin-left:138px" />
+    </div>
+</div>
+</div>	
+</form>
+</div>
+</body>
+</html>
+<script>
+var cpu = "{$resource['cpu']}";         //cpu阀值
+var memory = "{$resource['memory']}";   //内存阀值
+var disk = "{$resource['disk']}";       //磁盘阀值 
+var switche = "{$resource['switch']}";  //监控进程开关
+$(function () {
+    resource_switch('disable');
+    $("#add_cpu").textbox('setValue',cpu);
+    $("#add_memory").textbox('setValue',memory);
+    $("#add_disk").textbox('setValue',disk);
+    if(switche == "stop") {
+        $("#process_off").attr("checked", true);
+        resource_switch('enable');
+    } else {
+        $("#process_on").attr("checked", true);
+        resource_switch('disables');
+    }	
+})
+</script>

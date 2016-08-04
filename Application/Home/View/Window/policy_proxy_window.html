@@ -1,0 +1,216 @@
+<div>
+    <form id="proxyForm">
+        <table class="ngtos_form_table">
+            <tr id="proxyId">
+                <td class="tdlabel">id</td>
+                <td>
+                    <input type="text" id="id" name="id" class="easyui-textbox input_length">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.PROXY_IP}</td>
+                <td>
+                    <select name="proxy_ip" id='proxy_ip'></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.PROXY_PORT}</td>
+                <td>
+                    <!--<input type="text" id='expect_buffer' name="expect_buffer" class="easyui-textbox input_length" data-options="required:true,validType:'range[512,4194304]'"/>B-->
+                    <!--<span class="form_comment">[1-65535]</span>-->
+                    <input type="text" id="proxy_port" name="proxy_port" class="easyui-textbox input_length" data-options="validType:'range[1,65535]'">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.PROXY_MODE}</td>
+                <td>
+                    <select id="mode" name="mode">
+                        <option value="rproxy">{$Think.lang.RPROXY}</option>
+                        <option value="tproxy">{$Think.lang.TPROXY}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="serverIp" style="display: none">
+                <td class="tdlabel">{$Think.lang.SERVER_ADDR_OBJ}</td>
+                <td>
+                    <select name="server_ip" id='server_ip'></select>
+                </td>
+            </tr>
+            <tr id="serverPort" style="display: none">
+                <td class="tdlabel">{$Think.lang.SERVER_PORT}</td>
+                <td>
+                    <input type="text" id="server_port" name="server_port" class="easyui-textbox input_length" data-options="validType:'range[1,65535]'">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">l7Profile</td>
+                <td>
+                    <select name="l7_profile" id='l7_profile'></select>
+                    <!--<input type="text" id="l7_profile" name="l7_profile" name="server_port" class="easyui-textbox input_length">-->
+                </td>
+            </tr>
+            <tr id="sslName">
+                <td class="tdlabel">sslProfile</td>
+                <td>
+                    <select name="ssl_profile" id='ssl_profile'></select>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('proxy_window_div')">
+    </div>
+</div>
+<script>
+    $(function() {
+        $('#sslName').hide();
+
+        $('#proxy_ip').combobox({
+            url: '?c=Policy/Proxy&a=comboBox',
+            queryParams:{
+                mod:'define host,define range,define subnet,define mac'
+            },
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false,
+            valueField:'name',
+            textField:'name'
+        });
+        if($("#proxyBar1").size() == 0){
+            $('#proxy_ip').combobox('panel').after(comboBut("add_addr('"+$LANG.ADD+"','proxy_ip')","proxyBar1"));
+        }
+
+        $('#server_ip').combobox({
+            url: '?c=Policy/Proxy&a=comboBox',
+            queryParams:{
+                mod:'define host,define range,define subnet,define mac',
+                textField:'name'
+            },
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false,
+            valueField:'name',
+            textField:'name'
+        });
+        if($("#proxyBar2").size() == 0){
+            $('#server_ip').combobox('panel').after(comboBut("add_addr('"+$LANG.ADD+"','server_ip')","proxyBar2"));
+        }
+
+        $("#mode").combobox({
+            width:220,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            multiple:false,
+            editable:false,
+            onSelect: function() {
+                if($("#mode").combobox('getValue') == 'rproxy') {
+                    $("#serverPort").show();
+                    $("#serverIp").show();
+                    $("#server_port").textbox({novalidate:false});
+                    $("#server_ip").textbox({novalidate:false});
+                } else {
+                    $("#serverPort").hide();
+                    $("#serverIp").hide();
+                    $("#server_port").textbox({novalidate:true});
+                    $("#server_ip").textbox({novalidate:true});
+                }
+            }
+        });
+
+        $("#l7_profile").combobox({
+            url: '?c=Policy/Proxy&a=getL7ProfileName',
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:false,
+            valueField:'name',
+            textField:'name',
+            onSelect: isHttpProfile
+        });
+
+        $('#ssl_profile').combobox({
+            url: '?c=Policy/SSL&a=getSslProfileName',
+            width:220,
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:true,
+            editable:false,
+            valueField:'name',
+            textField:'name',
+            onChange:function() {
+                var str_len = $.trim($("#ssl_profile").combobox('getValues')).split(",").length;
+                if(str_len >2) {
+                    ngtosPopMessager("error", 'sslProfile引用过多');
+                    $("#ssl_profile").combobox({clear:function(){}});
+                }
+            }
+        });
+
+        if($("#mode").combobox('getValue') == 'rproxy') {
+            $("#serverPort").show();
+            $("#serverIp").show();
+        } else {
+            $("#serverPort").hide();
+            $("#serverIp").hide();
+            $("#server_port").textbox({novalidate:true});
+            $("#server_ip").textbox({novalidate:true});
+        }
+
+        if(tagproxy == 1) {
+            $("#proxyId").hide();
+        } else {
+            $('#id').val(param[0]);
+            $('#proxy_ip').combobox('setValue',param[1]);
+            $("#proxyId").show();
+            $("#id").attr('disabled','true');
+            $('#proxy_port').val(param[2]);
+            $('#mode').combobox('setValue',param[3]);
+            if(param[3] == 'rproxy') {
+                $("#serverPort").show();
+                $("#serverIp").show();
+                $('#server_ip').combobox('setValues',param[4]);
+                $('#server_port').val(param[5]);
+            } else {
+                $("#serverPort").hide();
+                $("#serverIp").hide();
+            }
+            $('#l7_profile').combobox('setValue',param[6]);
+            if(isHttpProfile() == 'http') {
+                $('#sslName').show();
+            }
+            $('#ssl_profile').combobox('setValues',param[7]);
+        }
+
+        $('#confirm_button').click(function() {
+            var isValid = $('#proxyForm').form('validate');
+            if(isValid) {
+                addProxyProfile(tagproxy);
+            }
+        });
+    });
+    function isHttpProfile() {
+        $("#ssl_profile").combobox({clear:function(){}});
+        var l7_name = $('#l7_profile').combobox('getValue');
+        $.ajax({
+            url: "?c=Policy/Proxy&a=getL7ProfileName&flag=1",
+            type: 'POST',
+            data: {
+                name:l7_name
+            },
+            success: function(data) {
+                if(data == 'http') {
+                    $('#sslName').show();
+                } else {
+                    $('#sslName').hide();
+                    $("#ssl_profile").textbox({novalidate:true});
+                }
+            }
+        });
+    }
+</script>

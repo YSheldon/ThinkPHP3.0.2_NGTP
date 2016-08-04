@@ -1,0 +1,53 @@
+<div>
+<form id="configsave">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.FILENAME}</td>
+            <td><input class="easyui-textbox input_length" id='filename' data-options="required:true,validType:'eSymbols'"></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+            <td><input class="easyui-textbox input_length" id='comment' data-options="required:true,validType:'unnormal'"></td>
+        </tr>
+
+    </table>
+    <div class="window_foot_btn">
+        <input type="button"  id='saveAs' class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('config_save_window');">
+    </div>
+</form>
+</div>
+<script>
+$(function() {
+    $('#saveAs').click(function() {
+        var configsaveas = $('#configsave').form('validate');
+        if (configsaveas) {
+            var filename = $('#filename').val();
+            var comment = $('#comment').val();
+            closeWindow('config_save_window');
+           // waitMegBox();
+            if($('#filename').val) {
+                $.ajax({
+                    url: "?c=System/Config&a=fileSaveas",
+                    type: 'GET',
+                    dataType: 'text',
+                    data: {
+                        filename:filename,
+                        comment:comment
+                    },
+                    success: function(data) {
+                        if (data == '0') {
+                            ngtosPopMessager("success", $LANG.TCFISS);
+                            $('#dg').datagrid('reload');
+                        } else {
+                            ngtosPopMessager("error", data);
+                        }
+                    }
+                });
+            } else {
+                ngtosPopMessager("error", $LANG.FILE_NAME_CAN_NOT_BE_EMPTY);
+            }
+        }
+    });
+});
+</script>

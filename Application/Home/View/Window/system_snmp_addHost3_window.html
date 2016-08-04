@@ -1,0 +1,72 @@
+<div id='admin1'>
+    <div>
+    <form id="addhost3_form">
+        <table class="ngtos_form_table">
+            <tr><td class="tdlabel_net">{$Think.lang.USER_NAME}</td>
+                <td><input type="text"id="userName" name="userName"  class="easyui-textbox input_length" data-options="required:true,validType:'eSymbols'"/></td>
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.SECURE_LEVEL}</td>
+                <td>
+                    <!--<select name="snmp_user_lev" id="snmp_user_lev"  class="ngtos_input">-->
+                        <!--<option value="{lang la_snmp_pwd}">{lang la_snmp_pwd}</option>-->
+                        <!--<option value="{lang la_snmp_nopwd}">{lang la_snmp_nopwd}</option>-->
+                    <!--</select>-->
+                    <input type="radio"  name="snmp_user_lev" id="shutdown_enable" value="{$Think.lang.ENCRYPT}" onClick="change_radio('3')" checked> 
+                    <label for="shutdown_enable">{$Think.lang.ENCRYPT}</label>
+                    <input type="radio"  name="snmp_user_lev" id="shutdown_disable" value="{$Think.lang.UNENCRYPT}" onClick="change_radio('4')">
+                    <label for="shutdown_disable">{$Think.lang.UNENCRYPT}</label>
+                </td>
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.AUTH_PWD}</td>
+                <td><input type="password" id="userPassword" name="userPassword"  class="easyui-textbox input_length" data-options="required:true,validType:['unnormal','Length']"/><span class="form_comment">[{$Think.lang.PWD_LENGTH_8}]</span></td>
+            </tr>
+            <tr id="sp3"><td class="tdlabel_net">{$Think.lang.PRIVATE_PWD}</td>
+                <td>
+                    <input type="password" id="userSelfpassword" name="userSelfpassword"  class="easyui-textbox input_length" data-options="required:true,validType:['unnormal','Length']"/><span class="form_comment">[{$Think.lang.PWD_LENGTH_8}]</span>
+                </td>
+            </tr>
+        </table>
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}"  id="SNMPV3">
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('snmp_div3')">
+        </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(function() {
+//		$("#snmp_user_lev").change(function(){
+//            var sel = $("#snmp_user_lev").val();
+//            if(sel == '{lang la_snmp_pwd}'){
+//                $("#sp3").show();
+//            }
+//            if(sel == '{lang la_snmp_nopwd}'){
+//                $("#sp3").hide();
+//            }
+//        })
+        /*
+        param[0] = username;
+        param[1] = auth_password;
+        param[2] = secure_level;
+        param[3] = privilege_password;
+        */
+        if (v3User_tag == 1) {
+            $("#userName").removeAttr('disabled');
+        } else {
+            $('#userName').val(param[0]);
+            $("#userName").attr('disabled','true');
+            if (param[2] == "authpriv") {
+                $("#sp3").show();
+                $("#userSelfpassword").val(param[3]);
+                $("#snmp_user_lev").val("{lang la_snmp_pwd}");
+            } else {
+                $("#sp3").hide();
+                $("#snmp_user_lev").val("{lang la_snmp_nopwd}");
+            }
+            $('#userPassword').val(param[1]);
+        }
+        $('#SNMPV3').click(function() {
+               add_snmpSNMPV3_submit(v3User_tag); 
+        });
+    })
+</script>

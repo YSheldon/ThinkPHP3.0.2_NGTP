@@ -1,0 +1,195 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/vlan.js"></script>
+<table id="tt"></table>
+<!--    <a href="###" onClick="editVlanRow()" class="easyui-linkbutton" id="icon-edit" iconCls="icon-edit" plain="true">修改</a>-->
+<script>
+    var param = [];
+/*    var vsys_name = "{$vsys_name}";     //判断当前是不是虚系统用户
+    var vsys_start = "{$vsys_start}";   //判断当前是不是已经开启虚系统*/
+    $(function() {
+        if (getPrivilege("network") != false && getPrivilege("vsys-manage") != false) {
+            $('#tt').datagrid({
+                toolbar: [{
+                    id: 'icon-add',
+                    text: $LANG.ADD,
+                    iconCls: 'icon-add',
+                    handler: addVlanRow
+                }, {
+                    id: 'icon-edit',
+                    text: $LANG.EDIT,
+                    iconCls: 'icon-edit',
+                    handler: editVlanRow
+                }, {
+                    id: 'icon-delete',
+                    text: $LANG.DELETE,
+                    iconCls: 'icon-delete',
+                    handler: deleteVlanRow
+                }, {
+                    id: 'icon-delete_range',
+                    text: $LANG.DELETE_RANGE,
+                    iconCls: 'icon-delete',
+                    handler: deleteRangeVlan
+                }, {
+                    id: 'icon-clear',
+                    text: $LANG.CLEAR,
+                    iconCls: 'icon-clear',
+                    handler: clearVlanRow
+                }
+//                {
+//                    id: 'icon-searchall',
+//                    text: '查看所有',
+//                    iconCls: 'icon-search',
+//                    handler: searchVlanRowAll
+//                }, {
+//                    id: 'icon-search',
+//                    text: '查看根用户',
+//                    iconCls: 'icon-search',
+//                    handler: searchVlanRows
+//                }
+                ]
+            });
+        }else if(getPrivilege("network") == false && getPrivilege("vsys-manage") == false){
+
+        }else{
+            $('#tt').datagrid({
+                toolbar: [{
+                    id: 'icon-add',
+                    text: $LANG.ADD,
+                    iconCls: 'icon-add',
+                    handler: addVlanRow
+                },{
+                    id: 'icon-edit',
+                    text: $LANG.EDIT,
+                    iconCls: 'icon-edit',
+                    handler: editVlanRow
+                }, {
+                    id: 'icon-delete',
+                    text: $LANG.DELETE,
+                    iconCls: 'icon-delete',
+                    handler: deleteVlanRow
+                }, {
+                    id: 'icon-delete_range',
+                    text: $LANG.DELETE_RANGE,
+                    iconCls: 'icon-delete',
+                    handler: deleteRangeVlan
+                }, {
+                    id: 'icon-clear',
+                    text: $LANG.CLEAR,
+                    iconCls: 'icon-clear',
+                    handler: clearVlanRow
+                }
+                ]
+            })
+        }
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            nowrap: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'vlanid',
+            url: '?c=Network/Vlan&a=showJsondata',
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'vlanid', title: 'VLAN', width: 70, sortable: true,
+						sorter:function(a,b) {
+                            return (parseInt(a)>parseInt(b)?1:-1);
+                        },
+                        formatter: function(value) {
+                            if (value < 10) {
+                                var vlan = "vlan.000" + value;
+                            } else if (value >= 10 && value < 100) {
+                                var vlan = "vlan.00" + value;
+                            } else if (value >= 100 && value < 1000) {
+                                var vlan = "vlan.0" + value;
+                            } else {
+                                var vlan = "vlan." + value;
+                            }
+                            return "<a style='cursor:pointer;' onclick=\"show_flow('" + vlan + "')\">" + vlan + "</a>";
+                        }
+                    },
+                    {field: 'description', title: $LANG.DESCRIPTION, width: 100},
+                    {field: 'ip', title: $LANG.ADDR_MASK, width: 250,
+                        formatter: function(value, row) {
+                            return format_ip(row.ipv4, row.ipv6);
+                        }
+                    },
+                    {field: 'state', title: $LANG.STATE, width: 80, sortable: true,
+                        formatter: function(value) {
+                            if (value == "active") {
+                                return $LANG.ENABLE;
+                            } else {
+                                return $LANG.STOP;
+                            }
+                        }
+                    },
+                    {field: 'portname', title: $LANG.CONTAIN_IF, width: 200,
+                        formatter: function(value) {
+                            return formatVlanInterface(value);
+                        }
+                    }
+//                    ,
+//                    {field: 'sta', title: $LANG.SPAN_TREE, width:80,
+//                        formatter: function(value,row) {
+//                            if(row.status == 'off') {
+//                                return "<a style='cursor:pointer;' onclick='show_span(&quot;"+row.vlanid+"&quot;)'><?php echo L('OFF')?></a>";
+//                            } else {
+//                                 return "<a style='cursor:pointer;' onclick='show_span(&quot;"+row.vlanid+"&quot;)'><?php echo L('ON')?></a>";
+//                            }
+//                        }
+//                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onClickRow: set_vlan_toolbar,
+            onCheck: set_vlan_toolbar,
+            onUncheck: set_vlan_toolbar,
+            onCheckAll: set_vlan_toolbar,
+            onUncheckAll: set_vlan_toolbar,
+            onSelect: set_vlan_toolbar,
+            onUnselect: set_vlan_toolbar,
+            onDblClickRow: function(index, row) {
+                if (getPrivilege("network") == true) {
+                    editVlanRow(row.vlanid);
+                }
+            },
+            onLoadSuccess: function() {
+                set_vlan_toolbar();
+                $('#tt').datagrid('fixRownumber');
+                if($('.tagvif_tip').length > 0) {
+                    $('.tagvif_tip').tooltip({ position: 'bottom'});
+                    $('.tagvif_tip').mouseover(function(){$(this).tooltip('show');});
+                }
+            }
+        });
+//        if (!getVsysTurn()) {
+//        $('#tt').datagrid("hideColumn", "vcomname");
+//        }
+//        if (getPrivilege("global") = "0") {
+//        } else {
+//        $('#tt').datagrid("hideColumn", "opt");
+//        }
+
+//        if (vsys_name == 1 || vsys_start == 1) {
+//            $('#icon-searchall').linkbutton('disable');
+//            $('#icon-search').linkbutton('disable');
+//        }
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

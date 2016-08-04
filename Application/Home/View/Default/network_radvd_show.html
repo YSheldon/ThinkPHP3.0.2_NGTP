@@ -1,0 +1,86 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/radvd.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="tb">
+    <div>
+        <a href="javascript:void(0);" class="easyui-linkbutton" id ="icon_add" iconCls="icon-add" plain="true" onClick="addRadvd()">{$Think.lang.ADD}</a>
+        <a href="javascript:void(0);" class="easyui-linkbutton" id='ipedit' iconCls="icon-edit" plain="true" onClick="editRadvd();">{$Think.lang.EDIT}</a>
+        <a href="javascript:void(0);" class="easyui-linkbutton" id='ipdelete' iconCls="icon-delete" plain="true" onClick="deleteRadvd();">{$Think.lang.DELETE}</a>
+<<<<<<< .mine
+        <a href="javascript:void(0);" class="easyui-linkbutton" id="icon_clear" iconCls="icon-clear" plain="true"   onClick="deleteAllRadvd();" style="border:none;">
+            {$Think.lang.CLEAR}
+        </a>
+        <span style="margin-left:260px;">
+        <b>
+            <span style="margin-top:10px;">{$Think.lang.CURRENT_STATE} : </span>
+            <span id="suitstate_status_id">{$Think.lang.OFF}</span>
+        </b>
+        <img id="suitstate_switch_id" style="position:relative;left:10px;top:5px;" title="开启" onclick="RadvdRoles('suitstate_switch_id')" src="{$Think.config.NG_PATH}Public/images/image/stop.png"/>
+        </span>
+=======
+        <a href="javascript:void(0);" class="easyui-linkbutton" id="icon_clear" iconCls="icon-clear" plain="true" onClick="deleteAllRadvd();">{$Think.lang.CLEAR}</a><span style="margin-left:260px;">
+        <b>{$Think.lang.CURRENT_STATE} : <span id="suitstate_status_id">{$Think.lang.OFF}</span></b>
+            <img id="suitstate_switch_id" style="position:relative;left:10px;top:5px;" title="开启" onclick="RadvdRoles('suitstate_switch_id')" src="{$Think.config.NG_PATH}Public/images/image/stop.png">
+>>>>>>> .r1601
+    </div>
+</div>
+<script>
+    var param = [];
+    status_ret('suitstate_switch_id');
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            remoteSort: false,
+            sortName: 'interface',
+            url: '?c=Network/Radvd&mod=radvd',
+/*            queryParams:{
+                mod:'network radvd'
+            },*/
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'interface', title: $LANG.NETWORK_INTERFACE, align: 'left', width: 80,sortable:true},
+                    {field: 'prefix', title: $LANG.SUBNET_PREFIX, align: 'left', width: 80},
+                    {field: 'lease_day', title: $LANG.EFFECTTIVE_DAYS, align: 'left', width: 80},
+                    {field: 'lease_hour', title: $LANG.EFFECTTIVE_HOURS, align: 'left', width: 80},
+                    {field: 'lease_min', title: $LANG.EFFECTTIVE_MINS, align: 'left', width: 80},
+                    {field: 'max_ra_interval', title: $LANG.MAX_INTERVAL, align: 'left', width: 80},
+                    {field: 'min_ra_interval', title: $LANG.MIN_INTERVAL, align: 'left', width: 80},
+                    {field: 'cur_hop_limit', title: $LANG.JUMP_LIMIT, align: 'left', width: 80},
+                    {field: 'reachable_t', title: $LANG.UP_TIME, align: 'left', width: 80},
+                    {field: 'retrans_t', title: $LANG.RETRANSMISSION_TIME, align: 'left', width: 80}
+                ]],
+            toolbar: '#tb',
+            checkOnSelect: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onCheck: setRadvd,
+            onUncheck: setRadvd,
+            onCheckAll: setRadvd,
+            onUncheckAll: setRadvd,
+            onLoadSuccess: setRadvd ,
+            onDblClickRow: function(index, row) {	 //当用户双击一行时触发。
+                editDvd(row['interface'], row['prefix'], row['lease_day'], row['lease_hour'], row['lease_min'], row['max_ra_interval'], row['min_ra_interval'], row['cur_hop_limit'], row['reachable_t'], row['retrans_t']);
+            }
+        });
+        if (getPrivilege("network") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+            $('#icon_enable').linkbutton('disable');
+            $('#icon_disable').linkbutton('disable');
+        }
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<include file='Index:main'/>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/modules/network/ajaxfileupload.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/tunnel.js"></script>
+<div  id="center" class="main-center easyui-layout">
+    <!-- 表格头 -->
+    <div data-options="region:'north',border:false" style="height:35px;">
+        <div class="ngtos_header">
+            <a href="?c=Network/StaticTunnel&a=TunnelInfo">
+                <div class="ngtos_tab_over">{$Think.lang.STATIC_TUNNEL}</div></a>
+            <!--            <a href="?module=network_manual_tunnel&action=manual">
+                            <div class="ngtos_tab">{lang menu_network_manual_tunnel}</div></a>-->
+        </div>
+    </div>
+    <!-- 菜单栏-->
+    <div id="tb" style="height: auto;">
+        <div>
+            <a href="###" onClick="addRow()" id="" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+            <a href="###" onClick="deleteRow()" id="icon_delete" class="easyui-linkbutton" iconCls="icon-delete" plain="true">删除</a>
+            <a href="###" onClick="editRow()" id="icon_edit" class="easyui-linkbutton" iconCls="icon-edit" plain="true">编辑</a>
+            <a href="###" onClick="cloneRow()" id="icon_clone" class="easyui-linkbutton" iconCls="icon-clone" plain="true">克隆</a>
+            <a href="###" onClick="clearRow()" id="icon_clear" class="easyui-linkbutton" iconCls="icon-clear" plain="true">清空</a>
+            <a href="###" onClick="changeAction('invalid')" id="icon_enable" class="easyui-linkbutton" iconCls="icon-enable" plain="true">启用</a>
+            <a href="###" onClick="changeAction('valid')" id="icon_disable" class="easyui-linkbutton" iconCls="icon-disable" plain="true">禁用</a>
+        </div>
+    </div>
+    <!-- 表格 -->	
+    <div data-options="region:'center',border:false">
+        <table id="tt"></table>	
+    </div>	
+    <script>
+        var isa = 0;
+        var param = []; //定义数组变量
+        var submint_content; //1:为添加   2 ： 为修改  3：克隆
+        $(function() {
+            $('#tt').datagrid({
+                fitColumns: true,
+                striped: true, //设置为true将交替显示行背景。
+                url: '?c=Network/StaticTunnel&a=showalldata',
+                fit: true, //设置为true时，面版的大小将铺满它所在的容器（浏览器）。面板属性。
+                border: false, //定义是否显示控制面板边框。面板属性。
+                checkOnSelect: true,
+                selectOnCheck: true,
+                remoteSort: false,
+                toolbar: '#tb',
+                columns: [[
+                        {field: 'ck', checkbox: true},
+                        {field: 'name', title: '隧道名称', width: 40, sortable: true, align: 'left',
+                            formatter: function(value, row, index) {
+                                return "<a style='cursor:pointer;' onclick='showDetailInfo(&quot;" + value + "&quot;)'>" + value + "</a>";
+                            }
+                        },
+                        {field: 'localhost', title: '本地地址', width: 50, align: 'left'},
+                        {field: 'localsubnet', title: '本地子网', width: 50, align: 'left'},
+                        {field: 'peerhost', title: '远端网关', width: 50, align: 'left'},
+                        {field: 'peersubnet', title: '对方子网', width: 50, align: 'left'},
+                        {field: 'status', title: '隧道状态', width: 50, sortable: true,
+                            formatter: function(value, row, index) {
+                                if (value == 'ready') {
+                                    return  '<span>就绪</span> ';
+                                } else if (value == 'negotiateing') {
+                                    return  '<span>正在协商</span> ';
+                                } else if (value == 'sa1-established') {
+                                    return  '<span>一阶段协商成功</span> ';
+                                } else if (value == 'sa2-established') {
+                                    return  '<span>二阶段协商成功</span> ';
+                                } else if (value == 'stop') {
+                                    return  '<span>停止</span> ';
+                                }
+                            }
+                        },
+                        {field: 'xie', title: '协商', width: 50, align: 'left',
+                            formatter: function(value, rowData, rowIndex) {
+                                if (rowData.status != 'stop') {
+                                    return '<a href="###" onclick="changeConsult(' + rowData.name + ');"><img src="./Public/images/icon/consult.png" title="协商"></a> ';
+                                }
+                            }
+                        },
+                        {field: 'chai', title: '拆除', width: 50, align: 'left',
+                            formatter: function(value, rowData, rowIndex) {
+                                if (rowData.status == 'sa2-established') {
+                                    return '<a href="###" onclick="changeDismantle(' + rowData.name + ');"><img src="./Public/images/icon/dismantle.png" title="拆除"></a> ';
+                                }
+                            }
+                        }
+                    ]],
+                pagination: true,
+                pageSize: 20, 
+                pageList: [20, 50, 100], 
+                rownumbers: true, 
+                loadMsg: "请等待，数据正在加载......",
+                onBeforeLoad: checkTimeOut("$retArray['type']", "$retArray['info']"),
+                onDblClickRow: function(index, row) {				//当用户双击一行时触发。
+                    $("#tt").datagrid('unselectAll');
+                    $("#tt").datagrid('selectRow', index);
+                    editRow(row.name);
+                },
+                onLoadSuccess: function(data) {
+                    $('#icon_delete').linkbutton('disable');
+                    $('#icon_edit').linkbutton('disable');
+                    $('#icon_clone').linkbutton('disable');
+                    $('#icon_enable').linkbutton('disable');
+                    $('#icon_disable').linkbutton('disable');
+                },
+                onClickRow: setToolBar,
+                onCheckAll: setToolBar,
+                onUncheckAll: setToolBar,
+                onSelect: setToolBar,
+                onUnselect: setToolBar,
+                onLoadError: function(data) {
+                    alert('error' + data['responseText']);
+                }
+            });/*end $('#tt').datagrid*/
+        });/*end  $function*/
+    </script>
+</div>
+</body>
+</html>

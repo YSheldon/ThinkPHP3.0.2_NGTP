@@ -1,0 +1,19 @@
+<div>
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.FILE_NAME}</td>
+            <td>
+                <input type="file" name="file" style="display: block; width:222px" id="file">
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='importNote'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('note_div');">
+    </div>
+</div>
+<script>
+     $('#importNote').click(function() {
+            import_flie();
+     });
+</script>

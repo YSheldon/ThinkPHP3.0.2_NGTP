@@ -1,0 +1,49 @@
+<div>
+    <form id="tacacsForm">
+        <table class="ngtos_form_table">
+            <tr id="tacacsId">
+                <td class="tdlabel">id</td>
+                <td>
+                    <input type="text" id="id" name="id" class="easyui-textbox input_length">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">TACACS+{$Think.lang.PROXY_PROFILE_NAME}</td>
+                <td>
+                    <input type="text" id="proxy_name" name="proxy_name" class="easyui-textbox input_length" data-options="required:true">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">TACACS+{$Think.lang.PROXY_KEY}</td>
+                <td>
+                    <input type="text" id="tacacs_key" name="tacacs_key" class="easyui-textbox input_length" data-options="required:true">
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('tacacs_window_div')">
+    </div>
+</div>
+<script>
+    $(function() {
+        if(tagtacacs == 1) {
+            $("#tacacsId").hide();
+        } else if(tagtacacs == 2 ) {
+            $('#id').val(param[0]);
+            $('#proxy_name').val(param[1]);
+            $("#tacacsId").show();
+            $("#id").attr('disabled','true');
+            $("#proxy_name").attr('disabled','true');
+
+            $('#tacacs_key').val(param[2]);
+        }
+        $('#confirm_button').click(function() {
+            var isValid = $('#tacacsForm').form('validate');
+            if(isValid) {
+                addTacacsProfile(tagtacacs);
+            }
+        });
+    })
+</script>

@@ -1,0 +1,60 @@
+<include file='Index:main'/>
+<script src="{$Think.config.NG_PATH}Public/modules/system/diagnose.js" type="text/javascript"></script>
+<style>
+    .clear { color:#000000}
+    .clear:hover{ color:#FF0000; cursor:pointer}
+    .clear::before{margin-bottom:-5px;}
+</style>
+<div class="ngtos_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td width="8%" class="tdlabel_net">{$Think.lang.DIAGNOSE_TYPE}</td>
+            <td><input type="radio" name='type' value="1" checked="checked" onclick="changDiagnose('1')"/>PING&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name='type' value="2" onclick="changDiagnose('2')">TRACEROUTE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name='type' value="3" onclick="changDiagnose('3')">TCP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name='type' value="4" onclick="changDiagnose('4')">HTTP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name='type' value="5" onclick="changDiagnose('5')">DNS
+            </td>
+        </tr>
+        <tr>
+            <td id='addr_td' class="tdlabel_net">{$Think.lang.DIAGNOSE_ADDR}</td>
+            <td><input type="text" name="addr" id="addr" class="easyui-textbox input_length" style="width: 200px"/>
+                <input type="button" id='diagnoseStart1' class="ngtos_button_small addr_diagnose" value="{$Think.lang.START_DIAGNOSE}" onClick="diagnose();">
+                <input type="button" id='diagnoseStop1' class="ngtos_button_small addr_diagnose" value="{$Think.lang.STOP_DIAGNOSE}" onClick="diagnoseStop()">
+            </td>
+        </tr>
+        <tr id='port_tr' style="display: none">
+            <td id='port_td' class="tdlabel_net">{$Think.lang.DIAGNOSE_PORT}</td>
+            <td><input type="text" name="port" id="port" class="easyui-textbox input_length" style="width: 200px"/>
+                <input id='diagnoseStart2' type="button" class="ngtos_button_small" value="{$Think.lang.START_DIAGNOSE}" onClick="diagnose();">
+                <input id='diagnoseStop2' type="button" class="ngtos_button_small" value="{$Think.lang.STOP_DIAGNOSE}" onClick="diagnoseStop()">
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top"><div style="margin-top: 25px" class="tdlabel_net">{$Think.lang.DIAGNOSE_RESULT}</div></td>
+            <td>
+                <div style="width:90%; margin-top:20px; margin-bottom:20px; border:1px #ccc solid; height:400px">
+                    <div id='showimage' style="height:25px; background-color:#ccc;line-height: 25px; padding-left: 10px">
+                        <span class="clear" onClick="clearResult();">{$Think.lang.CLEAR}</span>
+                    </div>
+                    <textarea id='result' style="width:99.5%; height:370px;" autofocus='false' readonly="readonly">
+				
+                    </textarea>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    var tick1;
+    var type1;
+    var request;
+    $(function() {
+        changDiagnose("1");
+//    checkTimeOut($retArray['type'],"$retArray['info']");
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

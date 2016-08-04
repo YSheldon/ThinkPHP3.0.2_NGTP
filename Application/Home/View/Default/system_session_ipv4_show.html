@@ -1,0 +1,187 @@
+<include file='Index:main'/>
+<link rel="stylesheet"href="{$Think.config.NG_PATH}Public/css/yngtos/system/system_session.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/system/sessionIp.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+
+<div id="parentHorizontalTab">
+    <ul id="ipv" class="resp-tabs-list hor_1"> 
+        <a href="?c=System/Session&a=ipshow">
+            <li id="ipv_4">
+                {$Think.lang.IPV4_SESSION_INFO}
+            </li>
+        </a>
+        <a href="?c=System/Session&a=ipshow&tabs=ipv4">
+            <li id="ipv_none">
+                {$Think.lang.IPV6_SESSION_INFO}
+            </li>
+        </a>
+    </ul>
+    <div class="resp-tabs-container hor_1">
+        <div>
+            <div class="datagrid-toolbar">
+                <div class="tools-lft">
+                    <div class="btn-anchor">
+                        <a href="###" id='icon_delete' class="easyui-linkbutton" iconCls="icon-delete" plain="true" onClick="deleteSeesionIpv4();">
+                            <span class="btn-left">
+                                <span class="btn-left-text">{$Think.lang.DELETE}</span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="btn-anchor">
+                        <a href="###" class="easyui-linkbutton" id="icon_clear" iconCls="icon-clear" plain="true"  onClick="deleteAll('ipv4')">
+                            <span class="btn-left">
+                                <span class="btn-left-text">{$Think.lang.CLEAR}</span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="btn-anchor">
+                        <a href="###" class="easyui-linkbutton" iconCls="icon-search" plain="true" 
+                           onClick="superQuery('ipv4')">
+                            <span class="btn-left">
+                                <span class="btn-left-text">{$Think.lang.QUERY}</span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="btn-anchor" style="border-right:none;float:right;">
+                        <span class="btn-left">
+                            <span class="btn-left-text">
+                                {$Think.lang.STATUS_DESCRIPTION}【 E: established | C: close | H: handshake | D: deny | N: never-expire】
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="tableDiv">
+                <table id="sessionipv4"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $("#parentHorizontalTab").css("margin-top","30px");
+        $('#sessionipv4').datagrid({
+            fit:true,
+            fitColumns:true,
+            striped: true,
+            nowrap: true,
+            border:false,
+            remoteSort: false,
+            collapsible:true,
+            autoRowHeight:true,
+            showFooter:false,
+            sortName: 'src_ip_port',
+            url:'?c=System/Session&a=jsonData&family=ipv4',
+            frozenColumns:[[
+                {field:'ck',checkbox:true}
+            ]],
+            columns : [[
+                {field:'state',title:$LANG.STATE,width:100,align:'left',sortable:true},
+                {field:'protocol',title:$LANG.PROTOCOL,align:'left',width:70,editor:'text',sortable:true},
+                {field:'src_ip_port',title:$LANG.SRC_IP+'：'+$LANG.DIAGNOSE_PORT,align:'left',width:180,editor:'text',sortable:true,
+                    // sorter: function(a,b){
+                    //     var ip1 = a.split(':');
+                    //     var ip2 = b.split(':');
+                    //     if(ip1[0].length == ip2[0].length){
+                    //         if(ip1[1].length == ip2[1].length){
+                    //             return a.localeCompare(b);
+                    //         }else{
+                    //             var num = ip1[0].localeCompare(ip2[0]);
+                    //             if(num === 0){
+                    //                 return parseInt(ip1[1])!=parseInt(ip2[1])?(parseInt(ip1[1])>parseInt(ip2[1])?1:-1):0;
+                    //             }else{
+                    //                 return num;
+                    //             }
+                    //         }
+                    //     }else if(ip1[0].length > ip2[0].length){
+                    //         return 1;
+                    //     }else{
+                    //         return -1;
+                    //     }
+                    // },
+                    formatter:function(value,row) {
+                        if(value!='' && value==row.dst_ip_port )
+                            return '-';
+                        else
+                            var lastO=value.lastIndexOf(':');
+                            return '['+value.substr(0,lastO)+']'+value.substr(lastO,value.length-1);
+                    }
+                },
+                {field:'src_nat_ip_port',title:$LANG.SRC_NAT_IP+'：'+$LANG.DIAGNOSE_PORT,align:'left',width:180,editor:'text',
+                    formatter:function(value,row) {
+                        if(value!='' && value==row.src_ip_port )
+                            return '-';
+                        else
+                            var lastOff=value.lastIndexOf(':');
+                             return '['+value.substr(0,lastOff)+']'+value.substr(lastOff,value.length-1);
+                    }
+                },
+                {field:'dst_ip_port',title:$LANG.PURPOSE_IP+'：'+$LANG.DIAGNOSE_PORT,align:'left',width:180,sortable:true,editor:'text',
+                    // sorter: function(a,b){
+                    //     var ip1 = a.split(':');
+                    //     var ip2 = b.split(':');
+                    //     if(ip1[0].length == ip2[0].length){
+                    //         if(ip1[1].length == ip2[1].length){
+                    //             return a.localeCompare(b);
+                    //         }else{
+                    //             var num = ip1[0].localeCompare(ip2[0]);
+                    //             if(num === 0){
+                    //                 return parseInt(ip1[1])!=parseInt(ip2[1])?(parseInt(ip1[1])>parseInt(ip2[1])?1:-1):0;
+                    //             }else{
+                    //                 return num;
+                    //             }
+                    //         }
+                    //     }else if(ip1[0].length > ip2[0].length){
+                    //         return 1;
+                    //     }else{
+                    //         return -1;
+                    //     }
+                    // },
+                    formatter:function(value,row) {
+                        if(value!='' && value==row.src_ip_port)
+                            return '-';
+                        else
+                            var lastOf = value.lastIndexOf(':');
+                            return '['+value.substr(0,lastOf)+']'+value.substr(lastOf,value.length-1);
+                    }
+                },
+                {field:'dst_nat_ip_port',title:$LANG.PURPOSE_NAT_IP+'：'+$LANG.DIAGNOSE_PORT,align:'left',width:180,editor:'text',
+                    formatter:function(value,row) {
+                        if(value!='' && value == row.dst_ip_port)
+                            return '-';
+                        else
+                           var lastOfff=value.lastIndexOf(':');
+                             return '['+value.substr(0,lastOfff)+']'+value.substr(lastOfff,value.length-1);
+                    }
+                }
+                ]],
+            onLoadError: function(data) {
+                ngtosPopMessager('error',data['responseText']);
+            },
+            pagination:true,
+            rownumbers:true,
+            pageSize: 20,
+            pageList: [20,50,100],
+            loadMsg:$LANG.WAITING,
+            toolbar:'#tb',
+            checkOnSelect:true,
+            selectOnCheck:true,
+            onClickRow:setSessionIpv4,
+            onCheckAll:setSessionIpv4,
+            onUncheckAll:setSessionIpv4,
+            onSelect:setSessionIpv4,
+            onUnselect:setSessionIpv4,
+            onLoadSuccess : function () {      
+                $(this).datagrid("fixRownumber");   
+            }
+        });
+       if(getPrivilege("session") == false) {
+            $('#icon_delete').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+       }
+    });
+</script>
+</body>
+</html>

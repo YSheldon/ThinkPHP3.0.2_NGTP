@@ -1,0 +1,58 @@
+<!-- 接口属性 interfaceAttr-->
+<form id="gre_add">
+    <div>
+        <table class="ngtos_form_table">
+            <tr><td class="tdlabel">{$Think.lang.NAME}：</td>
+                <td><input type="text" style="width:180px" id="interface_name" name="interface_name" disabled  class="ngtos_input"/></td>
+            </tr>
+            <tr><td class="tdlabel">{$Think.lang.STATE}：</td>
+                <td><img src="{$Think.config.NG_PATH}Public/images/image/start.png" onClick="changBtState_gre(this);" title="{$Think.lang.START}" class="switch1" id="shutdown_cid"/></td>
+            </tr>
+            <tr><th colspan="2">{$Think.lang.IF_ATTR}</th>
+            </tr>
+            <tr><td colspan=2>
+                <table>
+                    <tr>
+                        <td>
+                            {$Think.lang.ADDRESS}&nbsp;<input type="text" id="ip4_cid" class="easyui-textbox" style="width: 100px;" data-options="validType:'ipFour'">
+                            {$Think.lang.MASK}&nbsp;<input type="text" id="mask4_cid" class="easyui-textbox" style="width: 100px;" data-options="validType:'mask'">&nbsp;
+                            <input type="button" id="add4_cid" title="" value="{$Think.lang.ADD}" class="ngtos_button_small" onclick="addIpv4();"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table id="ip4_list_cid"></table>
+                            <input id="ip4addr_items_hid" type="hidden"/>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            </tr>
+        </table>
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable"
+                   value="{$Think.lang.CONFIRM}" id="btnInterfaceAttr">
+            <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}"
+                   onClick="closeWindow('gre_interface')">
+        </div>
+    </div>
+</form>
+<script>
+    $(function() {
+        loadDatagrid();
+        $("#interface_name").val(param[0]);
+        if (param[1] == "disable") {
+            setBtState_gre("shutdown_cid","stop");
+        } else {
+            setBtState_gre("shutdown_cid","start");
+        }
+
+        var ip4 = param[2];
+        if (ip4 != null && ip4 != "") {
+            $("#ip4_list_cid").datagrid('loadData',getIp4Data(ip4));
+        }
+        $('#btnInterfaceAttr').click(function() {
+            greInterface_handle();
+        })
+    });
+</script>

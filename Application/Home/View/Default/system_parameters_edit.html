@@ -1,0 +1,639 @@
+<include file='Index:main'/>
+<div class="ngtos_form">
+    <input type="hidden" id="certificate_verify" value="{$certificate_verify}"/>
+    <input type="hidden" id="certificate_exist" value="{$certificate_exist}"/>
+    <form id="parameter_form">
+        <table class="ngtos_form_table">
+            <if condition=" (($conf_network_show eq 1) OR ($conf_global eq 1 ))">
+                <tr>
+                    <td class="tdlabel">{$Think.lang.DEVICE_NAME}</td>
+                    <td colspan="3" style="height: 50px;">
+                        <input type="text" id='name' name='name' value="{$outcome['devname']}" class="easyui-textbox"  />
+                    </td>
+                </tr>
+            </if>
+            <tr>
+                <th colspan="4">{$Think.lang.NETWORK_PARAMETER}</th>
+            </tr>
+            <tr>
+                <td class="tdlabel">{$Think.lang.TERMINAL_FREE_TIMEOUT}</td>
+                <td><input type="text" id="timeout" name="timeout" value="{$outcome['timout_webui']}" class="easyui-textbox global_input" data-options="required:true,validType:'rangeOr[0,30,3600]'"/>&nbsp;{$Think.lang.RANGE_SYSTEM_TIMEOUT}</td>
+            <if condition=" $conf_network_show eq 1 ">
+                <td class="tdlabel">{$Think.lang.LONG_SESSION_TIMEOUT}</td>
+                <td><input type="text" id="nerver_expire" name="never_expire" value="{$outcome['nerver_expire_timeout']}" class="easyui-textbox global_input" data-options="required:true,validType:'range[3600,8388607]'"/>&nbsp;{$Think.lang.RANGE_LONG_CONNECT_TIMEOUT}</td>
+            </if>
+            </tr>
+            <if condition=" $conf_network_show eq 1 ">
+                <tr>
+                    <td class="tdlabel">{$Think.lang.TCP_SESSION_TIMEOUT}</td>
+                    <td><input type="text" id="con_timeout" name="con_timeout" value="{$outcome['tcp_handshake_timeout']}" class="easyui-textbox global_input" data-options="required:true,validType:'range[10,200]'"/>&nbsp;{$Think.lang.SECCOND_10_200}</td>
+                    <td class="tdlabel">{$Think.lang.TCP_CLOSE_TIMEOUT}</td>
+                    <td><input type="text" id="discon_timeout" name="discon_timeout" value="{$outcome['tcp_close_timeout']}" class="easyui-textbox global_input" data-options="required:true,validType:'range[3,800]'"/>&nbsp;{$Think.lang.SECOND_3_800}</td>
+                </tr>
+                <tr>
+                    <td class="tdlabel">{$Think.lang.TCP_TIMEOUT}</td>
+                    <td><input type="text" id="tcp_timeout" name="tcp_timeout" value="{$outcome['tcp_estab_timeout']}" class="easyui-textbox global_input" data-options="required:true,validType:'range[10,7200]'"/>&nbsp;{$Think.lang.RANGE_OTHER_CONNECT_TIMEOUT}</td>
+                    <td class="tdlabel">{$Think.lang.UDP_TIMEOUT}</td>
+                    <td><input type="text" id="udp_timeout" name="udp_timeout" value="{$outcome['udp_timeout']}" class="easyui-textbox global_input" data-options="required:true,validType:'range[10,7200]'"/>&nbsp;{$Think.lang.RANGE_OTHER_CONNECT_TIMEOUT}</td>
+                </tr>
+                <!--<tr>-->
+                <!--<td>{lang syn_proxy_timeout}</td>-->
+                <!--<td><input type="text" name="syn_proxy" value="$outcome['udp_timeout']" id="syn_proxy" class="easyui-textbox" /> {lang limit_udp_timeout}</td>-->
+                <!--</tr>-->
+                <tr>
+                    <td class="tdlabel">{$Think.lang.OTHER_SESSION_TIMEOUT}</td>
+                    <td><input type="text" id="other" name="other" value="{$outcome['other_timeout']}" class="easyui-textbox global_input" data-options="required:true,validType:'range[10,7200]'"/>&nbsp;{$Think.lang.RANGE_OTHER_CONNECT_TIMEOUT}</td>
+                    <td class="tdlabel">{$Think.lang.LONG_SESSION_PERCENT}</td>
+                    <td><input type="text" id="never_expire_percent" name="never_expire_percent" value="{$outcome['never_expire_percent']}" class="easyui-textbox global_input" data-options="required:true,validType:'range[5,90]'"/>&nbsp;{$Think.lang.RANGE_LONG_CONNECT_PERCENT}</td>
+                </tr>
+
+                <!--新加SYN参数-->
+
+                <!---->
+                <tr>
+                    <td class="tdlabel">TCP reset</td>
+                    <td><input type="checkbox" id='TCP' name="TCP" value="1" class="global_checkbox"/></td>
+                    <td class="tdlabel">{$Think.lang.PACKET_VERIFY_SUM}</td>
+                    <td><input type="checkbox" id='packet' name="packet-checksum" value="1" class="global_checkbox"></td>
+                </tr>
+
+                <tr>
+                    <td class="tdlabel">{$Think.lang.FRAGMENT_REASSEMBLY}</td>
+                    <td><input type="checkbox" id='defrag' name="defrag_is_on" value="1" class="global_checkbox"></td>
+                    <td class="tdlabel">{$Think.lang.SESSION_INTEGRITY}</td>
+                    <td><input type="checkbox" id='session_integrity' name="session_integrity" value="1" class="global_checkbox"></td>
+                </tr>
+                <tr>
+                    <td class="tdlabel">{$Think.lang.QUICK_SESSION_REUSE}</td>
+                    <td><input type="checkbox" id='syn_reset' name="syn_reset" value="1" class="global_checkbox"></td>
+                    <td class="tdlabel">{$Think.lang.ASYN_CREATE_SESSION}</td>
+                    <td><input type="checkbox" id='only_syn_create' name="only_syn_create" value="1" class="global_checkbox"></td>
+                </tr>
+                <!--添加路由回源-->
+                <tr>
+                    <td class="tdlabel">路由回源</td>
+                    <td><input type="checkbox" id='back_to_source' name="back_to_source" value="1" class="global_checkbox"></td>
+                </tr>
+                <if condition=" $vid eq 0 ">
+                    <tr>
+                        <td class="tdlabel">{$Think.lang.APACHE_SSL_PORT}</td>
+                        <td><input type="text" id="apache_ssl_port" name="apache_ssl_port" origin="{$outcome['apache_ssl_port']}" value="{$outcome['apache_ssl_port']}" class="easyui-textbox global_input" data-options="required:true,validType:'rangeOr[443,1024,65535]'"/></td>
+                    </tr>
+                </if>
+            </if>
+            <!--                <if condition=" $conf_stat eq 1 ">
+                                <tr>
+                                    <th colspan="4">{$Think.lang.FLOW_STATISTIC_BUTTON}</th>
+                                </tr>
+                                <tr>
+                                    <td>{$Think.lang.SESSION_FLOW}</td>
+                                    <td>
+                                        {if $outcome['session']=='on'}
+                                        <if condition=" $outcome.session eq 'on' ">
+                                            <img id='session_flow' src="./static/images/image/start.png" onClick="changswitch(this);" title="开启" class="switch1"/>
+                                            <input type="checkbox" id='session_flow' checked>
+                                        <else/>
+                                            <input type="checkbox" id='session_flow'>
+                                            <img id='session_flow' src="./static/images/image/stop.png" onClick="changswitch(this);" title="关闭" class="switch1"/>
+                                        </if>
+                                    </td>
+                                    <td>{$Think.lang.USER_APP_FLOW}</td>
+                                    <td>
+                                        <if condition="$outcome.user eq 'on'">
+                                            <input type="checkbox" id='user_app_flow' checked>
+                                            <img id='user_app_flow' src="./static/images/image/start.png" onClick="changswitch(this);" title="开启" class="switch1"/>
+                                        <else/>
+                                            <input type="checkbox" id='user_app_flow'>
+                                            <img id='user_app_flow' src="./static/images/image/stop.png" onClick="changswitch(this);" title="关闭" class="switch1"/>
+                                        </if>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{$Think.lang.SERVER_FLOW}</td>
+                                    <td>
+                                        <if condition="$outcome.server eq 'on'">
+                                            <input type="checkbox" id='server_flow' checked>
+                                            <img id='server_flow' src="./static/images/image/start.png" onClick="changswitch(this);" title="开启" class="switch1"/>
+                                        <else/>
+                                            <input type="checkbox" id='server_flow'>
+                                            <img id='server_flow' src="./static/images/image/stop.png" onClick="changswitch(this);" title="关闭" class="switch1"/>
+                                        </if>
+                                    </td>
+                                    <td>{$Think.lang.THREAT_FLOW}</td>
+                                    <td>
+                                        <if condition="$outcome.threat eq 'on'">
+                                            <input type="checkbox" id='threat_flow' checked>
+                                            <img id='threat_flow' src="./static/images/image/start.png" onClick="changswitch(this);" title="开启" class="switch1"/>
+                                        <else/>
+                                            <input type="checkbox" id='threat_flow'>
+                                            <img id='threat_flow' src="./static/images/image/stop.png" onClick="changswitch(this);" title="关闭" class="switch1"/>
+                                        </if>
+                                    </td>
+                                </tr>
+                                <if condition="$vpn_licnce neq 0">
+                                    <tr>
+                                        <td>{$Think.lang.VPN_TUNNEL_FLOW}</td>
+                                        <td>
+                                            <if condition="$outcome.vpn_tunnel eq 'on'">
+                                                <input type="checkbox" id='vpn_tunnel_flow' checked>
+                                                <img id='vpn_tunnel_flow' src="./static/images/image/start.png" onClick="changswitch(this);" title="开启" class="switch1"/>
+                                                <else/>
+                                                <input type="checkbox" id='vpn_tunnel_flow'>
+                                                <img id='vpn_tunnel_flow' src="./static/images/image/stop.png" onClick="changswitch(this);" title="关闭" class="switch1"/>
+                                            </if>
+                                        </td>
+                                    </tr>
+                                </if>
+                            </if>-->
+            <if condition=" (($conf_network_show eq 1) OR ($conf_global eq 1 ))">
+                <tr>
+                    <td class="tdlabel"></td>
+                    <td colspan="3">
+                        <div class="btn_config">
+                            <input type="button" value="{$Think.lang.APPLY}" class="ngtos_button_large confirmenable" onClick="form_submit()"/>
+                        </div>
+                    </td>
+                </tr>
+            </if>
+            <if condition = "(($conf_network_show eq 1) AND ($vid eq 0 ))">
+                <tr>
+                    <th colspan="4">{$Think.lang.CERTIFICATE}</th>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div style="display: block; margin-left: 8%">
+                            <input type="button" value="{$Think.lang.CREATE_CERTIFICATE}" class="ngtos_button_small" id='btn_certificate_create'>
+                            <input type="button" value="{$Think.lang.EXPORT_CERTIFICATE}" class="ngtos_button_small" id='btn_certificate_export' >
+                            <input type="button" value="{$Think.lang.ENABLE_CERTIFICATE}" class="ngtos_button_small" id='btn_enable_certificate' >
+                            <input type="button" value="{$Think.lang.DISABLE_CERTIFICATE}" class="ngtos_button_small" id='btn_disable_certificate' >
+                        </div>
+                    </td>
+                </tr>
+            </if>
+        </table>
+    </form>
+</div>
+<div id='saveClientPage' style="width:400px; display:none"></div>
+<script type="text/javascript">
+    if ("{$val}" == 1 && "{$res}" == 1) {
+        $("#name").attr("disabled", 'true');
+    }
+    $(function() {
+//            checkTimeOut($retArray['type'], "$retArray['info']");
+        if ("{$conf_network_show}" == 1) {
+            if ("{$outcome['tcp_reset']}" == "on")
+                $('#TCP')[0].checked = true;
+            else
+                $('#TCP')[0].checked = false;
+
+            if ("{$outcome['packet_checksum']}" == "on")
+                $('#packet')[0].checked = true;
+            else
+                $('#packet')[0].checked = false;
+
+            if ("{$outcome['defrag_is_on']}" == "on")
+                $('#defrag')[0].checked = true;
+            else
+                $('#defrag')[0].checked = false;
+            if ("{$outcome['session_integrity']}" == "on")
+                $('#session_integrity')[0].checked = true;
+            else
+                $('#session_integrity')[0].checked = false;
+
+            if ("{$outcome['syn_reset']}" == "on")
+                $('#syn_reset')[0].checked = true;
+            else
+                $('#syn_reset')[0].checked = false;
+
+            if ("{$outcome['only_syn_create']}" == "on")
+                $('#only_syn_create')[0].checked = false;
+            else
+                $('#only_syn_create')[0].checked = true;
+            //设置路由回源
+            if("{$back_to_source}" == 'on'){
+                $('#back_to_source')[0].checked = true;
+            }else{
+                $('#back_to_source')[0].checked = false;
+            }
+
+            if("{$vid}" ==0){
+                controlCertificateShow();
+                bindMethods();
+            }
+        }
+//        if ("{$conf_global}" != 1) {
+////                $('.easyui-textbox.global_input').attr("readonly","readonly");
+//            $('.easyui-textbox.global_input').attr("disabled", "disabled");
+//            $('.global_checkbox').attr("disabled", "disabled");
+//        }
+    });
+
+    function bindMethods(){
+        $("#btn_certificate_export").unbind("click");
+        $("#btn_certificate_export").click(function () {
+            exportCertificate();
+        })
+
+        $("#btn_certificate_create").unbind("click");
+        $("#btn_certificate_create").click(function () {
+            createCertificate();
+        });
+
+        $("#btn_enable_certificate").unbind("click");
+        $("#btn_enable_certificate").click(function () {
+            enableCertificate();
+        });
+
+        $("#btn_disable_certificate").unbind("click");
+        $("#btn_disable_certificate").click(function () {
+            disableCertificate();
+        });
+    }
+
+    var enableDisableSuccess = true;
+    function createCertificate(){
+        ngtosPopMessager("confirm", "{$Think.lang.ARE_YOU_SURE_TO_CREATE_CERTIFICATE}?", function (tag) {
+            if (tag) {
+                enableDisableSuccess = true;
+                winInfo = $.messager.alert("{$Think.lang.ALERT}", "{$Think.lang.IT_IS_CREATING_CERTIFICATE}", 'info');//
+                ajaxRequestMsg("?c=System/Parameters&a=createCert", {}, "winInfo.window('close');actionSucccess('{$Think.lang.CREATE_CERTIFICATE_SUCCESS_PLEASE_EXPORT}');", "winInfo.window('close');actionFail('{$Think.lang.CREATE_CERTIFICATE_FAIL}');");
+            }
+        });
+    }
+
+    function enableCertificate(){
+        ngtosPopMessager("confirm", "{$Think.lang.SURE_ENABLE_CERTIFICATE}?", function (tag) {
+            if (tag) {
+                enableDisableSuccess = true;
+                winInfo = $.messager.alert("{$Think.lang.ALERT}", "{$Think.lang.ENABLING_CERTIFICATE_MODE}", 'info');
+                ajaxRequestMsg("?c=System/Parameters&a=enableCert", {}, "turnToReSSLLoginPage();", "enableDisableSuccess = false;winInfo.window('close');ngtosPopMessager('error', data);");
+                setTimeout(enableDisableSuccessDetail, 4000);
+            }
+        });
+    }
+
+    function enableDisableSuccessDetail(){
+        if(enableDisableSuccess) {
+            turnToReSSLLoginPage();
+        }
+    }
+
+    function disableCertificate(){
+        ngtosPopMessager("confirm", "{$Think.lang.DISABLE_CERT_ALERT}?", function (tag) {
+            if (tag) {
+                winInfo = $.messager.alert("{$Think.lang.ALERT}", "{$Think.lang.DISABLING_CERTIFICATE_MODE}", 'info');
+                ajaxRequestMsg("?c=System/Parameters&a=disableCert", {}, "turnToReSSLLoginPage();", "enableDisableSuccess = false;winInfo.window('close');actionFail('{$Think.lang.DISABLING_CERTIFICATE_FAIL}');");
+                setTimeout(enableDisableSuccessDetail, 4000);
+            }
+        });
+    }
+
+    function disableSuccessDetail(){
+        if(!enableDisableSuccess){
+            winInfo.window('close');
+            ngtosPopMessager('success','{$Think.lang.DISABLING_CERT_SUCCESS_RESTART_SERVICE}');
+            apacheRestart()
+        } else{
+            turnToReSSLLoginPage();
+        }
+    }
+
+    function actionSucccess(msg){
+        ngtosPopMessager('success', msg);
+        parent.location.reload();
+    }
+
+    function actionFail(msg){
+        ngtosPopMessager('error', msg);
+    }
+
+    function controlCertificateShow(){
+        var certificateVerify = $("#certificate_verify").attr("value");
+        var certificateExist = $("#certificate_exist").attr("value");
+
+        if(certificateExist == "false"){
+            $("#btn_certificate_export").css("display", "none");
+        } else {
+            $("#btn_certificate_export").css("display", "inline");
+        }
+
+        if(certificateVerify == "no"){
+            $("#btn_certificate_create").css("display", "inline");
+            $("#btn_enable_certificate").css("display", "inline");
+            $("#btn_disable_certificate").css("display", "none");
+            return;
+        }
+        $("#btn_enable_certificate").css("display", "none");
+        $("#btn_disable_certificate").css("display", "inline");
+        $("#btn_certificate_create").css("display", "none");
+    }
+
+    function form_submit() {
+        var flag = verifySSLPort();
+        if(!flag){
+            return false;
+        }
+        var isValid = $('#parameter_form').form('validate');
+        if (isValid) {
+            if ("{$conf_global}" == 1) {
+//                if ($("#name").checkInput({cl: ['must', 'illlegchar']}) == false)
+//                    return false;
+            }
+            if ($('#timeout').val() != 0) {
+                if("{$conf}" !=1 && "{$vid}" !=0){
+                    ngtosPopMessager("success", $LANG.VIRTUAL_SCNBM);
+                    return false;
+                }
+            }
+
+            var session_flow = '';
+            var server_flow = '';
+            var user_app_flow = '';
+            var vpn_tunnel_flow = '';
+            var threat_flow = '';
+
+            //apache ssl端口
+            var apache_ssl_port_origin = "";
+            var apache_ssl_port_now = "";
+            var apache_ssl_port_modify = "";
+            if("{$vid}" ==0) {
+                apache_ssl_port_origin = $("#apache_ssl_port").attr("origin");
+                apache_ssl_port_now = $("#apache_ssl_port").val();
+            }
+
+            if ("{$conf_network_show}" == 1) {
+                dataoption = {
+                    name: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#name').val()) : '',
+                    timeout: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#timeout').val()) : '',
+                    never_expire: $.trim($('#nerver_expire').val()),
+                    con_timeout: $.trim($('#con_timeout').val()),
+                    discon_timeout: $.trim($('#discon_timeout').val()),
+                    udp_timeout: $.trim($('#udp_timeout').val()),
+                    TCP: $('#TCP')[0].checked ? '1' : '0',
+                    packet_checksum: $('#packet')[0].checked ? '1' : '0',
+                    //                        defrag_is_on: $('#defrag')[0].checked ? '1' : '0',
+                    never_expire_percent: $.trim($('#never_expire_percent').val()),
+                    session_integrity: $('#session_integrity')[0].checked ? '1' : '0',
+                    other: $.trim($('#other').val()),
+                    tcp_timeout: $.trim($('#tcp_timeout').val()),
+                    syn_reset: $('#syn_reset')[0].checked ? '1' : '0',
+                    only_syn_create: $('#only_syn_create')[0].checked ? '1' : '0',
+                    session_flow: session_flow,
+                    server_flow: server_flow,
+                    user_app_flow: user_app_flow,
+                    vpn_tunnel_flow: "$vpn_licnce" != 0 ? vpn_tunnel_flow : '',
+                    threat_flow: threat_flow,
+                    apache_ssl_port: apache_ssl_port_modify,
+                    back_to_source:$('#back_to_source')[0].checked ? '1' : '0'
+                }
+            }else{
+                dataoption = {
+                    name: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#name').val()) : '',
+                    timeout: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#timeout').val()) : '',
+                    session_flow: session_flow,
+                    server_flow: server_flow,
+                    user_app_flow: user_app_flow,
+                    vpn_tunnel_flow: "{$vpn_licnce}" != 0 ? vpn_tunnel_flow : '',
+                    threat_flow: threat_flow
+                }
+            }
+
+            if("{$vid}" ==0 && apache_ssl_port_origin != apache_ssl_port_now) {
+                ngtosPopMessager("confirm", "修改apache ssl端口后，需要重启服务器才能生效，确定要修改吗?", function (tag) {
+                    if (tag) {
+                        dataoption["apache_ssl_port"] = apache_ssl_port_now;
+                        form_submit_action(dataoption);
+                        setTimeout(apacheRestart, 4000);
+                    } else{
+                        $("#apache_ssl_port").parent().find("input").attr("value", apache_ssl_port_origin);
+                        $("#apache_ssl_port").parent().find("input").val(apache_ssl_port_origin);
+                        return false;
+                    }
+                });
+            } else {
+                form_submit_action(dataoption);
+            }
+        }
+    }
+
+    function verifySSLPort(){
+        var value = $("#apache_ssl_port").val();
+        if(value > 443 && value < 1024){
+            ngtosPopMessager("success", "{$Think.lang.APACHE_SSL_PORT}{$Think.lang.APACHE_SSL_VALUE_ALERT}!");
+            return false;
+        }
+        return true;
+    }
+
+    function form_submit_action(dataoption){
+        //ajax提交
+        //?c=System/Parameters put
+        //?c=System/Parameters&a=parametersEditsave
+        //alert(dataoption["apache_ssl_port"]);
+        $.ajax({
+            url: "?c=System/Parameters",
+            type: 'put',
+            dataType: 'text',
+            async: false,
+            data: dataoption,
+            success: function(data, textStatus) {
+                if (data == '0') {
+                    if("{$vid}" ==0) {
+                        var apache_ssl_port_origin = $("#apache_ssl_port").attr("origin");
+                        var apache_ssl_port_now = $("#apache_ssl_port").val();
+                        if (apache_ssl_port_origin != apache_ssl_port_now) {
+                            apacheRestart();
+                            return;
+                        }
+                    }
+
+//                            globalTimeFlag = false;     //暂停超时检查
+                    $.cookie("timeoutSuspend", 1, {secure: true});
+                    $.cookie("timeout", $.trim($('#timeout').val()), {secure: true});  //更新超时时间
+//                            $.cookie("ildetime", 0);    //计时清0
+//                            globalTimeFlag = true;      //恢复计时
+                    $.cookie("timeoutSuspend", 0, {secure: true});
+                    ngtosPopMessager("success", $LANG.CHANGE_SUCCESS);
+                } else {
+                    ngtosPopMessager("error", data, function() {
+                        parent.location.reload();
+                    });
+                }
+            }
+        });
+    }
+
+    function turnToReSSLLoginPage(){
+        var newUrl = window.location.protocol+ "//" + window.location.hostname + ":" +$("#apache_ssl_port").val();
+        window.location.href = newUrl;
+    }
+
+    function apacheRestart(){
+        /*var url = "?c=System/Parameters&a=restartApache";
+         ajaxRequestMsg(url, {}, "", "");*/
+        $.messager.alert("{$Think.lang.ALERT}", "{$Think.lang.RESTARTING_SERVICE}", 'info');
+        setTimeout(turnToReSSLLoginPage, 4000);
+        return;
+    }
+
+    function ajaxRequestMsg(url, data, successMethods, errorMethods){
+        //ajax提交
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'text',
+            async:true,
+            data: data,
+            success: function(data, textStatus) {
+                if (data == '0') {
+                    eval(successMethods);
+                } else {
+                    eval(errorMethods);
+                }
+            }
+        });
+    }
+
+    function exportCertificate(){
+        open_window('saveClientPage', 'Policy/Interview', 'windowShow&w=ssl_export_client_password', '{$Think.lang.SET_EXPORT_PASSWORD}');
+    }
+
+    /*function form_submit() {
+        var isValid = $('#parameter_form').form('validate');
+        if (isValid) {
+            if ("{$conf_global}" == 1) {
+//                if ($("#name").checkInput({cl: ['must', 'illlegchar']}) == false)
+//                    return false;
+            }
+            if ($('#timeout').val() != 0) {
+                if("{$conf}" !=1 && "{$vid}" !=0){
+                    ngtosPopMessager("success", $LANG.VIRTUAL_SCNBM);
+                    return false;
+                }
+            }
+
+            var session_flow = '';
+            var server_flow = '';
+            var user_app_flow = '';
+            var vpn_tunnel_flow = '';
+            var threat_flow = '';
+//            if("$conf_stat"==1)
+//            {
+//                if($('#session_flow')[0].checked)
+//                    session_flow='on';
+//                else
+//                    session_flow='off';
+//                if($('#server_flow')[0].checked)
+//                    server_flow='on';
+//                else
+//                    server_flow='off';
+//                if($('#user_app_flow')[0].checked)
+//                    user_app_flow='on';
+//                else
+//                    user_app_flow='off';
+//                if("$vpn_licnce"!=0)
+//                {
+//                    if($('#vpn_tunnel_flow')[0].checked)
+//                        vpn_tunnel_flow='on';
+//                    else
+//                        vpn_tunnel_flow='off';
+//                }
+//                if($('#threat_flow')[0].checked)
+//                    threat_flow='on';
+//                else
+//                    threat_flow='off';
+//            }
+            
+//            if ("{$conf_network_show}" == 1 && "{$conf_global}" == 1) {
+//
+//                var dataoption = {
+//                    name: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#name').val()) : '',
+//                    timeout: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#timeout').val()) : '',
+//                    never_expire: $.trim($('#nerver_expire').val()),
+//                    con_timeout: $.trim($('#con_timeout').val()),
+//                    discon_timeout: $.trim($('#discon_timeout').val()),
+//                    udp_timeout: $.trim($('#udp_timeout').val()),
+//                    TCP: $('#TCP')[0].checked ? '1' : '0',
+//                    packet_checksum: $('#packet')[0].checked ? '1' : '0',
+//                    defrag_is_on: $('#defrag')[0].checked ? '1' : '0',
+//                    never_expire_percent: $.trim($('#never_expire_percent').val()),
+//                    session_integrity: $('#session_integrity')[0].checked ? '1' : '0',
+//                    other: $.trim($('#other').val()),
+//                    tcp_timeout: $.trim($('#tcp_timeout').val()),
+//                    syn_reset: $('#syn_reset')[0].checked ? '1' : '0',
+//                    only_syn_create: $('#only_syn_create')[0].checked ? '1' : '0',
+//                    session_flow: session_flow,
+//                    server_flow: server_flow,
+//                    user_app_flow: user_app_flow,
+//                    vpn_tunnel_flow: "$vpn_licnce" != 0 ? vpn_tunnel_flow : '',
+//                    threat_flow: threat_flow
+//                }
+//            } else 
+             if ("{$conf_network_show}" == 1) {
+
+                    var dataoption = {
+                        name: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#name').val()) : '',
+                        timeout: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#timeout').val()) : '',
+                        never_expire: $.trim($('#nerver_expire').val()),
+                        con_timeout: $.trim($('#con_timeout').val()),
+                        discon_timeout: $.trim($('#discon_timeout').val()),
+                        udp_timeout: $.trim($('#udp_timeout').val()),
+                        TCP: $('#TCP')[0].checked ? '1' : '0',
+                        packet_checksum: $('#packet')[0].checked ? '1' : '0',
+    //                        defrag_is_on: $('#defrag')[0].checked ? '1' : '0',
+                        never_expire_percent: $.trim($('#never_expire_percent').val()),
+                        session_integrity: $('#session_integrity')[0].checked ? '1' : '0',
+                        other: $.trim($('#other').val()),
+                        tcp_timeout: $.trim($('#tcp_timeout').val()),
+                        syn_reset: $('#syn_reset')[0].checked ? '1' : '0',
+                        only_syn_create: $('#only_syn_create')[0].checked ? '1' : '0',
+                        session_flow: session_flow,
+                        server_flow: server_flow,
+                        user_app_flow: user_app_flow,
+                        vpn_tunnel_flow: "$vpn_licnce" != 0 ? vpn_tunnel_flow : '',
+                        threat_flow: threat_flow,
+                        //设置路由回源中ajax传值
+                        back_to_source:$('#back_to_source')[0].checked ? '1' : '0'
+                    }
+            }else{
+                
+                var dataoption = {
+                    name: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#name').val()) : '',
+                    timeout: "{$conf}" ==1 && "{$vid}" ==0 ? $.trim($('#timeout').val()) : '',
+                    session_flow: session_flow,
+                    server_flow: server_flow,
+                    user_app_flow: user_app_flow,
+                    vpn_tunnel_flow: "{$vpn_licnce}" != 0 ? vpn_tunnel_flow : '',
+                    threat_flow: threat_flow
+                }
+            }
+            //ajax提交
+            $.ajax({
+                url: "?c=System/Parameters",
+                type: 'put',
+                dataType: 'text',
+                async: false,
+                data: dataoption,
+                success: function(data, textStatus) {
+                    if (data == '0') {
+//                            globalTimeFlag = false;     //暂停超时检查
+                        $.cookie("timeoutSuspend", 1, {secure: true});
+                        $.cookie("timeout", $.trim($('#timeout').val()), {secure: true});  //更新超时时间
+//                            $.cookie("ildetime", 0);    //计时清0
+//                            globalTimeFlag = true;      //恢复计时
+                        $.cookie("timeoutSuspend", 0, {secure: true});
+                        ngtosPopMessager("success", $LANG.CHANGE_SUCCESS);
+                    } else {
+                        ngtosPopMessager("error", data, function() {
+                            parent.location.reload();
+                        });
+                    }
+                }
+            });
+        }
+    }*/
+</script>
+</div>
+</div>
+</body>
+</html>

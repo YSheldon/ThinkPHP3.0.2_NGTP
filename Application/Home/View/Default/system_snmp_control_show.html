@@ -1,0 +1,156 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/system/snmp.css" type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/system/snmp.js"></script>
+<div class="ngtos_form">
+    <div id="easyui_tab" data-options="fit:true,border:false, tabWidth:120">
+        <div style="overflow:auto;height:100px;float: left;width:300px;padding: 15px;margin-top:-20px;">
+            <fieldset>
+                <legend>&nbsp;&nbsp;SNMP {$Think.lang.SERVICE_CONTROL}&nbsp;&nbsp;</legend>
+                <div style="padding:10px 10px 3px 20px;">{$Think.lang.POSITION}：
+                    <input type="text" style="width:200px" id="position" name="position" class="easyui-textbox global_input"/></div>
+                <div style="padding:3px 10px 10px 20px">{$Think.lang.CONTACT}：
+                    <input type="text" style="width:200px" id="call" name="call" class="easyui-textbox global_input"/></div>
+            </fieldset>
+        </div>
+        <div>
+            <input type="button" class="ngtos_button_small" data-options="plain:true" id="btn_app" value="{$Think.lang.APPLY}"/><br/>
+            <input type="button" class="ngtos_button_small" data-options="plain:true" id="btn_start" value="{$Think.lang.LAUNCH}"/><br/>
+            <input type="button" class="ngtos_button_small" data-options="plain:true" id="btn_stop" value="{$Think.lang.STOP}" />
+        </div>
+        <table  width=100% class="tab_tag_table">
+            <tr>
+                <td>
+                    <ul id="ipv2" class="resp-tabs-list hor_1"> 
+                        <a href="?c=System/Snmp&a=snmp_show">
+                            <li>
+                                SNMP {$Think.lang.MANAGE_HOST}
+                            </li>
+                        </a>
+                        <a href="?c=System/Snmp&a=snmp_show&tab=2">
+                            <li id="ipv_4">
+                                SNMP {$Think.lang.PITFALL_HOST}
+                            </li>
+                        </a>
+                        <a href="?c=System/Snmp&a=snmp_show&tab=3">
+                            <li>
+                                SNMPV3 {$Think.lang.USER}
+                            </li>
+                        </a>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+        <table id='aa' style="height: 400px;"></table>
+    </div>
+    <script>
+        var tag;
+        var v3User_tag;
+        var flag_clean;
+        var param = [];
+        var ipTag;
+
+        $(function() {
+            //查看已分配的地址
+            $('#aa').datagrid({
+                fitColumns: true,
+                striped: true,
+                border: true,
+                rownumbers: true,
+                url: '?c=System/Snmp&mod=traphost',
+/*                queryParams:{
+                    mod:'system snmp traphost'
+                },*/
+                frozenColumns:[[
+                    {field:'ck',checkbox:true}
+                ]],
+                columns: [[
+                        {field: 'name', title: $LANG.NAME, width: 30},
+                        {field: 'ip', title: $LANG.IP_ADDR, width: 100}
+                    ]],
+                pagination: true,
+                pageSize: 20,
+                pageList: [20, 50, 100],
+                onCheck: snmpcontrol_toolbar,
+                onUncheck: snmpcontrol_toolbar,
+                onCheckAll: snmpcontrol_toolbar,
+                onUncheckAll: snmpcontrol_toolbar,
+                onLoadSuccess: snmpcontrol_toolbar,
+                loadMsg: $LANG.WAITING
+            });
+
+           if (getPrivilege("snmp")==true) {
+                //数据表格顶部面板的菜单栏。
+                $('#aa').datagrid({
+                    toolbar: [{
+                            id: 'icon-add',
+                            text: $LANG.ADD,
+                            iconCls: 'icon-add',
+                            handler: add_snmp2
+                        }, {
+                            id: 'icon-delete',
+                            text: $LANG.DELETE,
+                            iconCls: 'icon-delete',
+                            handler: del_snmp2
+                        }, {
+                            id: 'icon-clear',
+                            text: $LANG.CLEAR,
+                            iconCls: 'icon-clear',
+                            handler: clear_snmp2
+                        }]
+                });
+            }
+
+            //获取联系和位置
+            $.getJSON(
+                    '?c=System/Snmp&a=snmpGetPositionAddress&v=setlocationShow',
+                    function(data) {
+                        if (data){
+                            $(data.rows).each(function(key, value) {
+                                $('#position').textbox('setValue',value.location);
+                            })
+                        }
+                    });
+            $.getJSON(
+                    '?c=System/Snmp&a=snmpGetPositionAddress&v=setcontactShow',
+                    function(data) {
+                        if (data){
+                            $(data.rows).each(function(key, value) {
+                                $('#call').textbox('setValue',value.contact);
+                            })
+                        }
+                    });
+
+            //snmp is/no running
+            $.getJSON(
+                    '?c=System/Snmp&a=snmpGetPositionAddress&v=showSnmp',
+                    function(data) {
+                        if (data){
+                            $(data.rows).each(function(key, value) {
+                                if (value.status == "start") {
+                                    $("#btn_stop").removeAttr("disabled");
+                                    $("#btn_start").attr("disabled", "true");
+                                } else if (value.status == "stop") {
+                                    $("#btn_start").removeAttr("disabled");
+                                    $("#btn_stop").attr("disabled", "true");
+                                }
+                            })
+                        }
+                    });
+
+            $('#btn_app').click(function() {
+                snmp_app();
+            });
+
+            $('#btn_start').click(function() {
+                snmp_start();
+            });
+
+            $('#btn_stop').click(function() {
+                snmp_stop();
+            });
+        });
+    </script>
+</div>
+</div>
+</body>
+</html>

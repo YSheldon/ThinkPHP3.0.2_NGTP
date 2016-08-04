@@ -1,0 +1,62 @@
+<div>
+<form id="user_scan_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel">{$Think.lang.START_IP}</td>
+            <td>
+                <input type="text" id="sip" class='easyui-textbox' data-options="required:true,width:157,validType:'ipFourOripSix'">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.END_IP}</td>
+            <td>
+                <input type="text" id="eip" class='easyui-textbox' data-options="required:true,width:157,validType:'ipFourOripSix'">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.BELONG_USER_GROUP}</td>
+            <td>
+                <select id="user_scan_group"></select>
+                <div id="suser_group_div"></div>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.GRANT_TYPE}</td>
+            <td>
+                <select id="authType" class="easyui-combobox" data-options="panelHeight:'auto',editable:false,width:80">
+                    <option value="actuality">{$Think.lang.REAL_NAME}</option>
+                    <option value="anonymity">{$Think.lang.ANONYMOUS}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.STATE}</td>
+            <td>
+                <input type="radio" name="user_sta" id="user_sta1" value="no" checked>
+                <label for="user_sta1">{$Think.lang.ENABLE}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="user_sta" id="user_sta2" value="yes">
+                <label for="user_sta2">{$Think.lang.DISABLE}</label>
+            </td>
+        </tr>
+
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='userScan'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('userScan_div')">
+    </div>
+</form>
+</div>
+<div id="window_cover" style="margin:0 auto;display:none;">
+    <div id="sub_cover"></div>
+    <div class="waitMsgDiv" style="margin:100px 150px;position: absolute;z-index: 11;">
+        <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif" style="margin-left: 10px">&nbsp;&nbsp;{$Think.lang.CONFIG_ING}
+    </div>
+</div>
+<script>
+    $(function() {
+        make_user_group("user_scan_group","suser_group_div","scangroup","sgruser","scan_search_group");
+        $('#userScan').click(function() {
+            get_scan_info();
+        });
+    })
+</script>

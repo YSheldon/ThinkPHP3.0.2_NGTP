@@ -1,0 +1,134 @@
+<div>
+<form id="ldap_sync_form">
+    <table class="ngtos_form_pop">
+        <tr>
+            <td class="tdlabel_net" style="width:130px;">{$Think.lang.SERVER_NAME}</td>
+            <td>
+                <input type="text" name="sname" id="sname" class='easyui-textbox input_width150'>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SYNC_WAY}</td>
+            <td>
+                <select id="sync_type"></select>
+            </td>
+        </tr>
+        <tr id="sync_time">
+            <td class="tdlabel_net">{$Think.lang.SYNC_INTERVAL}</td>
+            <td>
+                <input type="text" name="sync_interval" id="sync_interval">
+                <span class="form_comment">{$Think.lang.HOUR_1_24}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.QUERY_ACCOUNT}</td>
+            <td>
+                <input type="text" name="qname" id="qname">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.QUERY_PWD}</td>
+            <td>
+                <input type="text" name="qpass" id="qpass">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.GENERATE_USER}</td>
+            <td>
+                <input type="checkbox" name="sync_user" id="sync_user" onclick="enable_filter()">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.USER_FILTER_CONDITION}</td>
+            <td>
+                <input type="text" name="user_filter" id="user_filter">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.GENERATE_USER_GROUP}</td>
+            <td>
+                <input type="checkbox" name="sync_group" id="sync_group" onclick="enable_filter()">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.USER_GROUP_FILTER_CONDITION}</td>
+            <td>
+                <input type="text" name="group_filter" id="group_filter">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.BELONG_PARENT_GROUP}</td>
+            <td>
+                <input type="text" name="group_father" id="group_father">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.GROUP_PREFIX}</td>
+            <td>
+                <input type="text" name="group_prefix" id="group_prefix">
+            </td>
+        </tr>
+
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addSync'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('server_ldap_sync_div');">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        $('#addSync').click(function() {
+            modify_sync_attr();
+        });
+        $('#sname').val(syncServer);
+        $('#sname').attr('disabled', 'disabled');
+        $("#sync_interval").textbox({ width:156,validType:'range[1,24]'});
+        $("#sync_type").combobox({
+            width:60,
+            panelHeight:'auto',
+            data:[{value: 'auto',text: $LANG.AUTO },{value: 'manual', text: $LANG.MANUAL}],
+            onChange:sync_mode
+        });
+        $("#qname").textbox({width:156});
+        $("#qpass").textbox({width:156});
+        $("#user_filter").textbox({width:156});
+        $("#group_filter").textbox({width:156});
+        $("#group_father").textbox({width:156});
+        $("#group_prefix").textbox({ width:156});
+        $.ajax({
+            url: "?c=Auth/Server&a=datagridShow",
+            type: 'GET',
+            dataType:'json',
+            data:{
+                mod:'user auth server-sync',
+                param:encodeURI(syncServer),
+                parKey:'server-name',
+                npage:1
+            },
+            //async:false,
+            success: function(data) {
+                if(data.total > 0) {
+                    $('#sync_type').combobox('setValue',data.rows[0].sync_type);
+                    $('#sync_interval').textbox('setValue',data.rows[0].time_interval);
+                    $('#qname').textbox('setValue',data.rows[0].ldap_queryname);
+                    $('#qpass').textbox('setValue',data.rows[0].ldap_querypasswd);
+                    if (data.rows[0].sync_user == "yes")
+                        $('#sync_user').prop('checked',true);
+                    else
+                        $('#sync_user').prop('checked', false);
+                    $('#user_filter').textbox('setValue',data.rows[0].user_filter_info);
+                    if (data.rows[0].sync_group == "yes")
+                        $('#sync_group').attr('checked', 'checked');
+                    else
+                        $('#sync_group').prop('checked', false);
+                    $('#group_filter').textbox('setValue',data.rows[0].group_filter_info);
+                    $('#group_father').textbox('setValue',data.rows[0].father_group);
+                    $('#group_prefix').textbox('setValue',data.rows[0].prefix_name);
+                    enable_filter();
+                    sync_mode();
+                }
+            }
+        })
+    })
+</script>

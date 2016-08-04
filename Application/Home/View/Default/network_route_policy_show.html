@@ -1,0 +1,188 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<style>
+    .datagrid-toolbar > table{margin-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/route_policy.js"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false">
+    <table id="tt"></table>
+</div>
+<div id="toolbar">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true"
+                   onClick="addProuteRow()">{$Think.lang.ADD}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_edit" data-options="iconCls:'icon-edit',plain:true"
+                   onClick="editProuteRow()">{$Think.lang.EDIT}</a>
+                <a href="#" id="icon_delete" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true"
+                   onClick="deleteProuteRow()">{$Think.lang.DELETE}</a>
+                <a href="#" id="icon_clear" class="easyui-linkbutton" data-options="iconCls:'icon-clear',plain:true" onClick="clearProuteRow()">{$Think.lang.CLEAR}</a>
+                <a href="###" id='icon_move' class="easyui-linkbutton" iconCls="icon-move" plain="true" onClick="moveProuteRow();" style="border:none;">
+                    {$Think.lang.MOVE}
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
+<script>
+    var param = [];
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'id',
+            url: '?c=Network/RoutePolicy&mod=route-policy&act=l',
+//            queryParams:{
+//                mod:'network route-policy',
+//                act:'list'
+//            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'id', title: $LANG.ID, width: 40, sortable: true,
+                        formatter: function(value, row) {
+                            return get_value("id", row.pbrentry);
+                        }
+                    },
+                    {field: 'interface', title: $LANG.BINDING, width: 80,
+                        formatter: function(value, row) {
+                            return get_value("interface", row.pbrentry);
+                        }
+                    },
+                    {field: 'src', title: $LANG.SRC, width: 150,
+                        formatter: function(value, row) {
+                            var s = "";
+                            if (get_value("src", row.pbrentry)) {
+                                s += $LANG.ADDRESS+"：" + get_value("src", row.pbrentry) + "<br>";
+                            }
+                            if (get_value("sport", row.pbrentry)) {
+                                s += $LANG.DIAGNOSE_PORT+"：" + get_value("sport", row.pbrentry);
+                                if (get_value("sport2", row.pbrentry)) {
+                                    s += " - " + get_value("sport2", row.pbrentry) + "<br>";
+                                }
+                            }
+                            return s;
+                        }
+                    },
+                    {field: 'dst', title: $LANG.DST, width: 150,
+                        formatter: function(value, row) {
+                            var s = "";
+                            if (get_value("dst", row.pbrentry)) {
+                                s += $LANG.ADDRESS+"：" + get_value("dst", row.pbrentry) + "<br>";
+                            }
+                            if (get_value("dport", row.pbrentry)) {
+                                s += $LANG.DIAGNOSE_PORT+"：" + get_value("dport", row.pbrentry);
+                                if (get_value("dport2", row.pbrentry)) {
+                                    s += " - " + get_value("dport2", row.pbrentry) + "<br>";
+                                }
+                            }
+                            return s;
+                        }
+                    },
+                    {field: 'protocol', title: $LANG.PROTOCOL, width: 40,
+                        formatter: function(value, row) {
+                            var value = get_value("protocol", row.pbrentry);
+                            if (value == 'tcp') {
+                                return "TCP";
+                            } else if (value == 'udp') {
+                                return "UDP";
+                            } else if (value == 'icmp') {
+                                return "ICMP";
+                            } else if (value == 'icmpv6') {
+                                return "ICMPv6";
+                            } else {
+                                return value;
+                            }
+                        }
+                    },
+                    {field: 'gw', title: $LANG.GATEWAY, width: 120,
+                        formatter: function(value, row) {
+                            return get_value("gw", row.pbrentry);
+                        }
+                    },
+                    {field: 'probe-id', title: $LANG.PROBE_ID, width: 60,
+                        formatter: function(value, row) {
+                            return get_value("probe-id", row.pbrentry);
+                        }
+                    },
+                    {field: 'load-balance ', title: $LANG.INTELLIGENT_ROUTING_ALGORITHM, width: 120,
+                        formatter: function(value, row) {
+                            var val = get_value("load-balance", row.pbrentry);
+                            if(val == 'weighted'){
+                                return $LANG.WEIGHT_COST_MULTIPATH;
+                            }else if(val == 'ttl'){
+                                return $LANG.TTL;
+                            }else if(val == 'latency'){
+                                return $LANG.LATENCY;
+                            }else if(val == 'bandwidth'){
+                                return $LANG.MINIMUM_BANDWIDTH_UTILIZATION;
+                            }else {
+                                return '';
+                            }
+                        }
+                    },
+                    {field: 'metric', title: $LANG.MEASUREMENT, width: 60,
+                        formatter: function(value, row) {
+                            return get_value("metric", row.pbrentry);
+                        }
+                    },
+                    {field: 'weight', title: $LANG.WEIGHT, width: 60,
+                        formatter: function(value, row) {
+                            return get_value("weight", row.pbrentry);
+                        }
+                    },
+                    {field: 'status ', title: $LANG.STATE, width: 60,
+                        formatter: function(value, row) {
+                            return get_value("status", row.pbrentry);
+                        }
+                    },
+                    {field: 'oif ', title: $LANG.INTERFACE, width: 60,
+                        formatter: function(value, row) {
+                            return get_value("oif", row.pbrentry);
+                        }
+                    }
+                    
+                ]],
+            toolbar: '#toolbar',
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onClickRow: set_proute_toolbar,
+            onCheck: set_proute_toolbar,
+            onUncheck: set_proute_toolbar,
+            onCheckAll: set_proute_toolbar,
+            onUncheckAll: set_proute_toolbar,
+            onSelect: set_proute_toolbar,
+            onUnselect: set_proute_toolbar,
+            onLoadSuccess:function() {
+                set_proute_toolbar();
+                $('#tt').datagrid('fixRownumber');
+            },
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            },
+            onDblClickRow: function(index, row) {
+                editProuteRowAfter(row);
+            }
+        });
+        if (getPrivilege("network") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_delete').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+            $('#icon_move').linkbutton('disable');
+        }
+    });
+</script>

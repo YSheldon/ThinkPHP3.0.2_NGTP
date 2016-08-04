@@ -1,0 +1,59 @@
+<include file='Index:main'/>
+<script src="{$Think.config.NG_PATH}Public/modules/system/log.js" type="text/javascript"></script>
+<div  id="center" class="main-center easyui-layout">
+    <div data-options="region:'north',border:false" style="height: 35px">
+        <div class="ngtos_datagrid_header">
+            <a href="?c=System/Log&a=log_show"><div class="ngtos_datagrid_tab_over">{$Think.lang.LOG_SHOW}</div></a>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="tt"></table>	
+    </div>
+    <!-- 菜单栏-->
+    <div id="tb" style="height: auto">
+        <div>
+            <a href="###" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onClick="deleteall();">{$Think.lang.CLEAR}</a>
+            <a href="###" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="superQuery()">{$Think.lang.QUERY}</a>
+        </div>
+    </div>
+    <div id="log_search" style="width: 400px; display: none"></div>
+    <script>
+        $(function() {
+            $('#tt').datagrid({
+                fit: true,
+                fitColumns: true,
+                striped: true,
+                nowrap: false,
+                border: false,
+                remoteSort: false,
+                collapsible: true,
+                showFooter: false,
+                url: '?c=System/Log&a=logJsondata',
+                queryParams: {
+                    from: "1",
+                    to: "2048"
+                },
+                columns: [[
+                        {field: 'info', title: '日志内容', align: 'left', resizable: true, width: 200, editor: 'text',
+                            formatter: function(value, rowData, rowIndex) {
+                                if (rowData.msg != "" && rowData.msg != null) {
+                                    var str = rowData.msg;
+                                    return str.replace(/,/ig, ' ');
+                                }
+                            }
+                        }
+                    ]],
+                pagination: true,
+                rownumbers: true,
+                pageSize: 20,
+                pageList: [20, 100, 1000, 2000],
+                loadMsg: $LANG.WAITING,
+                toolbar: '#tb',
+                checkOnSelect: true,
+                selectOnCheck: true
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

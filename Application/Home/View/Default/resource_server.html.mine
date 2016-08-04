@@ -1,0 +1,83 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/server.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="toolbar" style="padding:2px 0">
+    <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true"
+       onClick="addServerItem('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true"
+       onClick="edit_item(0, '', '', '', '', '{$Think.lang.ADD}')" id='icon_edit'>{$Think.lang.EDIT}</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-delete',plain:true"
+       onClick="deleteServerItem()" id='icon_delete'>{$Think.lang.DELETE}</a>
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-clear',plain:true"
+       onClick="clearServerItem()" id='icon_clear' style="border:none;">{$Think.lang.CLEAR}</a>
+</div>
+<script>
+    var tag;
+    var param = [];
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'name',
+            sortOrder: 'asc',
+            url: '?s=Home/Resource/Server&mod=server',
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'name', title: $LANG.NAME, width: 225, sortable: true},
+                    {field: 'ipaddr', title: $LANG.HOST, width: 400},
+                    {field: 'weight', title: $LANG.WEIGHT, width: 200},
+                    {field: 'shared', title: $LANG.SHARE, width: 200,
+                        formatter: function(value, rowData) {
+                            if (rowData.shared == "on")
+                                return $LANG.YES;
+                            else
+                                return $LANG.NO;
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: "#toolbar",
+            onClickRow: set_toolbar,
+            onCheck: set_toolbar,
+            onUncheck: set_toolbar,
+            onCheckAll: set_toolbar,
+            onUncheckAll: set_toolbar,
+            onSelect: set_toolbar,
+            onUnselect: set_toolbar,
+            onDblClickRow: function(index, row) {
+                $("#tt").datagrid('unselectAll');
+                $("#tt").datagrid('selectRow', index);
+                if(!isShared() || (isShared() && row.shared != "on")){
+                    edit_item(1, row.name, row.ipaddr, row.weight, row.shared, $LANG.EDIT);
+                }
+            },
+            onLoadSuccess: function() {
+                $('#tt').datagrid('fixRownumber');
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_delete').linkbutton('disable');
+            }
+        });
+         if (getPrivilege("define") == false) {
+             $('#icon_add').linkbutton('disable');
+             $('#icon_clear').linkbutton('disable');
+         }
+    });
+</script>
+
+</body>
+</html>

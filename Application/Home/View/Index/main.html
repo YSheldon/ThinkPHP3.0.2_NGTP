@@ -1,0 +1,285 @@
+<include file='Index:header'/>
+<link rel="stylesheet"type="text/css"href="{$Think.config.NG_PATH}Public/css/yngtos/index/main.css"/>
+<!-- 新版： -->
+<aside id="leftdiv">
+    <div class="sidebar-wrapper">
+        <div class="slimScrollDiv">
+            <div class="navigation-aside">
+                <ul id="navigation" class="nav">
+                    <foreach name="sercordMenu" item="v" key="k">
+                        <if  condition = "$v.url neq '' ">
+                            <li class="parent" module="{$toptitleNow}">
+                                <a onclick="mainOpenClose('{$v.url}')"  class="twomenu" onmouseover="ulSlideSwitch2('{$v.text}', this)"onmouseout="ulSlideSwitch3(this)">
+                                    <div class="treelineleft <if condition='$k eq $left_two_menu'>treelineleft_over</if>">
+                        <else/>
+                            <li class="parent" module="{$toptitleNow}">
+                                <input id="ulSlid" type="hidden" value="{$toptitleNow}_{$k}, this"/>
+                                <a href="javascript:void(0)" class="twomenu" onmouseover="ulSlideSwitch2('{$v.text}', this)"onmouseout="ulSlideSwitch3(this)"
+                                   onclick="ulSlideSwitch('{$toptitleNow}_{$k}', this)">
+                                    <!--遍历左边的一级导航栏-->
+                                    <div class="treelineleft">
+                        </if>        
+                                        <!-- 图标库：-->
+                                        <span class="icon icon{$v.img}"></span>
+                                        <span class='title'>
+                                            &nbsp;{$v.text}&nbsp;
+                                            <if  condition = "$v['childs'] neq '' ">
+                                                <if condition="$k eq $left_two_menu">
+                                                    <span id="treeline_down" class="treelinedown">
+                                                    </span>
+                                                <else />
+                                                    <span id="treeline_up" class="treelineup">
+                                                    </span>
+                                                </if>
+                                            </if>
+                                        </span>
+                                    </div>
+                                    <div id="Prompt_1" class="tb-toolbar-item-tip">
+                                       <span id="Prompt_2" class="tb-toolbar-item-tip-text"></span>
+                                       <div class="tb-toolbar-item-arrow">◆</div>
+                                    </div> 
+                                </a>
+                                <!--遍历左边导航栏的二级导航栏-->
+                                <if condition = " $v['childs'] neq '' ">
+                                    <ul id="{$toptitleNow}_{$k}" class="sub-nav">
+                                        <foreach name="v['childs']" item="valueee" key="ck">
+                                            <li>
+                                                <a onclick="mainOpens2('{$valueee.url}')" class="threemenu">
+                                                    <div class="tree_3 <if condition='$valueee.url eq $url'>tree_3over</if>">
+                                                        <span class="tree_3_img"></span>
+                                                        {$valueee.text}
+                                                    </div>
+                                                </a>
+                                                <script>
+                                                    function mainOpens2(i){
+                                                    $.ajax({
+                                                        url: "?c=Home/Support&a=status",
+                                                        type: 'POST',
+                                                        data: {
+                                                            leftdiv: "200px"
+                                                        },
+                                                        async: false,
+                                                        success: function(data) {
+                                                            if (data == '1') {
+                                                                // alert("成功！");
+                                                                // window.location.href=i+"&status="+data;
+                                                                window.location.href=i;
+                                                            }else{
+                                                                // alert("失败！");
+                                                                window.location.href=i;
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                                </script>
+                                            </li>
+                                        </foreach>
+                                    </ul>
+                                </if>
+                            </li>
+                    </foreach>
+                 </ul>
+            </div>
+        </div>
+    </div>
+    <img id="main_close"src="{$Think.config.NG_PATH}Public/images/images/close.png"alt="收缩"/>
+    <img id="main_open" src="{$Think.config.NG_PATH}Public/images/images/open.png" alt="展开"/>
+</aside>
+<!-- 新版：结束！ -->
+<script src="{$Think.config.NG_PATH}Public/modules/monitor/monitor.js"></script>
+<script type="text/javascript">
+var tree_3over = $(".tree_3over").css("backgroundColor");
+var ob = $(".tree_3over").parents(".sub-nav").attr("id");
+if(tree_3over=="rgb(255, 255, 255)"){
+    $("#"+ob).siblings("a.twomenu").css("backgroundColor","#fff");
+}
+
+function clickLink(){
+//判断点击展开菜单收缩菜单后 上下按钮是否显示
+    var _display = $(".thirdul").attr("style").indexOf("display");
+    if(_display =="block"){
+        var _height1=$(window).height();
+        var _height3=$(window).height()-35;
+        var _height2=$(".nav").height();
+        if(_height3<_height2){
+            $(".icon_up_box").show();
+            $(".icon_down_box").show();
+        }else{
+            $(".icon_up_box").hide();
+            $(".icon_down_box").hide();
+        }
+    } else{
+        var _height1=$(window).height();
+        var _height3=$(window).height()-35;
+        var _height2=$(".nav").height();
+        if(_height3<_height2){
+            $(".icon_up_box").show();
+            $(".icon_down_box").show();
+        }else{
+            $(".icon_up_box").hide();
+            $(".icon_down_box").hide();
+        }
+    }
+}
+function clickLink1(){
+    setTimeout(clickLink,1000);
+}
+    $(document).ready(function(){
+        //判断上下按钮是否出现
+        $(window).resize(function(){
+            var _height1=$(window).height();
+            var _height3=$(window).height()-25;
+            var _height2=$(".nav").height();
+//            alert(_height1);
+//            alert(_height2);
+            if(_height3<_height2){
+                $(".icon_up_box").show();
+                $(".icon_down_box").show();
+            }else{
+                $(".icon_up_box").hide();
+                $(".icon_down_box").hide();
+            }
+        });
+
+        //左侧菜单栏  上下滚动
+        $(".icon_up_box").on("click",function(){
+            var _height=$(window).height();
+            var _height3=$(window).height()-25;
+            var _height_small=$(".nav").height();
+            var _top=$("#leftdiv").css("top");
+            var ret = _top.split("px")[0];
+            if(_height3<_height_small){
+                $("#leftdiv").animate({top:ret-50});
+                var _top1=$("#leftdiv").css("top");
+                var ret1 = _top1.split("px")[0];
+                var _height_j=_height_small-(-ret1);
+                if(_height_j<=_height){
+                    $("#leftdiv").animate({top:ret1});
+                }
+            }
+        });
+        $(".icon_down_box").click(function(){
+            var _height=$(window).height();
+            var _height_small=$(".nav").height();
+            var _top=$("#leftdiv").css("top");
+            var ret = _top.split("px")[0];
+                if(ret<=0){
+                    $("#leftdiv").animate({top:ret-(-50)});
+                }
+        });
+    });
+    var left_menu_show = 0;
+    var sourOptions = [];
+    var selOptions = [];
+    var windowNum = 0;
+    var moveSelNum = 0;
+    
+    var total_width;
+    var sub_width;
+    var li_num;
+    $(document).ready(function() {
+        if (typeof ($.cookie('left_menu_show')) != 'undefined' && $.cookie('left_menu_show') == 1) {
+            changebar_main_open_state();
+        } else {
+            changebar_main_close_state();
+        }
+        //检查浏览器宽度，如果缩小到一定程度，右上角模块hide
+        li_num = $('#topdiv_menu').find('.topmenu').length;
+        topmenuChangeStyle();
+        $(window).resize(function() {
+            topmenuChangeStyle();
+            if ($('.easyui-layout').length > 0)
+                $('.easyui-layout').layout('resize');
+        });
+    });
+    document.onmousemove = mouseMove;
+    $('#treebar').draggable({
+        axis: 'v',
+        cursor: 'hand'
+    });
+    //封装展开函数：
+    function mainOpen(){
+        $("#main_close").css("display","block");
+        $("#main_open").css("display","none");
+        $(".main-center").css("z-index","1");
+        $("ul#navigation li a span.title").css("display","block");
+        $("ul#navigation li a span.title").css("width","72%");
+        $("ul#navigation li a").css("width","100%");
+        $(".treelineleft").css("width","230px");
+
+        $(".sub-nav .visible").css("display","block");
+
+        $("#leftdiv").show('slow',function(){
+            changebar_main_close_state();
+        })
+    }
+    //封装收缩函数：
+    function mainClose(){
+        $("#main_close").css("display","none");
+        $("#main_open").css("display","block");
+        $(".main-center").css("z-index","-100");
+        $("ul#navigation li a span.title").css("display","none");
+        $("ul#navigation li a span.title").css("width","0px");
+        $("ul#navigation li a").css("width","60px");
+        $(".treelineleft").css("width","60px");
+
+        $('#leftdiv').css("width","");
+        $(".sub-nav").css("display","none");
+
+        $("#leftdiv").stop();
+        changebar_main_open_state();
+    }
+    $('#main_close').click(function(){
+        if($("#leftdiv").css('width') == '200px'){
+            mainClose();
+       }
+    });
+    $('#main_open').click(function(){
+        if($("#leftdiv").css('width') == '60px'){
+            mainOpen();
+        }
+    });
+    changebar_main_open_state();
+
+    function mainOpenClose(i){
+        // alert($("#leftdiv").css('width'));
+        $.ajax({
+            url: "?c=Home/Support&a=status",
+            type: 'POST',
+            data: {
+                leftdiv: $("#leftdiv").css('width')
+            },
+            async: false,
+            success: function(data) {
+                if (data == '1') {
+                    // alert("成功！");
+                    // window.location.href=i+"&status="+data;
+                    window.location.href=i;
+                }else{
+                    // alert("失败！");
+                    window.location.href=i;
+                }
+            }
+        });
+    }
+
+    var ob = $(".tree_3over").parents(".sub-nav").attr("id");
+    $(function(){
+        // alert(cookie_leftdiv);
+        if(cookie_leftdiv == "0"){
+            mainClose();
+            $(function(){
+                $(".datagrid .datagrid-pager").css("width","95%");
+            });   
+        }else{
+            
+            $("#main_close").fadeIn("slow");
+            $("#"+ob).css("display","block");
+            $('.navigation-aside').css("width","230px");
+            $('ul#navigation li a span.title').show("fast"); 
+            
+        }
+    });
+</script>
+<div id="center" class="main-center" onselectstart="return false;" style="-moz-user-select:none;">
+    <div id="pcenter" class="easyui-panel" data-options="fit:true,border:false">

@@ -1,0 +1,41 @@
+<div>
+    <table class="ngtos_form_table">
+<!--        <tr>
+            <td>{$Think.lang.TYPE}</td>
+            <td>
+                <select name="sel" id="sel">
+                    <volist name="list_array" id="vo">
+                    <option value="{$vo.level}">{$vo.level}</option>
+                    </volist>
+                </select>
+            </td>
+        </tr>-->
+        <td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+        <td>
+            <input type="text" id="text" class="easyui-textbox input_length" />
+        </td>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.FILE_NAME}</td>
+            <td>
+                <input type="file" name="file" style="display: block; width:222px" id="file">
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='importRoles'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('package_div');">
+    </div>
+</div>
+    <div id="window_cover" style="margin:0 auto;display:none;">
+        <div id="sub_cover"></div>
+        <div class="waitMsgDiv" style="margin:100px 150px;position: absolute;z-index: 11;">
+            <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif" style="margin-left: 10px">&nbsp;&nbsp;{$Think.lang.CONFIG_ING}
+        </div>
+    </div>
+<script>
+    $(function() {
+        $('#importRoles').click(function() {
+            import_package();
+        });
+    })
+</script>

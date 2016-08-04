@@ -1,0 +1,39 @@
+<div id='admin2'>
+    <table class="ngtos_form_table">
+        <tr><td class="tdlabel">{$Think.lang.NAME}</td>
+            <td><input type="text" id="name" name="name" class="easyui-textbox input_length" data-options="required:true,validType:'eSymbols'"></td>
+        </tr>
+        <tr><td class="tdlabel">{$Think.lang.HOST_ADDR}</td>
+            <td><input type="text" id="hostAddr" name="hostAddr" class="easyui-textbox input_length" data-options="required:true,validType:'ipFour'"></td>
+        </tr>
+        <tr><td class="tdlabel">{$Think.lang.PHYSICS_ADDR}</td>
+            <td><input type="text" id="phyAddr" name="phyAddr" class="easyui-textbox input_length" data-options="required:true,validType:'mac'"></td>
+        </tr>
+        <!--由于虚拟路由ID没作用，所以注释-->
+        <!--<tr><td class="tdlabel">{$Think.lang.VROUTE_ID}</td>-->
+            <!--<td><input type="text" id="vcomId1" name="vcomId1"  value="0" class="easyui-textbox input_length"></td>-->
+        <!--</tr>-->
+    </table>
+    <div class="window_foot_btn">
+        <input type="submit" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}"  id="addrBang">
+        <input type="reset"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_addrBang')">
+    </div>
+</div>
+<script>
+    $(function() {
+        if (dhcpPool_tag == 1) {
+            $("#name").removeAttr('disabled');
+            $("#vcomId1").removeAttr('disabled');
+        } else {
+            $("#name").val(param[0]),
+            $("#hostAddr").val(param[1]);
+            $("#phyAddr").val(param[2]);
+            $("#vcomId1").val(param[3]);
+            $("#name").attr('disabled','true');
+            $("#vcomId1").attr('disabled','true');
+        }
+        $('#addrBang').click(function() {
+            addAddrBangSubmit(dhcpPool_tag);
+        })
+    });
+</script>

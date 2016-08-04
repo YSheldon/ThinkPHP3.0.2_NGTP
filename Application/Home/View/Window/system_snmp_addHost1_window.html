@@ -1,0 +1,58 @@
+<div id='admin1'>
+    <div>
+    <form id="addhost1_form">
+        <table class="ngtos_form_table">
+            <tr><td class="tdlabel_net">{$Think.lang.HOST_NAME}</td>
+                <td><input type="text" id="hostName" name="hostName"  class="easyui-textbox input_length" data-options="required:true,validType:'eSymbols'"/>
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.LOCALHOST}</td>
+                <td>
+                    <!--<select name="snmp_manageHostType" id="snmp_manageHostType"  class="ngtos_input">-->
+                        <!--<option value="{lang la_snmp_v3host}">{lang la_snmp_v3host}</option>-->
+                        <!--<option value="{lang la_snmp_v3subnet}">{lang la_snmp_v3subnet}</option>-->
+                    <!--</select>-->
+                    <input type="radio"  name="snmp_manageHostType" id="shutdown_enable" value="{$Think.lang.HOST}" onClick="change_radio('1')" checked><label for="shutdown_enable">{$Think.lang.HOST}</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio"  name="snmp_manageHostType" id="shutdown_disable" value="{$Think.lang.SUBNET}" onClick="change_radio('2')"><label for="shutdown_disable">{$Think.lang.SUBNET}</label>
+                </td>
+            </tr>
+            <tr><td class="tdlabel_net">{$Think.lang.HOST_IP}</td>
+                <td>
+                    <span style="display:block" id="sp1">
+                          <input type="text" id="hostIp" name="hostIp"  class="easyui-textbox input_length" data-options="required:true,validType:'ipFour'"/>
+                    </span>
+                    <span style="display:none" id="sp2">
+                          <input type="text" style="width:105px;" id="subnetIp" name="subnetIp"  class="easyui-textbox input_length" data-options="required:true,validType:'ipFour'" /> /
+                          <input type="text" style="width:105px;" id="subnetIp_stop" name="subnetIp_stop"  class="easyui-textbox input_length" data-options="required:true,validType:'ipvFourAndMask'" />
+                    </span>
+                </td>
+            </tr>
+            <tr><td class="tdlabel_net">Community</td>
+                <td><input type="text" id="community" name="community"  class="easyui-textbox input_length" data-options="required:true,validType:['strLengthNum[20]','twentyLength','notChinese']" /></td>
+            </tr>
+        </table>
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}"  id="add_snmp_manageHost">
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('snmp_div1')">
+        </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(function(){
+//        $("#snmp_manageHostType").change(function(){
+//            var sel = $("#snmp_manageHostType").val();
+//            if(sel == '{lang la_snmp_v3host}'){
+//                $("#sp1").show();
+//                $("#sp2").hide();
+//            }
+//            if(sel == '{lang la_snmp_v3subnet}'){
+//                $("#sp1").hide();
+//                $("#sp2").show();
+//            }
+//        })
+        $('#add_snmp_manageHost').click(function() {
+                add_snmpManage_submit();
+        });
+    })
+</script>

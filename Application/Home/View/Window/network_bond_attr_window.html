@@ -1,0 +1,230 @@
+<div class="ngtos_window_switch">
+    <form id="bond_form">
+    <div class="ngtos_window_tab">
+        <a href="###" onClick="page_show('attr_page', 'basic');"><div class="ngtos_window_tab_on" id="basicStyle"><b>{$Think.lang.BASIC_INFO}</b></div></a>
+        <a href="###" onClick="page_show('attr_page', 'super');"><div class="ngtos_window_tab_off" id="superStyle"><b>{$Think.lang.SENIOR_INFO}</b></div></a>
+    </div>
+    <div class="ngtos_window_content" style="height:390px;">
+        <div class="basic_table">
+            <table class="ngtos_form_pop">
+                <!--<tr><td style="height: 2px;"></td></tr>-->
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.NAME}</td>
+                    <td>
+                        <span id="interface_name_cid"></span>
+                        <input type="hidden" id="if_attr"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.STATE}</td>
+                    <td>
+                        <input type="radio" name="shutdown" id="shutdown_enable" value="enable" />
+                        <label for="shutdown_enable">{$Think.lang.START}</label>
+                        <input type="radio" name="shutdown" id="shutdown_disable" value="disable" />
+                        <label for="shutdown_disable">{$Think.lang.STOP}</label>
+                        <!--<img src="./static/images/image/start.png" onClick="changBtState(this);" title="启用" class="switch1" id="shutdown_cid"/>-->
+                        <input type="hidden" id="shutdown_old"/>
+                    </td>
+                </tr>
+                <tr>                            
+                    <td class="tdlabel_net">{$Think.lang.MODE}</td>
+                    <td>
+                        <input type="radio" name="comm_type" id="comm_type_route_cid" value="routing" onClick="change_bond_comm('group_route')"/>
+                        <label for="comm_type_route_cid">{$Think.lang.ROUTE}</label>
+                        <input type="radio" name="comm_type" id="comm_type_switch_cid" value="switching" onClick="change_bond_comm('group_switch')"/>
+                        <label for="comm_type_switch_cid">{$Think.lang.NETWORK_SWITCH}</label>
+                        <input type="hidden" id="comm_type_old" />
+                    </td>
+                </tr>
+                <tr>
+                   <td class="tdlabel_net" id="desc_id">
+                        <label for="description_cid">{$Think.lang.DESCRIPTION}</label>
+                    </td>
+                    <td>
+                        <input type="text" id="description_cid" class='easyui-textbox' style="width:200px;"/>
+                        <input type="hidden" id="description_old"/>
+                    </td>
+                </tr>                                    
+            </table>
+            <table id="group_route">
+                <tr ><td class="window_subtitle"><b>{$Think.lang.ROUTE_MODE}</b></td></tr>
+                <tr>
+                    <td>
+                        <div class="easyui-tabs" id="easytabs" data-options="plain:true,border:false" style="width:530px;height:245px;">
+                            <div title="IPv4">
+                                <table class="ngtos_form_table padding_ip">
+                                    <tr>
+                                        <td>
+                                            <label for="ip4_cid">{$Think.lang.ADDRESS}</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="ip4_cid" class='easyui-textbox' data-options="validType:'ipFour'" style="width: 130px;">
+                                        </td>
+                                        <td>
+                                            <label for="mask4_cid">{$Think.lang.LOCAL_MASK}</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="mask4_cid" class='easyui-textbox' data-options="validType:'mask'" style="width: 110px;">
+                                        </td>
+                                        <td>
+                                            <label for="ha4_cid">{$Think.lang.ASYNC_ADDR}</label>
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" id="ha4_cid"/>
+                                        </td>
+                                        <td>
+                                            <input type="button" id="add4_cid" title="" value="{$Think.lang.ADD}" class="ngtos_button_small" onclick="addIpv4();"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table id="ip4_list_cid"></table>
+                                <input id="ip4addr_items_old" type="hidden"/>
+                            </div>
+                            <div title="IPv6">
+                                <table class="ngtos_form_table padding_ip">
+                                    <tr>
+                                        <td>
+                                            <label for="ip6_cid">{$Think.lang.ADDRESS}</label>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="ip6_cid" class='easyui-textbox' data-options="validType:'ipSixPrefix'" style="width: 275px;">
+                                        </td>
+                                        <td>
+                                            <label for="ha6_cid">{$Think.lang.ASYNC_ADDR}</label>
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" id="ha6_cid"/>
+                                        </td>
+                                        <td>
+                                            <input type="button" id="add6_cid" title="" value="{$Think.lang.ADD}" class="ngtos_button_small" onclick="addIpv6();"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table id="ip6_list_cid"></table>
+                                <input id="ip6addr_items_old" type="hidden"/>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table id="group_switch" class="ngtos_form_pop">
+                <tr>
+                    <td class="window_subtitle" colspan="2"><b>{$Think.lang.SWITCH_MODE}</b></td>
+                </tr>
+                <tr id="qinq_btn">
+                    <td class="tdlabel_net">VLAN VPN{$Think.lang.ENABLE_ENERGY}</td>
+                    <td>
+                        <input type="radio" name="vlanvpn" id="vlanvpn_enable" value="enable"/>
+                        <label for="vlanvpn_enable">{$Think.lang.START}</label>
+
+                        <input type="radio" name="vlanvpn" id="vlanvpn_disable" value="disable" />
+                        <label for="vlanvpn_disable">{$Think.lang.STOP}</label>
+                        <!--<img src="./static/images/image/start.png" onClick="changBtState(this);" title="{lang app_start}" class="switch1" id="vlanvpn_cid"/>-->
+                        <input id="vlanvpn_old" type="hidden"/>
+
+                    </td>                        
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">
+                        <label for="tpid_cid">VLAN VPN{$Think.lang.PACKAGE_PROTOCOL_NUM}</label>
+                    </td>
+                    <td>
+                        <input type="text" id="tpid_cid" class='easyui-textbox' style="width:200px">
+                        <input id="tpid_old" type="hidden"/>
+                    </td>
+                </tr>
+                <tr>
+                     <td class="tdlabel_net">{$Think.lang.TYPE}</td>
+                    <td>
+                        <input type="radio" name="switch_type" id="switch_type_access_cid" onClick="change_switch('group_access')"/>
+                        <label for="switch_type_access_cid">access</label>
+                        <input type="radio" name="switch_type" id="switch_type_trunk_cid" onClick="change_switch('group_trunk')" />
+                        <label for="switch_type_trunk_cid">trunk</label>
+                        <input id="switch_type_old" type="hidden"/>
+
+                    </td>
+                </tr>
+                <tr id="group_access">
+                    <td class="tdlabel_net"><label for="access_cid">{$Think.lang.VLAN_ID}</label></td>
+                    <td>
+                        <input type="text" id="access_cid" class='easyui-textbox' data-options="width:150,required:true,validType:'range[1,4094]'"><span class="form_comment">[1－4094]</span>
+                        <input id="access_old" type="hidden"/>
+                    </td>
+                </tr>
+                <tr id="group_trunk_allowed">
+                    <td class="tdlabel_net"><label for="allowed_cid">{$Think.lang.VLAN_RANGE}</label></td>
+                    <td>
+                        <input type="text" id="allowed_cid" class='easyui-textbox' style="width:200px">
+                        <input id="allowed_old" type="hidden"/>
+                    </td>
+                </tr>
+                <tr id="group_trunk_allowed_note">
+                    <td class="tdlabel_net"></td>
+                    <td>
+                        <span>{$Think.lang.RANGE_1_4094}</span>
+                    </td>
+                </tr>
+                <tr id="group_trunk_native">
+                    <td class="tdlabel_net">{$Think.lang.NATIVE_VLAN}</td>
+                    <td>
+                        <input type="text" id="native_cid" class='easyui-textbox' data-options="width:150,required:true,validType:'range[1,4094]'"><span class="form_comment">[1－4094]</span>
+                        <input id="native_old" type="hidden"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table class="super_table ngtos_form_pop" style="display:none;">
+            <!--<tr><td style="height: 2px;"></td></tr>-->
+            <tr><td style="height: 2px;"></td></tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.MTU}</td>
+                <td>
+                    <input type="text" id="mtu_cid" class='easyui-textbox' data-options="width:150,required:true,validType:'range[68,1500]'"/><span class="form_comment">[68-1500]</span>
+                    <input id="mtu_old" type="hidden"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.MSS}</td>
+                <td>
+                    <input type="radio" id="mss_auto" name="mss" value="auto" onclick="change_mss('hide')"/>
+                    <label for="mss_auto">{$Think.lang.ADAPT}</label>&nbsp;
+                    <input type="radio" id="mss_off" name="mss" value="off" checked="checked" onclick="change_mss('hide')"/>
+                    <label for="mss_off">{$Think.lang.CLOSE}</label>&nbsp;&nbsp;
+                    <input type="radio" id="mss_define" name="mss" value="define" onclick="change_mss('show')"/>
+                    <label for="mss_define">{$Think.lang.CUSTOM}</label>
+                    <input id="mss_old" type="hidden"/>
+                </td>
+            </tr>
+            <tr id="mss_define_cid">
+                <td class="tdlabel_net">&nbsp;</td>
+                <td>
+                    <input type="text" id="define_cid"/><span class="form_comment">[200-1460]</span>
+                    <input id="define_old" type="hidden"/>
+                </td>
+            </tr>
+<!--            <tr id="vsysid">
+                <td style="padding-left:10px">{lang label_network_interface_vsysid}</td>
+                <td colspan="3">
+                    <select id='vsid_cid' class="ngtos_input" ></select>
+                    <input id="vsid_old" type="hidden"/>
+                </td>
+            </tr>-->
+        </table>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="attr_bond_submit()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('attr_page')">
+    </div>    
+        </form>
+</div>
+<script>
+    $(function() {
+        $("#define_cid").textbox({
+            width:150,
+            required:true,
+            novalidate:false,
+            validType:'range[200,1460]'
+        });
+        attr_bond_row_init(param[0]);
+    });
+</script>

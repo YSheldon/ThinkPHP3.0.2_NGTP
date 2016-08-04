@@ -1,0 +1,95 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<style>
+    .datagrid{padding-top:0;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/policy/proxy.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/address.js" type="text/javascript"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false">
+    <table id="proxy"></table>
+</div>
+
+</body>
+</html>
+<script>
+    var tagproxy;
+    var param = [];
+    var addr_tag;
+    var grtag;
+    var gaddr_tag = 0;
+    $(function() {
+        $('#proxy').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            url: '?c=Policy/Proxy&a=datagridShow',
+            queryParams:{
+                mod:'proxy policy'
+            },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'id', title: "ID", width: 30},
+                    {field: 'proxy_ip', title: $LANG.PROXY_IP, width: 80},
+                    {field: 'proxy_port', title: $LANG.PROXY_PORT + "(tcp)", width: 80},
+                    {field: 'mode', title: $LANG.PROXY_MODE, width: 80,
+                        formatter: function(value) {
+                            if (value == 'rproxy')
+                                return $LANG.RPROXY;
+                            else {
+                                return $LANG.TPROXY;
+                            }
+                        }
+                    },
+                    {field: 'server_ip', title: $LANG.SERVER_ADDR_OBJ, width: 80},
+                    {field: 'server_port', title: $LANG.SERVER_PORT, width: 80},
+                    {field: 'l7_profile', title: "l7Profile", width: 50},
+                    {field: 'ssl_profile', title: "sslProfile", width: 80},
+                    {field: 'match_times', title: $LANG.STATISTIC, width: 30}
+                ]],
+            checkOnSelect: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            onCheck: setProxy,
+            onUncheck: setProxy,
+            onCheckAll: setProxy,
+            onUncheckAll: setProxy,
+            onLoadSuccess: setProxy,
+            onDblClickRow: function(value, rowData) {
+                editProxy(rowData.id, rowData.proxy_ip, rowData.proxy_port, rowData.mode, rowData.server_ip, rowData.server_port, rowData.l7_profile, rowData.ssl_profile);
+            }
+        });
+        if (getPrivilege("proxy") != false) {
+            $('#proxy').datagrid({
+                toolbar: [{
+                        id: 'icon-add',
+                        text: '{$Think.lang.ADD}',
+                        iconCls: 'icon-add',
+                        handler: addProxy
+                    }, {
+                        id: "icon-edit",
+                        text: '{$Think.lang.EDIT}',
+                        iconCls: 'icon-edit',
+                        handler: editProxyRow
+                    }, {
+                        id: 'icon-delete',
+                        text: '{$Think.lang.DELETE}',
+                        iconCls: 'icon-delete',
+                        handler: deleteProxy
+                    }, {
+                        id: 'icon-clear',
+                        text: '{$Think.lang.CLEAR}',
+                        iconCls: 'icon-clear',
+                        handler: clearProxy
+                    }]
+            });
+        }
+    })
+</script>

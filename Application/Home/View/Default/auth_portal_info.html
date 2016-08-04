@@ -1,0 +1,82 @@
+<include file='Index:main'/>
+<link rel="stylesheet" type="text/css" href="{$Think.config.NG_PATH}Public/css/yngtos/server_protal.css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/portal.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="dlg-toolbar" class="table-wrap flotRight">
+    <!-- 标题栏： -->
+    <div class="datagrid-toolbar">
+        <div class="tools-lft">
+            <div class="btn-anchor">
+                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" 
+                   onClick="add_portal('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" 
+                   onClick="editPortalRow('{$Think.lang.EDIT}');">{$Think.lang.EDIT}</a>
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="#" class="easyui-linkbutton" id='icon_del' data-options="iconCls:'icon-delete',plain:true" onClick="delete_item()">{$Think.lang.DELETE}</a>
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-clear',plain:true" onClick="clear_item()">{$Think.lang.CLEAR}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var portal_tag;
+    var param = [];
+    $(function() {
+        $("#tt").datagrid({
+            fitColumns: true,
+            nowrap: true,
+            striped: true,
+            sortName: 'name', //当数据表格初始化时以哪一列来排序。
+            sortOrder: 'asc',
+            queryParams: {
+                mod: 'user auth portal'
+            },
+            url: '?c=Auth/Portal&a=datagridShow',
+            fit: true,
+            border: false,
+            remoteSort: false, //定义是否通过远程服务器对数据排序。
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'name', title: $LANG.NAME, width: 225, sortable: true},
+                    {field: 'server_name', title: $LANG.AUTH_SERVER, width: 225},
+                    {field: 'address', title: $LANG.PORTAL_ADDR, width: 400},
+                    {field: 'port', title: $LANG.PORT, width: 225}
+                ]],
+            onDblClickRow: function(rowindex, rowData) {
+                edit_portal(rowData.name, rowData.server_name, rowData.address, rowData.port, $LANG.EDIT);
+            },
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            rownumbers: true,
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar",
+            checkOnSelect: true,
+            onLoadSuccess: function(data) {
+                $('#tt').datagrid('fixRownumber');
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_del').linkbutton('disable');
+            },
+            onCheck: setPortalToolBar,
+            onUncheck: setPortalToolBar,
+            onClickRow: setPortalToolBar,
+            onCheckAll: setPortalToolBar,
+            onUncheckAll: setPortalToolBar,
+            onSelect: setPortalToolBar,
+            onUnselect: setPortalToolBar
+        });
+    })
+    $(".datagrid-header").css("width","1305px");
+</script>
+
+</body>
+</html>

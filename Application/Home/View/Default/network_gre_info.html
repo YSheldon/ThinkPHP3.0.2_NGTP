@@ -1,0 +1,88 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/gre.js"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false">
+    <table id="gre"></table>
+</div>
+<div id='gre_div' style="width:550px; display:none;"></div>
+<div id='gre_interface' style="width:600px; display:none;"></div>
+</div>
+</div>
+</body>
+</html>
+<script>
+    var param = [];
+    var dhcpPool_tag;
+    $(function() {
+        $('#gre').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            rownumbers: true,
+            url: '?c=Network/Gre&mod=tunnel',
+/*            queryParams:{
+                mod:'network tunnel'
+            },*/
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'name', title: $LANG.NAME, width: 30},
+                    {field: 'local', title: $LANG.LOCALHOST, width: 30},
+                    {field: 'remote', title: $LANG.REMOTE_ADDR, width: 30},
+                    {field: 'key', title: $LANG.TUNNEL + "" + $LANG.KEYWORD, width: 30},
+                    {field: 'ttl', title: $LANG.TUNNEL + "" + $LANG.SURVIVAL_TIME, width: 30},
+                    {field: 'csum', title: $LANG.VERIFY_SUM_CHECK, width: 30},
+                    {field: 'seq', title: $LANG.SERIAL_NUMBER_CHECK, width: 30},
+                    //接口属性的弹出框口操作
+                    {field: 'area7', title: $LANG.IF_ATTR, width: 30,
+                        formatter: function(value, rowData) {
+                            return '<a style="margin-left: 10px" href="###" onclick="editInterfaceAttr(&quot;' + rowData.name + '&quot;);"><img src="'+NG_PATH+'Public/images/icon/icon_edit.png" title=<?php echo L(EDIT)?>></a>';
+                        }
+                    },
+                    {field: 'area8', title: $LANG.TUNNEL_ATTR, width: 30,
+                        formatter: function(value, rowData) {
+                            return '<a style="margin-left: 10px" href="###" onclick="editGreAttr(&quot;' + rowData.name + '&quot;);"><img src="'+NG_PATH+'Public/images/icon/icon_edit.png" title=<?php echo L(EDIT)?>></a>';
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            checkOnSelect: true,
+            onCheck: set_toolbar,
+            onUncheck: set_toolbar,
+            onCheckAll: set_toolbar,
+            onUncheckAll: set_toolbar,
+            onLoadSuccess: set_toolbar,
+            onDblClickRow: function(value, rowData) {
+                editGreAttr(rowData.name);
+            }
+        });
+        if (getPrivilege("network") != false){
+            //数据表格顶部面板的菜单栏。
+            $('#gre').datagrid({
+                toolbar: [{
+                        id: 'icon-add',
+                        text:$LANG.ADD,
+                        iconCls: 'icon-add',
+                        handler: addGre
+                    }, {
+                        id: 'icon-delete',
+                        text: $LANG.DELETE,
+                        iconCls: 'icon-delete',
+                        handler: delete_Row
+                    }, {
+                        id: 'icon-clear',
+                        text: $LANG.CLEAR,
+                        iconCls: 'icon-clear',
+                        handler: clearGreRow
+                    }]
+            });
+        }
+    })
+</script>

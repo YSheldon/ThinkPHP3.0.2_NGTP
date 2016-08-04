@@ -1,0 +1,46 @@
+.datagrid-view{
+    height: 230px;
+    width: 98%;
+	position: relative;
+}
+#searchs{
+    position:relative;
+    border-right:0px;
+    float:right;
+    color:#000000;
+}
+#searchs_1{
+    position: absolute;
+    right: 145px;
+    top: 5px;
+    width: 100px;
+}
+.tools-lft{
+    width:100%;
+}
+.datagrid .datagrid-pager
+{
+    width:85%;
+}
+.datagrid .panel-body {
+    margin-left: 10px;
+}
+#dlg-toolbar{
+    border: 0 none;
+    padding: 0;
+    width:98.9%;
+}
+.flotRight{
+    float:left;
+}
+.datagrid-view2 >.datagrid-header{
+    width: 98.4%;
+}
+#left_div{
+    float: left;
+    left: 0;
+    overflow: hidden;
+    position: relative;
+    top: 0;
+    width: 230px;
+}

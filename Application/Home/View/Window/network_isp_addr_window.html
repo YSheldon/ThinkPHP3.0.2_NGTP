@@ -1,0 +1,61 @@
+<div>
+<form id="isp_addr_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel">{$Think.lang.ISP_NAME}</td>
+            <td id='name_td'>
+                <select id='ispName' name="ispname" class="combobox_len"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel">{$Think.lang.DST_ADDR_NETWORK_PR}</td>
+            <td>
+                <input id='dst' type="text" name="dst" class="easyui-textbox" data-options="required:true,validType:'ipFour'" />&nbsp;/&nbsp;<input type="text"  id='add_masks'  class="easyui-textbox" style="width:82px" data-options="required:true,validType:'range[0,32]'">
+            </td>
+        </tr>
+    </table>
+
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="submitIspAddr()">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('isp_addr_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        $("#ispName").combobox({
+            url: '?c=Network/IspRoute&a=ispRouteList',
+            required:true,
+            valueField:'ispKey',
+            textField:'ispName',
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            multiple:false,
+            editable:true
+        });
+    });
+
+    function submitIspAddr() {
+        var isValid = $('#isp_addr_form').form('validate');
+        if(isValid) {
+            $.ajax({
+                url: '?c=Network/IspRoute&addr=1',
+                type:'POST',
+                dataType: 'text',
+                data: {
+                    isp: $("#ispName").combobox('getValue'),
+                    dst: $("#dst").val() + '/' + $('#add_masks').val()
+                },
+                success: function(data) {
+                    if(data != '0') {
+                        ngtosPopMessager('error',data);
+                    } else {
+                        $('#isp_addr_div').window('close');
+                        $("#tt").datagrid('reload');
+                    }
+                    $("#tt").datagrid("unselectAll");
+                }
+            });
+        }
+    }
+</script>

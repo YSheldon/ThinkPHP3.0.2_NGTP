@@ -1,0 +1,229 @@
+<include file='Index:main'/>
+<script src="static/js/network/dns.js"></script>
+<div id="easyui_tab" class="easyui-tabs" data-options="fit:true,border:false, tabWidth:120">
+    <div title="{$Think.lang.DNS_SERVER}"></div>
+    <div title="{$Think.lang.DOMAIN_RECORD}"></div>
+    <div title="{$Think.lang.DNS_DOCTOR}">
+        <table id="dns_a_doctor_id"></table>
+    </div>
+</div>
+<div id='dns_doctor_window' style="width: 350px;display:none"></div>
+<script>
+    $('#easyui_tab').tabs({
+        selected: 2, //tab的位置，从0开始第几个
+        border: false,
+        onSelect: function(title, index) {
+            if (index == 0) {   //点击tab标签跳转的页面
+                location.href = '?c=Network/Dns&a=dns_server_show&tag=0';
+            } else if(index == 1) {
+                location.href = '?c=Network/Dns&a=dns_server_show&tag=1';
+            }
+        }
+    });
+    $(function() {
+        $('#dns_a_doctor_id').datagrid({
+            fitColumns: true,
+            singleSelect: false,
+            nowrap: true,
+            autoRowHeight: true,
+            striped: true,
+            showFooter: false,
+            sortName: 'name',
+            sortOrder: 'asc',
+            fit: true,
+            url: '?module=network_dns&action=doctor_json',
+            border: false,
+            remoteSort: false,
+            toolbar: '#table_topbar',
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[{
+                        field: 'name',
+                        title: '域名',
+                        width: 80,
+                        sortable: true
+                    }, {
+                        field: 'inside',
+                        title: '内网地址',
+                        width: 80
+                    }, {
+                        field: 'outside',
+                        title: '外网地址',
+                        width: 80
+                    }
+                ]],
+            toolbar: [{
+                    text: '添加',
+                    iconCls: 'icon-add',
+                    handler: add_dns_doctor
+                }, {
+                    id: "icon-edit",
+                    text: '编辑',
+                    iconCls: 'icon-edit',
+                    handler: edit_dns_doctor
+                }, {
+                    id: "icon-delete",
+                    text: '删除',
+                    iconCls: 'icon-delete',
+                    handler: delete_dns_doctor
+                }, {
+                    id: "icon-clear",
+                    text: '清空',
+                    iconCls: 'icon-clear',
+                    handler: clean_dns_doctor
+                }, {
+                    id: "icon-enable",
+                    text: '启用',
+                    iconCls: 'icon-enable',
+                    handler: en_doctor_status
+                }, {
+                    id: "icon-disable",
+                    text: '禁用',
+                    iconCls: 'icon-disable',
+                    handler: dis_doctor_status
+                }],
+                    pageSize: 20,
+            pagination: true,
+            rownumbers: true,
+            rowStyler: function(index, row) {
+                if (row.enable == 'no')
+                    return 'background-color:#d5d5d5;';
+            },
+            onCheckAll: set_dns_doctor_toolbar, //监听checkbox全选
+            onUncheckAll: set_dns_doctor_toolbar, //监听checkbox取消全选
+            onSelect: set_dns_doctor_toolbar, //监听行选中
+            onUnselect: set_dns_doctor_toolbar, //监听行取消选中
+            onLoadSuccess: set_dns_doctor_toolbar //监听数据变化              
+        });
+    });
+    function add_dns_doctor() {
+        open_doctor_window('');
+    }
+    function delete_dns_doctor(id) {
+        var rows = [];
+        if (typeof id == 'string')
+            rows.push({
+                ID: id
+            });
+        else
+            rows = $('#dns_a_doctor_id').datagrid('getSelections');
+        if (rows.length == 0) {
+            ngtosPopMessager('error', "请选择要删除的项！");
+            return false;
+        }
+        else {
+            ngtosPopMessager("confirm", "确定删除？", function(r) {
+                if (r) {
+                    $.ajax({
+                        url: "?module=network_dns&action=delete_doctor",
+                        type: 'POST',
+                        data: {
+                            rows: rows
+                        },
+                        success: function(data, textStatus) {
+                            if (data == 'done') {
+                                setTimeout("$('#dns_a_doctor_id').datagrid('reload');", 200);
+                            }
+                            else
+                                ngtosPopMessager("error", data);
+                        }
+                    });
+                }
+            });
+        }
+    }
+    function clean_dns_doctor() {
+        var rows = $('#dns_a_doctor_id').datagrid('getRows');
+        if (rows.length == 0)
+            return false;
+        ngtosPopMessager("confirm", "确定清空？", function(r) {
+            if (r) {
+                $.ajax({
+                    url: "?module=network_dns&action=clean_doctor",
+                    type: 'POST',
+                    success: function(data, textStatus) {
+                        if (data == 'done') {
+                            setTimeout("$('#dns_a_doctor_id').datagrid('reload');", 200);
+                        }
+                        else
+                            ngtosPopMessager("error", data);
+                    }
+                });
+            }
+        });
+    }
+    function edit_dns_doctor(index) {
+        var jq = $('#dns_a_doctor_id');
+//            jq.datagrid('selectRow', index);
+        var row = jq.datagrid('getSelected');
+        if (row != null)
+            open_doctor_window(row);
+    }
+    function open_doctor_window(args) {
+        var jqWindow = $("#dns_doctor_window");
+        jqWindow.css("display", '');
+        jqWindow.window({
+            width: 350,
+            collapsible: false,
+            minimizable: false,
+            maximizable: false,
+            noheader: false,
+            border: false,
+            top: 20,
+            href: "?module=network_dns&action=dns_doctor_add",
+            resizable: false,
+            shadow: false,
+            modal: true,
+            cache: false,
+            newWinOpts: args,
+            title: '<img class="ngtos_window_icon" src="static/images/icons/dialog_title.png"><span id="title">&nbsp;DNS Doctoring</span>',
+            style: {
+                borderWidth: 0,
+                padding: 0
+            }
+        });
+    }
+
+    function en_doctor_status() {
+        var rows = $('#dns_a_doctor_id').datagrid('getSelections');
+        if (rows.length > 0) {
+            for (var i = 0; i < rows.length; i++) {
+                change_doctor_status("yes", rows[i].ID);
+            }
+        }
+        $('#dns_a_doctor_id').datagrid('reload');
+    }
+
+    function dis_doctor_status() {
+        var rows = $('#dns_a_doctor_id').datagrid('getSelections');
+        if (rows.length > 0) {
+            for (var i = 0; i < rows.length; i++) {
+                change_doctor_status("no", rows[i].ID);
+            }
+        }
+        $('#dns_a_doctor_id').datagrid('reload');
+    }
+
+    function change_doctor_status(status, id) {
+        $.ajax({
+            url: "?module=network_dns&action=doctor_status",
+            type: 'POST',
+            data: {
+                id: id,
+                status: status
+            },
+            success: function(data) {
+                if (data == 'done') {
+//                        setTimeout("$('#dns_a_doctor_id').datagrid('reload');", 200);
+                }
+                else
+                    ngtosPopMessager("error", data);
+            }
+        });
+    }
+</script>
+</div>
+</div>
+</body>
+</HTML>

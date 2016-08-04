@@ -1,0 +1,70 @@
+<div>
+    <table class="ngtos_form_table">
+        <tr height="40px;">
+            <td style="width:60%; padding-left:20px;"><span id='moveid'></span><select id='selectedid' class="easyui-combobox combobox_len" data-options="panelHeight: 'auto',panelMaxHeight: 198,editable:false"></select>
+                <select id='position' class="easyui-combobox" data-options="panelHeight: 'auto',editable:false">
+                    <option value="before">{$Think.lang.BEFORE}</option>
+                    <option value="after">{$Think.lang.AFTER}</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onClick="submitMove()">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('interview_move')">
+    </div>
+</div>
+<script>
+    $(function() {
+        if(moveType == 'group') {
+            if(moveVal=='none')
+                $('#moveid').html($LANG.MOVE_POLICY_GROUP+'&nbsp;&nbsp;'+$LANG.DEFAULT_GROUP+'&nbsp;&nbsp;'+$LANG.TO_GROUP+'&nbsp;') ;
+            // $('#moveid').innerHTML = $LANG.MOVE_POLICY_GROUP+'&nbsp;&nbsp;'+$LANG.DEFAULT_GROUP+'&nbsp;&nbsp;'+$LANG.TO_GROUP+'&nbsp;';
+            else
+                $('#moveid').html($LANG.MOVE_POLICY_GROUP+'&nbsp;&nbsp;'+moveVal+'&nbsp;&nbsp;'+$LANG.TO_GROUP+'&nbsp;');
+                //$('#moveid').innerHTML = $LANG.MOVE_POLICY_GROUP+'&nbsp;&nbsp;'+moveVal+'&nbsp;&nbsp;'+$LANG.TO_GROUP+'&nbsp;';
+            $.each(moveAllData,function() {
+                if(this.name!=moveVal)  {
+                    if(this.name!='none')
+                        $('#selectedid')[0].add(new Option(this.name,this.name));
+                }
+            });
+        } else {
+            $('#moveid').html($LANG.MOVE_POLICY+'&nbsp;&nbsp;'+moveVal+'&nbsp;&nbsp;'+$LANG.TO_POLICY+'&nbsp;');
+//            $('#moveid').innerHTML = $LANG.MOVE_POLICY+'&nbsp;&nbsp;'+moveVal+'&nbsp;&nbsp;'+$LANG.TO_POLICY+'&nbsp;';
+            $.each(moveAllData,function(){
+                if(this.id!=moveVal) {
+                    $('#selectedid')[0].add(new Option(this.id,this.id));
+                }
+            });
+        }
+    });
+
+    function submitMove() {
+        $.ajax({
+            url: "?c=Policy/Interview&a=policyMove",
+            type: 'POST',
+            dataType:'text',
+            async:false,
+            data:{
+                isgroup : moveType,
+                name : moveVal,
+                position : $("#position").combobox('getValue'),
+                selected : $("#selectedid").combobox('getValue')
+            },
+            success: function(data) {
+                if(data == '0') {
+                    $("#interview_move").window('close');
+                    moveType = '';
+                    moveVal = '';
+                    moveAllData = {};
+                    $('#tt').treegrid('unselectAll');
+                    $('#tt').treegrid('reload');
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+</script>

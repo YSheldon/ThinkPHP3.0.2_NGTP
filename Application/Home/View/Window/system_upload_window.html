@@ -1,0 +1,69 @@
+<div>
+    <table class="ngtos_form_table">
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.UPDATE_WAY}</td>
+            <td><select id="sel" onChange="sel_item()" class="input_length" name="sel" style="width:225px">
+                <option>{$Think.lang.LOCAL}</option>
+                <option>TFTP</option>
+                <option>FTP</option>
+            </select></td>
+        </tr>
+        <tr id="ser_addr"><td class="tdlabel_net">{$Think.lang.SERVER_ADDR}</td>
+            <td><input type="text"  id="serverip" value="" class="easyui-textbox input_length">&nbsp;<font color="red">*</font></td>
+        </tr>
+        <tr id="file_name"><td class="tdlabel_net">{$Think.lang.FILE_NAME}</td>
+            <td><input type="text" id="filename" value="" class="easyui-textbox input_length">&nbsp;<font color="red">*</font></td>
+        </tr>
+        <tr id="user" style="display:none"><td class="tdlabel_net">{$Think.lang.USERNAME}</td>
+            <td><input type="text" id="user_name" value="" class="easyui-textbox input_length"></td>
+        </tr>
+        <tr id="passwd" style="display:none"><td class="tdlabel_net">{$Think.lang.PASSWORD}</td>
+            <td><input type="password" id="pass_name" value="" class="easyui-textbox input_length"></td>
+        </tr>
+        <tr id="desc"><td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+            <td><input type="text" id="comments" name="comments" value="" class="easyui-textbox input_length"></td>
+        </tr>
+        <tr id="loc_upload" style="display:none">
+            <td class="tdlabel_net">{$Think.lang.FILE_NAME}</td>
+            <td>
+                <input type="file" name="file" style="display: block; width:222px" id="file">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="checkbox" id="change_conf" name="change_conf" style="vertical-align:text-bottom;"><label for="change_conf"> {$Think.lang.REPLACE_CURR_FIRMWARE}</label>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id="importFile">
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('import_div')">
+    </div>
+    </div>
+    <div id="window_cover" class="easyui-window" style="width:200px;height:100px;z-index:10000;" 
+         data-options="collapsible: false, minimizable: false, maximizable: false, noheader: true,border:false, shadow:false, closed:true">
+        <div id="sub_cover"></div>
+            <div class="waitMsgDiv" style="margin:40px 0px 0px 40px;position: absolute;z-index: 111;">
+                <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif" style="margin-left: 10px">&nbsp;&nbsp;{$Think.lang.CONFIG_ING}
+
+            </div>
+    </div>
+
+    <div id="reboot_wait" class="easyui-window" style="width:420px;height:120px" 
+         data-options="modal:true,collapsible: false, minimizable: false, maximizable: false, noheader: true,border:false, shadow:false, closed:true">
+        <div style="margin:10px 30px;">{$Think.lang.SYS_REBOOT_WAITING}</div>
+        <hr>
+        <br>
+        <br>
+        <div id="p" class="easyui-progressbar" style="width:400px;margin:0 auto"></div>
+    </div>
+<script>
+    $(function() {
+        $('#importFile').click(function() {
+//            display_waiting();
+            import_tab();
+        });
+        sel_item();
+//        $('#window_cover').window('close');
+    })
+</script>

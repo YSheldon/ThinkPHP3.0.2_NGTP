@@ -1,0 +1,97 @@
+<include file='Index:main'/>
+<style>
+    .datagrid .panel-body{
+        margin-top:30px;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="{$Think.config.NG_PATH}Public/css/yngtos/server_protal.css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<table id="online-user-table"></table>
+
+<script type="text/javascript">
+    $(function() {
+        $("#online-user-table").datagrid({
+            url: '?c=Monitor/OnlineUser&a=datagridShow',
+            queryParams:{
+                mod:'user manage online-user'
+            },
+            fitColumns: true,
+            singleSelect: false,
+            nowrap: true,
+            autoRowHeight: true,
+            striped: true,
+            showFooter: false,
+            sortName: 'username',
+            sortOrder: 'asc',
+            fit: true,
+            border: false,
+            remoteSort: false,
+            columns: [[
+                    {
+                        field: 'username',
+                        title: $LANG.USER_NAME,
+                        width: 80,
+                        align: 'left',
+                        sortable: true
+                    }, {
+                        field: 'address',
+                        title: $LANG.IP_ADDR,
+                        align: 'left',
+                        width: 80
+                    }, {
+                        field: 'server_name',
+                        title: $LANG.SERVER_NAME,
+                        width: 100,
+                        align: 'left',
+                        sortable: true
+                    }, {
+                        field: 'client_type',
+                        title: $LANG.CLIENT_TYPE,
+                        width: 100,
+                        align: 'left',
+                        sortable: true
+                    }, {
+                        field: 'onlinetime',
+                        title: $LANG.ONLINE_TIME,
+                        width: 100,
+                        align: 'left',
+                        sortable: true
+                    }, {
+                        field: 'opt',
+                        title: $LANG.OPERATION,
+                        width: 60,
+                        align: 'left',
+                        formatter: function(value, rowData, rowIndex) {
+                            return '<a href="###" onclick="forcedOffline(' + rowData.username + ',' + rowIndex + ')">' + $LANG.OffLine_Forced + '</a>';
+                        }
+                    }
+                ]],
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            rownumbers: true,
+            loadMsg: $LANG.WAITING
+        });
+    });
+    function forcedOffline(username) {
+        $.ajax({
+            url: "?c=Monitor/OnlineUser&a=del_user_data",
+            type: 'POST',
+            datatype: 'text',
+            data: {
+                username: username
+            },
+            success: function(data) {
+                if (data == 1) {
+                    ngtosPopMessager("error", data);
+                } else if (data == 2) {
+                    ngtosPopMessager("error", data);
+                }
+
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

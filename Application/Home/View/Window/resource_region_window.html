@@ -1,0 +1,88 @@
+<div id="tan_div">
+<form id="region_form">
+    <div>
+        <table class="ngtos_form_table">
+            <tr><td style="width:120px;" class="tdlabel_net">{$Think.lang.REGION_NAME}</td>
+                <td><input type="text" id="reg_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','eSymbols']"></td>
+            </tr>
+            <tr id="vshare" style="display:none">
+                <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+                <td width="450px">
+                    <input type="radio" name="region_sha" id="region_share1" value="1">
+                    <label for="region_share1">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="region_sha" id="region_share2" value="0" checked>
+                    <label for="region_share2">{$Think.lang.DENY}</label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+                <td width="450px">
+                    <input type="text" id="reg_comm" class="easyui-textbox input_length" data-options="multiline:true,height:66,validType:['maxLength[125]','disableQuot']">
+                    <span class="form_comment">{$Think.lang.MAX_BYTE125}</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net" style="vertical-align: middle;">{$Think.lang.INTERFACE}</td>
+                <td>
+                    <div class="select_div">
+                        <div class="select_ldiv">
+                            <div class="select_ldiv_bottom border_bottom0">
+                                <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                            <span class="searchbox width100">
+                                <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'area_item_cid',0)">
+                                <span class="searchbox-button"></span>
+                            </span>
+                            </div>
+                            <select class="select middle2" style="height:216.5px;" id="area_item_cid" multiple ondblclick="move_options('area_item_cid','d_area_item_cid','1','sel_area_num');">
+                            </select>
+                        </div>
+                        <div class="select_cdiv">
+                            <input type="button" class="width40" onClick="move_options('area_item_cid','d_area_item_cid','1','sel_area_num');" value=" > ">
+                            <br/><br/>
+                            <input type="button" class="width40" onClick="move_options('d_area_item_cid','area_item_cid','0','sel_area_num');" value=" < ">
+                        </div>
+                        <div class="select_rdiv">
+                            <div id="sel_area_num" class="select_ldiv_bottom border_bottom0" style="line-height: 26px;">
+                            </div>
+                            <select class="select middle2 height12" style="height:190px;" id="d_area_item_cid" name="service_item[]" multiple ondblclick="move_options('d_area_item_cid','area_item_cid','0','sel_area_num');">
+                            </select>
+                            <div class="select_ldiv_bottom border_top0">
+                                <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_area_item_cid','area_item_cid','0','sel_area_num');">{$Think.lang.CLEAR_ALL}</a>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addRegion'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('area_div')">
+    </div>
+</form>
+</div>
+<script>
+$(function(){
+    if(!isShared())
+        $('#vshare').css("display","");
+    else
+        $('#vshare').css("display","none");
+    if(region_tag == 1) {
+        refresh_region();
+    } else {
+        modify_refresh_region(param[3]);
+
+        $('#reg_name').val(param[0]);
+        $('#reg_comm').val(param[1]);
+        $("#reg_name").attr('disabled','disabled');
+        if(param[2] == 'on')
+            $('input:radio[name="region_sha"]').get(0).checked = true;
+        else
+            $('input:radio[name="region_sha"]').get(1).checked = true;
+    }
+
+    $('#addRegion').click(function(){
+        sel_attr(region_tag,grtag);
+    });
+});
+</script>

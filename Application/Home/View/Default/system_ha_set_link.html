@@ -1,0 +1,181 @@
+<include file='Index:main'/>
+<script src="{$Think.config.NG_PATH}Public/modules/system/ha.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/common.js"></script>
+<style>
+    .select_margin{margin-left:4px;float:left;}
+    .input_margin{margin-left:4px;margin-top:20px;float:left;}
+    .select{padding:0 0 0 2px;height:200px;width:180px;}
+</style>
+<div style="padding:20px 0 0 20px">
+    <form  action="" name="system_parameters_form" method="post">
+        <table class="ngtos_form_table">
+            <tr>
+                <th colspan="2" class="tdlabel_net">{$Think.lang.GLOBAL_CONFIG}</th>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.MODE}</td>
+                <td class="ngtos_width_85pc">
+                    <select id="ha_mode_id" onchange="change_ha_mode()" style="width:155px" class="easyui-combobox" data-options="panelHeight:'auto',panelMaxHeight:198">
+                        <option value="as">{$Think.lang.MINE_MODE}</option>
+                        <option value="sp">{$Think.lang.CONNECT_PROTECTION}</option>
+                        <option value="aa">{$Think.lang.BALANCE}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.HEART_RATE}</td>
+                <td class="ngtos_width_85pc">
+                    <select name="interface" id="interface" style="width:155px" class="easyui-combobox" data-options="panelHeight:'auto',panelMaxHeight:198">
+                        <volist name="dev" id="vo">
+                            <option value="{$vo.dev}">{$vo.dev}</option>
+                        </volist>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.THIS}IP</td>
+                <td><input type="text" name="local" id="local" class="easyui-textbox global_input" /> </td>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.OPPOSITE}IP</td>
+                <td><input type="text" name="remote" id="remote" class="easyui-textbox global_input" /> </td>
+            </tr>
+            <!--添加链路探测开关-->
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.LINK_PROBE}{$Think.lang.SWITCH}</td>
+                <td>
+                    <img src="{$Think.config.NG_PATH}Public/images/image/stop.png" onClick="changBtState_ha(this);" title="{$Think.lang.STOP}" class="switch1" id="hacheck"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan = '2'>
+                    <div class="btn_config" style="margin-left:190px">
+                        <input type="button" value="{$Think.lang.APPLY}" id="ha_save_id" class="ngtos_button_large confirmenable" onClick="ha_save()"/>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2" class="tdlabel_net">HA{$Think.lang.STATE}</th>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.CURRENT_STATE}:<span id="ha_status_id">{$Think.lang.ON}</span></td>
+                <td><input type="button" value="{$Think.lang.LAUNCH}" id="ha_start_id" class="ngtos_button_small" onClick="ha_start()"/>
+                    <input type="button" value="{$Think.lang.STOP}" id="ha_stop_id" class="ngtos_button_small" onClick="ha_stop()"/></td>
+            </tr>
+            <tr>
+                <th colspan="2" class="tdlabel_net">{$Think.lang.OPERATION}</th>
+            </tr>
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.CONFIG_SYNC_OPPOSITE}</td>
+                <td><input type="button" value="{$Think.lang.IMMEDIATELY_SYNC}" id="sync_to_peer" class="ngtos_button_small " onClick="ha_sync()"/></td>
+            </tr>
+            <tr>
+                <td class = 'tdlabel_net'>{$Think.lang.MANUAL_SWITCH}</td>
+                <td>{$Think.lang.GROUP}ID　<input type="text" name="switch" id="manual_switch" class="easyui-textbox global_input" style = 'width:34px;' data-options="required:true,validType:'range[1,255]'" /> 　　<input type="button" value="{$Think.lang.IMM_SWITCH}" id="manual_switch_btn" class="ngtos_button_small " onClick="switch_sync()"/></td>
+            </tr>
+        </table>
+
+    </form>
+    <table  width=100% class="tab_tag_table">
+        <tr>
+            <td>
+                <div class="tab_tag_black2">
+                    <a href="?c=System/Ha&a=show">{$Think.lang.MANAGEMENTGROUP_SET}</a></div>
+                <div class="tab_tag_black1">
+                    <a href="?c=System/Ha&a=show&tab=2">{$Think.lang.LINK_BIND_SET}</a></div>
+            </td>
+        </tr>
+    </table>
+    <table id="tt" style="height:160px"></table>
+</div>
+<script type="text/javascript">
+    var max_group_num = 255;
+    var origin_data = [];
+    var ha_enable = false;
+    var param = [];
+    $(function() {
+        $('#tt').datagrid({
+            url:'?c=System/Ha&a=linkData',
+            fitColumns: true,
+            striped: true,
+            nowrap: false,
+            border: false,
+            remoteSort: false,
+            singleSelect: false,
+            autoRowHeight: true,
+            showFooter: false,
+            sortName: 'probeid',
+            sortOrder: 'asc',
+            toolbar: '#table_topbar',
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+
+            columns: [[
+                 {
+                field: 'probeid',
+                title: $LANG.LINK+'ID',
+                width: 320
+            }, {
+                field: 'vsysname',
+                title: $LANG.VSYS_NAME,
+                width: 320
+            }
+            ]],
+            pagination: true,
+            rownumbers: true,
+            pageSize: 10,
+            pageList: [10, 20, 50],
+            onClickRow: set_ha_toolbar,
+            onCheck: set_ha_toolbar,
+            onUncheck: set_ha_toolbar,
+            onCheckAll: set_ha_toolbar,
+            onUncheckAll: set_ha_toolbar,
+            onSelect: set_ha_toolbar,
+            onUnselect: set_ha_toolbar,
+            onLoadSuccess: set_ha_toolbar
+        });
+        if (getPrivilege("ha") != false) {
+            $('#tt').datagrid({
+                toolbar: [{
+                    id: 'icon-add',
+                    text: $LANG.ADD,
+                    iconCls: 'icon-add',
+                    handler: add_ha_group_link
+                }, {
+                    id: 'icon-delete',
+                    text: $LANG.DELETE,
+                    iconCls: 'icon-delete',
+                    handler: del_ha_group_link
+                } ,{
+                    id: 'icon-clear',
+                    text: $LANG.CLEAR,
+                    iconCls: 'icon-clear',
+                    handler: clear_ha_group_link
+                }]
+            });
+        }
+        $.ajax({
+            url: "?c=System/Ha&a=haShow",
+            type: 'POST',
+            async: false,
+            success: function(data) {
+                if (data == '') {
+                    ngtosPopMessager("error", $LANG.LOGIN_TIMEOUT, 'login');
+                } else {
+                    var obj = jQuery.parseJSON(data);
+                    init_ha_page_link(obj["rows"][0]);
+                }
+            }
+        });
+        if (getPrivilege("ha") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+        }
+        haBindStatus();
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<style>
+    #ipv_4{background-color:#f5f5f5;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/address.js"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=Resource/Address&a=address_info">
+        <li>
+            {$Think.lang.ADDRESS}
+        </li>
+    </a>
+    <a href="?c=Resource/Address&a=address_info&tabs=info">
+        <li id="ipv_4">
+            {$Think.lang.ADDR_GROUP}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table>
+<div id="dlg-toolbar" style="padding:2px 0">
+    <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true" onClick="add_addrGroup('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+    <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" onClick="editAddrGroRow('{$Think.lang.EDIT}');">{$Think.lang.EDIT}</a>
+    <a href="#" class="easyui-linkbutton" id="icon_del" data-options="iconCls:'icon-delete',plain:true" onClick="delete_item_check()">{$Think.lang.DELETE}</a>
+    <a href="#" class="easyui-linkbutton" id="icon_clear" data-options="iconCls:'icon-clear',plain:true" onClick="clearGroupAddressItem()" style="border:none;">{$Think.lang.CLEAR}</a>
+</div>
+<script>
+    var grtag = 2;
+    var gaddr_tag;
+    var addr_tag;
+    var param = [];
+    parent.moveSelNum = 0;
+    $(function() {
+        $('#tt').treegrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            rownumbers: false,
+            remoteSort: false,
+            idField: 'id',
+            treeField: 'name',
+            animate: false,
+            url: '?s=Home/Resource/Address&grid=tree',
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'name', title: $LANG.NAME, width: 250, sortable: true},
+                    {field: 'type_value', title: $LANG.TYPE, width: 225, sortable: true,
+                        formatter: function(value, rowData, rowIndex) {
+                            if (rowData.type_value == 1)
+                                return $LANG.HOST;
+                            else if (rowData.type_value == 2)
+                                return $LANG.SUBNET;
+                            else if (rowData.type_value == 3)
+                                return $LANG.RANGE;
+                            else if (rowData.type_value == 4)
+                                return $LANG.MAC_ADDR;
+                        }
+                    },
+                    {field: 'ip', title: $LANG.CONTAIN_IP, width: 400,
+                        formatter: function(value, rowData, rowIndex) {
+                            if (rowData.type_value == 1) {
+                                var s = rowData.ipaddr;
+                                if (s.length > 60) {
+                                    var arr = s.split(',');
+                                    s = s.substr(0, 50) + "...";
+                                    var tipInfo = '';
+                                    var r = 1;
+                                    for (var i = 0; i < arr.length; i++) {
+                                        var end = (r % 4) == 0 ? '<br/>' : ' , ';
+                                        tipInfo += arr[i] + end;
+                                        r++;
+                                    }
+                                    s += '&nbsp;&nbsp;<a class="addr_tip" title="' + tipInfo + '">[' + $LANG.DETAIL + ']</a>';
+                                }
+                            } else if (rowData.type_value == 2) {
+                                if (rowData.ip.indexOf('/') == -1)
+                                    var s = "IP:&nbsp;" + rowData.ip + "&nbsp;" + $LANG.MASK + ":&nbsp;" + rowData.mask;
+                                else
+                                    var s = rowData.ip;
+                            }
+                            else if (rowData.type_value == 3)
+                                var s = rowData.ip;
+                            else if (rowData.type_value == 4)
+                                var s = rowData.macaddr;
+
+                            return s;
+                        }
+                    },
+                    {field: 'family', title: $LANG.VERSION, width: 200,
+                        formatter: function(value, rowData, rowIndex) {
+                            if (rowData.family == 2)
+                                return "IPv4";
+                            else if (rowData.family == 10)
+                                return "IPv6";
+                            else
+                                return "";
+                        }
+                    },
+                    {field: 'shared', title: $LANG.SHARE, width: 200,
+                        formatter: function(value, rowData, rowIndex) {
+                            if (rowData.shared == "on")
+                                return $LANG.YES;
+                            else
+                                return $LANG.NO;
+                        }
+                    }
+                ]],
+            onDblClickRow: function(row) {
+                if (row.member) {
+                    if(!isShared() || (isShared() && row.shared != "on")){
+                        edit_group_name(row.name, row.member, row.shared, $LANG.EDIT);
+                    }
+                } else {
+                    if(!isShared() || (isShared() && row.shared != "on")){
+                        edit_host_name(row.name, row.type_value, row.ip, row.ipaddr, row.mask, row.macaddr, row.shared, $LANG.EDIT);
+                    }
+                }
+            },
+            singleSelect: false,
+            checkOnSelect: true,
+            pagination: true, 
+            pageSize: 20, 
+            pageList: [20, 50, 100], 
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar",
+            onCheck: setAddrGroToolBar,
+            onUncheck: setAddrGroToolBar,
+            onClickRow: setAddrGroToolBar,
+            onCheckAll: setAddrGroToolBar,
+            onUncheckAll: setAddrGroToolBar,
+            onSelect: setAddrGroToolBar,
+            onUnselect: setAddrGroToolBar,
+            onBeforeExpand: before_expand_action,
+            onExpand: expand_action,
+            onLoadSuccess: function(data) {
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_del').linkbutton('disable');
+                if ($('.addr_tip').length > 0) {
+                    $('.addr_tip').tooltip({position: 'bottom'});
+                    $('.addr_tip').mouseover(function() {
+                        $(this).tooltip('show');
+                    });
+                }
+            }
+        });
+        var p = $('#tt').treegrid('getPager');
+        $(p).pagination({
+            onBeforeRefresh: function() {
+                $('#tt').treegrid('options').url = '?s=Home/Resource/Address&grid=tree';
+            }
+        });
+        if (getPrivilege("define") == false) {
+             $('#icon_add').linkbutton('disable');
+             $('#icon_clear').linkbutton('disable');
+         }
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!--导入   弹出框-->
+<div id='admin1'>
+    <form id="config_form" >
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.FILE}</td>
+                <td>
+                    <input id="file" type="file" name="file" onChange="$('#upload_file_input_backup').val(this.value)">
+                    <!--<input type="file" name="file" style="display: block; width:222px" id="file" onChange="$('#file').val(this.value)">-->
+                </td>
+            </tr>
+        </table>    
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.SUBMIT}"  id="import">
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('import_div')">
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        $('#import').click(function() {
+            smallimportFile_handle();
+        });
+    })
+</script>

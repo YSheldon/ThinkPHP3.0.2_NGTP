@@ -1,0 +1,170 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/address_info.css"
+      type="text/css"/>
+<style>
+    .datagrid-toolbar > table{margin-top:0px;}
+    .datagrid-toolbar > table td{border-right:none;}
+</style>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/address.js"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=Resource/Address&a=address_info">
+        <li id="ipv_4">
+            {$Think.lang.ADDRESS}
+        </li>
+    </a>
+    <a href="?c=Resource/Address&a=address_info&tabs=info">
+        <li id="ipv_none">
+            {$Think.lang.ADDR_GROUP}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table>
+<div id="dlg-toolbar" style="padding:2px 0">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true" onClick="add_addr('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+                <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" onClick="editAddrRow('{$Think.lang.EDIT}');">{$Think.lang.EDIT}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_del" data-options="iconCls:'icon-delete',plain:true" onClick="deleteAddressItem()">{$Think.lang.DELETE}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_clear" data-options="iconCls:'icon-clear',plain:true" onClick="clearAddressItem()" style="border:none;">{$Think.lang.CLEAR}</a>
+            </td>
+            <td style="text-align:right;padding-right:2px">
+                <input type="text" id="searchName" name="searchName" class="easyui-textbox input_length" 
+                       data-options="validType:['nospace','addrName'],tipPosition:'left',onChange:freshItem,buttonIcon:'panel-tool-close',onClickButton:clearSearch" />
+                <a href="" id='super_query' class="btn-enquiry" iconCls="icon-search" 
+                   plain="true" style="margin-left:10px;" onClick="search_data()">
+                        <img src="{$Think.config.NG_PATH}Public/images/images/inquiry-icon.png"/>
+                    </span>
+                    <span class="text-wrap">{$Think.lang.QUERY}</span>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    var mac_num = 0;
+    var addr_tag;
+    var grtag = 1;
+    var gaddr_tag = 0;
+    var param = [];
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            striped: true,
+            fitColumns: true,
+            nowrap: true,
+            border: false,
+            rownumbers: true,
+            remoteSort: false,
+            sortName: 'type_value',
+            sortOrder: 'asc',
+            url: '?s=Home/Resource/Address',
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'name', title: $LANG.NAME, width: 225, sortable: true},
+                    {field: 'type_value', title: $LANG.TYPE, width: 225, sortable: true,
+                        formatter: function(value, rowData) {
+                            if (rowData.type_value == 1)
+                                return $LANG.HOST;
+                            else if (rowData.type_value == 2)
+                                return $LANG.SUBNET;
+                            else if (rowData.type_value == 3)
+                                return $LANG.RANGE;
+                            else if (rowData.type_value == 4)
+                                return $LANG.MAC_ADDR;
+                        }
+                    },
+                    {field: 'ip', title: $LANG.ADDR_INFO, width: 400,
+                        formatter: function(value, rowData) {
+                            if (rowData.type_value == 1) {
+                                var s = rowData.ipaddr;
+                                if (s.length > 60) {
+                                    var arr = s.split(',');
+                                    s = s.substr(0, 50) + "...";
+                                    var tipInfo = '';
+                                    var r = 1;
+                                    for (var i = 0; i < arr.length; i++) {
+                                        var end = (r % 4) == 0 ? '<br/>' : ' , ';
+                                        tipInfo += arr[i] + end;
+                                        r++;
+                                    }
+                                    s += '&nbsp;&nbsp;<a class="addr_tip" title="' + tipInfo + '">[' + $LANG.DETAIL + ']</a>';
+                                }
+                            } else if (rowData.type_value == 2) {
+                                if (rowData.ip.indexOf('/') == -1)
+                                    var s = "IP:&nbsp;" + rowData.ip + "&nbsp;" + $LANG.MASK + ":&nbsp;" + rowData.mask;
+                                else
+                                    var s = rowData.ip;
+                            }
+                            else if (rowData.type_value == 3)
+                                var s = rowData.ip;
+                            else if (rowData.type_value == 4)
+                                var s = rowData.macaddr;
+
+                            return s;
+                        }
+                    },
+                    {field: 'family', title: $LANG.VERSION, width: 200, sortable: true,
+                        formatter: function(value, rowData) {
+                            if (rowData.family == 2)
+                                return "IPv4";
+                            else if (rowData.family == 10)
+                                return "IPv6";
+                            else
+                                return "";
+                        }
+                    },
+                    {field: 'shared', title: $LANG.SHARE, width: 200,
+                        formatter: function(value, rowData) {
+                            if (rowData.shared == "on")
+                                return $LANG.YES;
+                            else
+                                return $LANG.NO;
+                        }
+                    }
+                ]],
+            checkOnSelect: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar",
+            onCheck: setAddrToolBar,
+            onUncheck: setAddrToolBar,
+            onClickRow: setAddrToolBar,
+            onCheckAll: setAddrToolBar,
+            onUncheckAll: setAddrToolBar,
+            onSelect: setAddrToolBar,
+            onUnselect: setAddrToolBar,
+            onDblClickRow: function(rowindex, rowData) {
+                if(!isShared() || (isShared() && (rowData.shared != 'on'))) {
+                    edit_host_name(rowData.name, rowData.type_value, rowData.ip, rowData.ipaddr, rowData.mask, rowData.macaddr, rowData.shared, $LANG.EDIT);
+                }
+
+            },
+            onLoadSuccess: function(data) {
+                $('#tt').datagrid('fixRownumber');
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_del').linkbutton('disable');
+                if ($('.addr_tip').length > 0) {
+                    $('.addr_tip').tooltip({position: 'bottom'});
+                    $('.addr_tip').mouseover(function() {
+                        $(this).tooltip('show');
+                    });
+                }
+            }
+        });
+        change_type(1);
+         if (getPrivilege("define") == false) {
+             $('#icon_add').linkbutton('disable');
+             $('#icon_clear').linkbutton('disable');
+         }
+    });
+</script>
+</div>
+</div>
+</body>
+</html>

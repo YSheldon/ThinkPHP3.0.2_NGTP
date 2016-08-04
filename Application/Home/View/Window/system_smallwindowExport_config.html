@@ -1,0 +1,21 @@
+<!--导入   弹出框-->
+<div id='admin1'>
+    <form id="config_form" >
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.FILE_TYPE}</td>
+                <td class="tdlabel_net operation">{$Think.lang.OPERATION}</td>
+                <td class="tdlabel_net"></td>
+            </tr>
+            <volist name="name" id="vo">
+            <tr>
+                <td class="tdlabel_net">{$vo.cn}</td>
+                <td class="tdlabel_net"><a href='#' onclick="smallExprot('{$vo.class}','{$vo.cn}')" class="export">{$Think.lang.EXPORT}</a></td>
+                <td class="tdlabel_net"></td>
+            </tr>
+            </volist>
+        </table>    
+    </form>
+</div>
+<script>     
+</script>

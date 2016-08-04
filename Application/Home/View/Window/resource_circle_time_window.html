@@ -1,0 +1,206 @@
+<div>
+<form id="circle_time_form">
+    <table class="ngtos_form_table">
+        <tr>
+            <td width="150px" class="tdlabel_net">{$Think.lang.NAME}</td>
+            <td width="350px">
+                <input type="text" id="time_name" name="time_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','eSymbols']">
+                <span class="form_comment">{$Think.lang.MAX_CHAR30}</span>
+            </td>
+        </tr>
+        <tr id="cir_vshare" style="display:none">
+            <td class="tdlabel_net">{$Think.lang.SHARE}</td>
+            <td width="450px"><input type="radio" name="cir_sha"  value="1" id="share_on">
+                <label for="share_on">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="cir_sha" value="0" id="share_off" checked>
+                <label for="share_off">{$Think.lang.DENY}</label>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center"><br/>
+            <fieldset style="border:1px solid #e5e5e5;">
+            <legend>&nbsp;&nbsp;{$Think.lang.EFFECT_TIME}&nbsp;&nbsp;</legend>
+            <table cellpadding="5" cellspacing="5">
+                <tr>
+                    <td style="text-align: center;">
+                        <input type="radio" name="circle_method" value="1" id="circle_type1" onClick="change_circle_type(1)" checked>
+                        <label for="circle_type1">{$Think.lang.EVERYDAY}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="circle_method" value="2" id="circle_type2" onClick="change_circle_type(2)">
+                        <label for="circle_type2">{$Think.lang.WEEKLY}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="circle_method" value="3" id="circle_type3" onClick="change_circle_type(3)">
+                        <label for="circle_type3">{$Think.lang.MONTHLY}</label>
+                    </td>
+                </tr>
+                <tr id="month_info" style="display:none">
+                    <td>
+                        {$Think.lang.DAYTIME}：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <select id="month_st" class="easyui-combobox" data-options="required:true,width:90">
+                            <option value="1">{$Think.lang.DATE1}</option>
+                            <option value="2">{$Think.lang.DATE2}</option>
+                            <option value="3">{$Think.lang.DATE3}</option>
+                            <option value="4">{$Think.lang.DATE4}</option>
+                            <option value="5">{$Think.lang.DATE5}</option>
+                            <option value="6">{$Think.lang.DATE6}</option>
+                            <option value="7">{$Think.lang.DATE7}</option>
+                            <option value="8">{$Think.lang.DATE8}</option>
+                            <option value="9">{$Think.lang.DATE9}</option>
+                            <option value="10">{$Think.lang.DATE10}</option>
+                            <option value="11">{$Think.lang.DATE11}</option>
+                            <option value="12">{$Think.lang.DATE12}</option>
+                            <option value="13">{$Think.lang.DATE13}</option>
+                            <option value="14">{$Think.lang.DATE14}</option>
+                            <option value="15">{$Think.lang.DATE15}</option>
+                            <option value="16">{$Think.lang.DATE16}</option>
+                            <option value="17">{$Think.lang.DATE17}</option>
+                            <option value="18">{$Think.lang.DATE18}</option>
+                            <option value="19">{$Think.lang.DATE19}</option>
+                            <option value="20">{$Think.lang.DATE20}</option>
+                            <option value="21">{$Think.lang.DATE21}</option>
+                            <option value="22">{$Think.lang.DATE22}</option>
+                            <option value="23">{$Think.lang.DATE23}</option>
+                            <option value="24">{$Think.lang.DATE24}</option>
+                            <option value="25">{$Think.lang.DATE25}</option>
+                            <option value="26">{$Think.lang.DATE26}</option>
+                            <option value="27">{$Think.lang.DATE27}</option>
+                            <option value="28">{$Think.lang.DATE28}</option>
+                            <option value="29">{$Think.lang.DATE29}</option>
+                            <option value="30">{$Think.lang.DATE30}</option>
+                            <option value="31">{$Think.lang.DATE31}</option>
+                        </select>&nbsp;-&nbsp;
+                        <select id="month_end" class="easyui-combobox" data-options="required:true,width:90">
+                            <option value="1">{$Think.lang.DATE1}</option>
+                            <option value="2">{$Think.lang.DATE2}</option>
+                            <option value="3">{$Think.lang.DATE3}</option>
+                            <option value="4">{$Think.lang.DATE4}</option>
+                            <option value="5">{$Think.lang.DATE5}</option>
+                            <option value="6">{$Think.lang.DATE6}</option>
+                            <option value="7">{$Think.lang.DATE7}</option>
+                            <option value="8">{$Think.lang.DATE8}</option>
+                            <option value="9">{$Think.lang.DATE9}</option>
+                            <option value="10">{$Think.lang.DATE10}</option>
+                            <option value="11">{$Think.lang.DATE11}</option>
+                            <option value="12">{$Think.lang.DATE12}</option>
+                            <option value="13">{$Think.lang.DATE13}</option>
+                            <option value="14">{$Think.lang.DATE14}</option>
+                            <option value="15">{$Think.lang.DATE15}</option>
+                            <option value="16">{$Think.lang.DATE16}</option>
+                            <option value="17">{$Think.lang.DATE17}</option>
+                            <option value="18">{$Think.lang.DATE18}</option>
+                            <option value="19">{$Think.lang.DATE19}</option>
+                            <option value="20">{$Think.lang.DATE20}</option>
+                            <option value="21">{$Think.lang.DATE21}</option>
+                            <option value="22">{$Think.lang.DATE22}</option>
+                            <option value="23">{$Think.lang.DATE23}</option>
+                            <option value="24">{$Think.lang.DATE24}</option>
+                            <option value="25">{$Think.lang.DATE25}</option>
+                            <option value="26">{$Think.lang.DATE26}</option>
+                            <option value="27">{$Think.lang.DATE27}</option>
+                            <option value="28">{$Think.lang.DATE28}</option>
+                            <option value="29">{$Think.lang.DATE29}</option>
+                            <option value="30">{$Think.lang.DATE30}</option>
+                            <option value="31">{$Think.lang.DATE31}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="week_info" style="display:none">
+                    <td>
+                        <table class="ngtos_form_pop padding_ip">
+                            <tr>
+                                <td rowspan="2" style="text-align: right;width:27px;">{$Think.lang.WEEK}：</td>
+                                <td style="text-align: right;">
+                                    <input type="checkbox" name="week1" id="week1">
+                                    <label for="week1">{$Think.lang.MONDAY}</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="week2" id="week2">
+                                    <label for="week2">{$Think.lang.TUESDAY}</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="week3" id="week3">
+                                    <label for="week3">{$Think.lang.WEDNESDAY}</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="week4" id="week4">
+                                    <label for="week4">{$Think.lang.THURSDAY}</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;">
+                                    <input type="checkbox" name="week5" id="week5">
+                                    <label for="week5">{$Think.lang.FRIDAY}</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="week6" id="week6">
+                                    <label for="week6">{$Think.lang.SATURDAY}</label>
+                                </td>
+                                <td colspan="2" style="text-align: left;">
+                                    <input type="checkbox" name="week7" id="week7">
+                                    <label for="week7">{$Think.lang.SUNDAY}</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">{$Think.lang.TIME}: &nbsp;&nbsp;&nbsp;
+                    <input id="st_time" name="st_time"  type="text" class="easyui-timespinner" data-options="required:true,min:'00:00',width:90,validType:'time'">&nbsp;-&nbsp;
+                    <input id="end_time" name="end_time"  type="text" class="easyui-timespinner" data-options="required:true,min:'00:00',width:90,validType:'time'">
+                    </td>
+                </tr>
+            </table>
+            </fieldset>
+            </td>
+        </tr>
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addCirTime'>
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('circle_time_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function(){
+        if(!isShared())
+            $('#cir_vshare').css("display","");
+        else
+            $('#cir_vshare').css("display","none");
+        if(circle_tag == 1) {
+            for(var i=1; i<8; i++) {
+                var sel ="'" + "#week" + i + "'";
+                $(eval(sel)).attr("checked", "checked");
+            }
+        } else {
+            $("#time_name").val(param[0]);
+            $("#time_name").attr('disabled','disabled');
+            if(param[5] == 'on')
+                $('input:radio[name="cir_sha"]').get(0).checked = true;
+            else
+                $('input:radio[name="cir_sha"]').get(1).checked = true;
+            //$("#st_time").val(param[3]);
+            //$("#end_time").val(param[4]);
+            if(param[1] == "weekcyc") {
+                $('input:radio[name="circle_method"]').get(1).checked = true;
+                change_circle_type(2);
+                for(var i=0; i<param[2].length; i++) {
+                    var sel ="'" + "#week" + param[2].charAt(i) + "'";
+                    $(eval(sel)).attr("checked", "checked");
+                }
+            } else {
+                var tmp_value = param[2].split('-');
+                if(tmp_value[0] == "1" && tmp_value[1] == "31") {
+                    $('input:radio[name="circle_method"]').get(0).checked = true;
+                    change_circle_type(1);
+                } else {
+                    $('input:radio[name="circle_method"]').get(2).checked = true;
+                    change_circle_type(3);
+
+                    $("#month_st").val(tmp_value[0]);
+                    $("#month_end").val(tmp_value[1]?tmp_value[1]:tmp_value[0]);
+                }
+            }
+        }
+        $('#addCirTime').click(function(){
+            cir_submit(circle_tag, grtag);
+        });
+    })
+</script>

@@ -1,0 +1,54 @@
+<!--导入   弹出框-->
+<div id='admin1'>
+    <form id="config_form" >
+        <table class="ngtos_form_table">
+            <tr>
+                <td class="tdlabel_net">{$Think.lang.FILE}</td>
+                <td>
+                    <input id="file" type="file" name="file" onChange="$('#upload_file_input_backup').val(this.value)">
+                    <!--<input type="file" name="file" style="display: block; width:222px" id="file" onChange="$('#file').val(this.value)">-->
+                </td>
+            </tr>
+            <tr id="tr1">
+                <td class="tdlabel_net">{$Think.lang.DESCRIPTION}</td>
+                <td><input type="text" id="des" name="des" class="easyui-textbox input_length" data-options="required:true"/>
+                    <input type="text" style="display:none" id='cookiename' name="cookiename"  class="ngtos_input">
+                </td>
+            </tr>
+            <tr style="display:none" id="tr2"><td></td>
+                <td ><input type="checkbox" style="vertical-align:middle;" id='loadf2' onClick="loadfType(this)"><label for="loadf" style="color:red;"> 您已经导出了整机配置,继续操作</label></td>
+            </tr>
+            <tr id="tr5"><td></td>
+                <td ><input type="checkbox" style="vertical-align:middle;" id='loadf' checked="checked"><label for="loadf"> {$Think.lang.REPLACE_CURR_CONFIG}</label></td>
+            </tr>
+
+        </table>    
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}"  id="import">
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('import_div')">
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        if(importId==1){
+            $("#tr1").hide();
+            $("#tr2").show();
+            $("#tr5").hide();
+            $("#des").textbox({
+                required:false
+            });
+            if(!$("#loadf2").checked){
+                $("#import").css('background-color','#A1BBD7');
+		$("#import").attr('disabled',true);
+            }
+        }
+        
+        $('#import').click(function() {
+            var isValid = $("#config_form").form('validate');
+            if (isValid) {
+                importFile_handle();
+            }
+        });
+    })
+</script>

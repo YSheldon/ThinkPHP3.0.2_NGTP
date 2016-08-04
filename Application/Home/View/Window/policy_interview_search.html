@@ -1,0 +1,70 @@
+<div>
+    <table class="ngtos_form_table">
+        <tr><th colspan="2">{$Think.lang.RESOURCE_OBJ}</th></tr>
+        <tr>
+            <td style="width: 30%" class="tdlabel_net">{$Think.lang.SRC_AREA}</td>
+            <td><input type="text" id='find_srcarea' class="easyui-textbox" style="width:180px"/></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SRC_ADDR}</td>
+            <td><input type="text" id='find_src' class="easyui-textbox" style="width:180px"/></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.DST_AREA}</td>
+            <td><input type="text" id='find_dstarea' class="easyui-textbox" style="width:180px"/></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.DST.ADDR}</td>
+            <td><input type="text" id='find_dst' class="easyui-textbox" style="width:180px"/></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ORIG_DST}</td>
+            <td><input type="text" id='find_orig_dst' class="easyui-textbox" style="width:180px"/></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.POLICY_GROUP}</td>
+            <td><input type="text" id='find_group' class="easyui-textbox" style="width:180px"/></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.OBJECT}</td>
+            <td><input type="text" id='find_name' class="easyui-textbox" style="width:180px"/></td>
+        </tr>
+
+        <tr><th colspan="2">{$Think.lang.IP_ADDR}</th></tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SRC_ADDR}</td>
+            <td><input type="text" id='find_srcip' class="easyui-textbox" style="width:180px"/></td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.DST_ADDR}</td>
+            <td><input type="text" id='find_dstip' class="easyui-textbox" style="width:180px"/></td>
+        </tr>
+
+    </table>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" onclick="searchPolicy();">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('policy_search');">
+    </div>
+</div>
+<script>
+    function searchPolicy() {
+        $('#tt').treegrid('getPager').pagination({pageNumber: 1});
+        $("#tt").treegrid({
+            url:'?c=Policy/Interview&a=interviewSearchGetJson',
+            method:"post",
+            queryParams:{
+                srcarea:$('#find_srcarea').textbox('getValue'),
+                dstarea:$('#find_dstarea').textbox('getValue'),
+                src:$('#find_src').textbox('getValue'),
+                dst:$('#find_dst').textbox('getValue'),
+                srcip:$('#find_srcip').textbox('getValue'),
+                dstip:$('#find_dstip').textbox('getValue'),
+                group_name:$('#find_group').textbox('getValue'),
+                name:$('#find_name').textbox('getValue'),
+                orig_dst:$('#find_orig_dst').textbox('getValue')
+            },
+            pageNumber:1
+        });
+        closeWindow('policy_search');
+    }
+</script>

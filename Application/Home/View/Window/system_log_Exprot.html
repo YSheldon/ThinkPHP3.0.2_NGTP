@@ -1,0 +1,16 @@
+<table class="ngtos_form_table">
+    <tr>
+        <td class="tdlabel_net">
+	        <label for="log_text">{$Think.lang.TEXT}</label>
+	        <input  type="radio" name="config" id="log_text">
+        </td>
+        <td>
+	        <label for="log_database">{$Think.lang.DATABASES}</label>
+	        <input type="radio" name="config" id="log_database" checked="checked">
+        </td>
+    </tr>
+</table>
+<div class="window_foot_btn">
+    <input type="button"  id='saveAs' class="ngtos_button_middle confirmenable"onclick="log_export()" value="{$Think.lang.EXPORT}">
+    <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('log_export_window');">
+</div>

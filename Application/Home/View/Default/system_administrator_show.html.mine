@@ -1,0 +1,302 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/system/admin.css" type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/system/admin.js" type="text/javascript"></script>
+<div  class="content-layout easyui-layout">
+    <div data-options="region:'north',border:false">
+        <ul id="ipv" class="resp-tabs-list hor_1"> 
+            <a href="?c=System/Admin&a=admin_show">
+                <li id="ipv_4">
+                    {$Think.lang.ADMIN}
+                </li>
+            </a>
+            <if condition=" ($pri neq '0')">
+                <a href="?c=System/Admin&a=admin_show&tab=1">
+                    <li>
+                        {$Think.lang.MANAGE_PERMISSION}
+                    </li>
+                </a>
+            </if>
+            <if condition="$device eq '1'">         
+                <a href="?c=System/Admin&a=admin_show&tab=2">
+                    <li>
+                        {$Think.lang.SET}
+                    </li>
+                </a>
+            </if>
+        </ul>
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="tt"></table>	
+    </div>
+    <div data-options="region:'south',title:'在线管理员',border:false,collapsed:false,split:true,iconCls:'icon-online-user',">
+        <table id="tt1" style="height:250px"></table>
+    </div>
+</div>
+
+<div id="tb">
+    <if condition=" $threeman neq '1' ">
+        <if condition=" $admin != '0'">
+            <a href="###" class="easyui-linkbutton" iconCls="icon-add" plain="true" onClick="adduserWindow();" id='icon_add'>{$Think.lang.ADD}</a>
+            <a href="###" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onClick="edituserWindow();" id='icon_edit'>{$Think.lang.EDIT}</a>
+            <a href="###" class="easyui-linkbutton" iconCls="icon-delete" plain="true" onClick="deleteAdminRow();" id='icon_delete'>{$Think.lang.DELETE}</a>
+        </if>
+        <if condition=" $pri != '0'">
+            <a href="###" class="easyui-linkbutton" iconCls="icon-enable" plain="true" onClick="enableSelectrow(1);" id='icon_enable'>{$Think.lang.ENABLE}</a>
+            <a href="###" class="easyui-linkbutton" iconCls="icon-disable" plain="true" onClick="enableSelectrow(0);" id='icon_disable'>{$Think.lang.DISABLE}</a>
+        </if>
+    </if>
+</div>
+<!--add adminstrator div secord end-->
+<script>
+    $(function(){
+//        $("#pcenter > div:first-of-type > div:nth-child(2)").removeAttr("style"); 
+        $(".layout-split-south >div.panel-body").css("height","240px");
+        $(".panel-tool a").css("float","right");
+
+        $(".layout-split-south").css("top","440px");
+        $(".content-layout div").css("width","100%");
+        $(".content-layout > div:nth-child(2)").css("top","45px");
+        $(".layout-button-down").css("display","none"); 
+    });
+    // @return int 1:有权限，0：无权限
+    var admin_php = "{$admin}";
+    var pri_php = "{$pri}";
+    var device_php = "{$device}";
+    //虚系统用户
+    var vr_switch_php = "{$vr_switch}";
+    //三元管理
+    var threeman = "{$threeman}";
+    //区分是编辑 还是 添加   
+    var oper = 0;
+    var editName;
+    var editCom;
+    var editLimitName;
+    var editVsys;
+    var editStatus;
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            remoteSort: false,
+            collapsible: true,
+            showFooter: false,
+            height: 150,
+            url: '?c=System/Admin&a=datagridShow',
+            queryParams:{
+                mod:'system admin'
+            },
+            columns: [[
+                    {field: 'ck',
+                        formatter: function(value, row, index) {
+                            if (row.admin_type == "default") {
+                                return '';
+                            } else {
+                                if (value == 1) {
+                                    var q = "<input type='checkbox' checked>";
+                                    return q;
+                                } else {
+                                    var q = "<input type='checkbox' >";
+                                    return q;
+                                }
+                            }
+                        }
+                    },
+                    {field: 'admin_name', title: $LANG.USERNAME, width: 150, sortable: true, align: 'left'},
+                    {field: 'admin_type', title: $LANG.TYPE, align: 'left', resizable: true, width: 80, editor: 'text',
+                        formatter: function(value) {
+                            if (value != null && value != "" && trimStr(value) == 'default')
+                                return $LANG.PRESET;
+                            else
+                                return $LANG.CONFIG;
+                        }
+                    },
+                    {field: 'map_name', title: $LANG.PERMISSION_TEMPLATE_NAME, align: 'left', resizable: true, width: 100, editor: 'text'},
+                    {field: 'vsys_name', title: $LANG.VSYS_NAME, align: 'left', resizable: true, width: 150, editor: 'text'},
+                    {field: 'comment', title: $LANG.DESCRIPTION, align: 'left', resizable: true, width: 200, editor: 'text'},
+                    {field: 'opt', title: $LANG.OPERATION, width: 60, align: 'left',
+                        formatter: function(value, row, index) {
+                            if (row.admin_type == "default") {
+                                return '';
+                            } else {
+                                return '<a href="###" onclick="admin_edit('
+                                        + row.admin_name + ',' + row.comment + ','
+                                        + row.map_name + ',' + row.vsys_name + ',' + row.status
+                                        + ');"><img src="'+NG_PATH+'Public/images/icon/icon_edit.png" title="编辑"></a> ';
+                            }
+                        }
+                    }
+                ]],
+            pagination: true,
+            rownumbers: true,
+            loadMsg: $LANG.WAITING,
+            toolbar:'#tb',
+            checkOnSelect: true,
+            selectOnCheck: true,
+            pageSize: 10,
+            pageList: [10, 20, 50],
+            onClickRow: function(rowIndex, rowData) {
+                if (rowData.admin_type == 'default') {
+                    $('#tt').datagrid("unselectRow", rowIndex);
+                } else {
+                    if (rowData.ck == 1){
+                        rowData.ck = 0;
+                    }else {
+                        rowData.ck = 1;
+                    }
+                    //禁用之后双击可以进行编辑模式，
+//                    $('#tt').datagrid('refreshRow', rowIndex);
+                }
+                if (admin_php != '0' || pri_php != '0')
+                    setToolBar();
+            },
+            rowStyler: function(index, row) {
+                if (row.status == 'invalid')
+                    return 'background-color:#d5d5d5;';
+            },
+            onDblClickRow: function(rowindex, rowData) {					//当用户双击一行时触发。
+                if (rowData.admin_type != "default") {
+                    oper = 1;
+                    editName = rowData.admin_name;
+                    editCom = rowData.comment;
+                    editLimitName = rowData.map_name;
+                    editVsys = rowData.vsys_name;
+                    editStatus = rowData.status;
+                    if ($('#admin_add_window').length <= 0) {
+                        $(document.body).append("<div id='admin_add_window' class='ngtos_window_500'></div>");
+                    }
+                    open_window('admin_add_window','System/Admin','windowAdmin',$LANG.EDIT);
+                }
+            },
+            onLoadSuccess: function(data) {
+                if (vr_switch_php == '0') {
+                    $('#tt').datagrid('hideColumn', 'vsys_name');
+                }
+                if (admin_php == 0) {
+                    $('#tt').datagrid('hideColumn', 'ck');
+                } else {
+                    $('#icon_edit').linkbutton('disable');
+                    $('#icon_delete').linkbutton('disable');
+                }
+                if (pri_php != 0) {
+                    $('#icon_enable').linkbutton('disable');
+                    $('#icon_disable').linkbutton('disable');
+                }
+
+                //非三员或者三员非配置权限隐藏操作列
+                if (threeman == 0) {
+                    $('#tt').datagrid('hideColumn', 'opt');
+                } else if (pri_php == 0) {
+                    $('#tt').datagrid('hideColumn', 'opt');
+                }
+            },
+            onCheckAll: setToolBar,
+            onUncheckAll: setToolBar,
+            onSelect: setToolBar,
+            onUnselect: setToolBar,
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+
+        /***************************tt1---start************************************************/
+        $('#tt1').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: true,
+            border: false,
+            remoteSort: false,
+            collapsible: true,
+            iconCls: 'icon-online-user',
+            showFooter: false,
+            url: '?c=System/Admin&a=datagridShow',
+            queryParams:{
+                mod:'system admin',
+                npage:'0',
+                act:'online'
+            },
+            columns: [[
+                    {field: 'admin_name', title: $LANG.USERNAME, width: 150, sortable: true, align: 'left'},
+                    {field: 'logon_ip', title: $LANG.LOGIN_IP_ADDRESS, align: 'left', resizable: false, width: 200, editor: 'text'},
+                    {field: 'logon_time', title: $LANG.LOGIN_TIME, align: 'left', resizable: false, width: 200, editor: 'text'},
+                    {field: 'online_time', title: $LANG.ONLINE_TIME, align: 'left', resizable: false, width: 200, editor: 'text'},
+                    {field: 'logon_type', title: $LANG.LOGIN_MODE, align: 'left', resizable: false, width: 355, editor: 'text'},
+                    {field: 'operate', title: $LANG.OPERATION, align: 'left', resizable: false, width: 180, editor: 'text',
+                        formatter: function(value, row) {
+                            return "<a href='#' onclick='forceOffline(&quot;" + row.session_id + "&quot;,&quot;" + row.admin_name + "&quot;);'><?php echo L('OffLine_Forced')?></a> ";
+                            $('tt1').datagrid('reload');
+                        }
+
+                    }
+                ]],
+            pagination: false,
+            rownumbers: true,
+            loadMsg: $LANG.WAITING,
+            checkOnSelect: true,
+            selectOnCheck: true,
+            pageSize: 10,
+            pageList: [10, 20, 50],
+            onLoadSuccess: function(data) {
+                //无权限隐藏强制下线
+                if (device_php == 0) {
+                    $('#tt1').datagrid('hideColumn', 'operate');
+                } 
+            },
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+        /***************************tt1---end***************************************************/
+        if (vr_switch_php == '1') {
+            $('#tt1').datagrid({
+                url: '?c=System/Admin&a=datagridShow',
+                queryParams:{
+                    mod:'system admin',
+                    act:'online'
+                },
+                pagination: true
+            })
+        }
+    });
+    function admin_edit(admin_name, comment, map_name, vsys_name, status) {
+        oper = 1;
+        editName = admin_name;
+        editCom = comment;
+        editLimitName = map_name;
+        editVsys = vsys_name;
+        editStatus = status;
+        if ($('#admin_add_window').length <= 0) {
+            $(document.body).append("<div id='admin_add_window' class='ngtos_window_500'></div>");
+        }
+        open_window('admin_add_window', 'system_admin', 'window_admin', $LANG.EDIT);
+    }
+    // 管理员页面，页面自适应
+    var Cwidth = window.innerWidth-80+'px';
+    $(function(){
+        $(".content-layout >div:nth-child(2)").css("top","45px");
+        $("#main_close").click(function(){
+            $(".datagrid .datagrid-pager").css("width","100%");
+            $(".datagrid .datagrid-pager").css("margin-left","10px");
+            $(".datagrid .panel-body").css("width","100%");
+            $(".panel").css("width","100%");
+
+        });
+        $("#main_open").click(function(){
+            $(".datagrid .datagrid-pager").css("width","100%");
+        });
+    });
+    // 菜单收缩：
+//    $(".panel-tool a").click(function(){
+//        $(".content-layout >div:nth-child(2)").css("top","45px");
+//        $(".layout-panel-center").css("top","45px");
+//        $(".layout-panel-center").css("width","100%");
+//        $(".panel").css("width","100%");
+//        $(".layout-panel").css("width","100%");
+//    });
+    
+</script>
+
+</body>
+</html>

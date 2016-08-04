@@ -1,0 +1,118 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/service_info.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<ul id="ipv" class="resp-tabs-list hor_1"> 
+    <a href="?c=Resource/Service&a=service_info">
+        <li id="ipv_4">
+            {$Think.lang.PREDEF_SERVICE}
+        </li>
+    </a>
+    <a href="?c=Resource/Service&a=service_info&tag=self">
+        <li>
+            {$Think.lang.CUSTOM_SERVICE}
+        </li>
+    </a>
+    <a href="?c=Resource/Service&a=service_info&tag=group">
+        <li>
+            {$Think.lang.SERVICE_GROUP}
+        </li>
+    </a>
+</ul>
+<table id="tt"></table>
+<div id="dlg-toolbar" style="padding:2px 0">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="text-align:right;padding-right:2px">
+                <input type="text" id="ser_name" name="ser_name" class="easyui-textbox input_length" 
+                       data-options="validType:['nospace','eSymbols'],tipPosition:'left',onChange:freshItem,buttonIcon:'panel-tool-close',onClickButton:clearSearch" />
+                <a href="###" id='super_query' class="btn-enquiry" iconCls="icon-search" 
+                   style="margin-left:10px;" onClick="search_data()">
+                        <img src="{$Think.config.NG_PATH}Public/images/images/inquiry-icon.png"/>
+                    </span>
+                    <span class="text-wrap">{$Think.lang.QUERY}</span>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    var bad_char = /[`~!@#$%^&*()+<>?:"{},.\/;'[\]]/im;
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: false,
+            border: false,
+            rownumbers: true,
+            sortName: 'ver',
+            url: '?s=Home/Resource/Service&mod=service&param=default&parKey=type',
+            columns: [[
+                    {field: 'name', title: $LANG.NAME, width: 300},
+                    {field: 'protocol', title: $LANG.PROTOCOL, width: 200},
+                    {field: 'port', title: $LANG.PORT, width: 200,
+                        formatter: function(value, rowData) {
+                            if (rowData.port == "0")
+                                var s = "";
+                            else
+                                var s = rowData.port;
+                            return s;
+                        }
+                    },
+                    {field: 'shared', title: $LANG.SHARE, width: 200,
+                        formatter: function(value, rowData) {
+                            if (rowData.shared == "on")
+                                return $LANG.YES;
+                            else
+                                return $LANG.NO;
+                        }
+                    },
+                    {field: 'comment', title: $LANG.DETAIL, width: 550}
+                ]],
+            singleSelect: true,
+            checkOnSelect: true,
+            pagination: true,
+            pageSize: 20,
+            pageList: [20, 50, 100],
+            loadMsg: $LANG.WAITING,
+            toolbar: "#dlg-toolbar"
+        });
+    });
+
+    function clearSearch() {
+        $('#ser_name').textbox('clear');
+    }
+    function search_data() {
+        var isValid = $('#ser_name').textbox('isValid');
+        if (!isValid) {
+            return false;
+        }
+        var sname = $('#ser_name').textbox('getValue');
+        if (sname == '') {
+            ngtosPopMessager("error", $LANG.INPUT_SEARCH);
+            return;
+        }
+        if (bad_char.test(sname)) {
+            ngtosPopMessager("error", $LANG.INPUT_CHAR_ERROR);
+            return false;
+        }
+        $('#tt').datagrid('getPager').pagination({pageNumber: 1});
+        $('#tt').datagrid({
+            pageNumber: 1,
+            url: '?s=Home/Resource/Service&mod=service&param=default&parKey=type&search='+encodeURI(sname)
+        });
+    }
+
+    function freshItem(newValue, oldValue) {
+        if (newValue == '') {
+            $("#tt").datagrid({
+                url: '?s=Home/Resource/Service&mod=service&param=default&parKey=type'
+            });
+        }
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

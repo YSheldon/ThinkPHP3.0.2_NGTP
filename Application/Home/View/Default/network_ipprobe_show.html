@@ -1,0 +1,66 @@
+<include file="Index:main"/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_nat.css"
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/network/ipprobe.js" type="text/javascript"></script>
+<table id="tt"></table>
+<div id="tb">
+    <div>
+        <a href="javascript:void(0);" class="easyui-linkbutton" id ="icon_add" iconCls="icon-add" plain="true" onClick="addipProbe()">{$Think.lang.ADD}</a>
+        <a href="javascript:void(0);" class="easyui-linkbutton" id='ipedit' iconCls="icon-edit" plain="true" onClick="ipProbeEdit();">{$Think.lang.EDIT}</a>
+        <a href="javascript:void(0);" class="easyui-linkbutton" id='ipdelete' iconCls="icon-delete" plain="true" onClick="ipProbeDelete();">{$Think.lang.DELETE}</a>
+        <a href="javascript:void(0);" class="easyui-linkbutton" id ="icon_clear" iconCls="icon-clear" plain="true" onClick="ipProbeDeleteAll();" style="border:none;">{$Think.lang.CLEAR}</a>
+    </div>
+</div>
+<script>
+    var param = [];
+    var tag;
+    $(function() {
+        $('#tt').datagrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            border: false,
+            remoteSort: false,
+            sortName: 'probe-id',
+            url: '?c=Network/IpProbe&mod=ip_probe',
+/*            queryParams:{
+                mod:'network ip-probe'
+            },*/
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                {field: 'probe-id', title: 'ID', align: 'left', width: 150,sortable: true},
+                {field: 'probe-ip', title: $LANG.PROBE + 'IP', align: 'left', width: 150},
+                {field: 'interval', title: $LANG.TIME_INTERVAL, align: 'left', width: 200,
+                    formatter: function(rowindex,rowdata) {
+                        return rowdata.interval+'s';
+                    }
+                },
+                {field: 'dev', title: $LANG.INTERFACE, align: 'left', width: 200},
+                {field: 'state', title: $LANG.STATE, align: 'left', width: 150}
+            ]],
+            checkOnSelect: true,
+            loadMsg: $LANG.WAITING,
+            toolbar: '#tb',
+            onCheck: setIpProbe,
+            onUncheck: setIpProbe,
+            onCheckAll: setIpProbe,
+            onUncheckAll: setIpProbe,
+            onLoadSuccess: setIpProbe,
+            onDblClickRow: function(index, row) {
+                if (getPrivilege("network") != false) {
+                    editIp(row['probe-id'], row['probe-ip'], row.interval);
+                }
+            }
+        });
+        if (getPrivilege("network") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+        }
+    });
+</script>
+</div>
+</body>
+</html>

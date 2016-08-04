@@ -1,0 +1,361 @@
+<include file='Index:main'/>
+<style type="text/css">
+</style>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/modules/policy/alarm.js" ></script>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/plugins/simpletooltip/ajaxfileupload.js"></script>
+<div>
+    <table border="0" class="ngtos_form_table" style="margin-top:100px;">
+        <tr>
+            <th colspan="2">{$Think.lang.SMS_SET}</th>
+        </tr>
+        <tr>
+            <td style="width:110px;" class='tdlabel_net'>{$Think.lang.SEND_NOTE_WAY}</td>
+            <td class="tdlabel_left">
+                <select id='type'>
+                        <option value="none" selected>{$Think.lang.WU}</option>
+                        <option value="ismg">{$Think.lang.NOTE_WAY_HTTPS_TYPE}</option>
+                        <option value="db">{$Think.lang.DB_TYPR}</option>
+                        <option value="webservice">{$Think.lang.WEBSERVICE_TYPE}</option>
+                        <option value="http">{$Think.lang.http类型}</option>
+                    </select>
+            </td>
+        </tr>
+        <tr style="display:none;" class="trdb">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.DB_TYPR}</td>
+            <td class="tdlabel_left">
+                <select id='db_type'>
+                        <option value="mysql" selected>Mysql</option>
+                        <option value="mssql">SqlServer</option>
+                    </select>
+            </td>
+        </tr>
+        <tr style="display:none;" class="trismg">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.PROTOCOL_TYPE}</td>
+            <td class="tdlabel_left">
+                <select id='ismg_type'>
+                        <option value="cmppv2" selected>{$Think.lang.CHINA_CMCC_V2}</option>
+                        <option value="cmppv3">{$Think.lang.CHINA_CMCC_V3}</option>
+                        <option value="sgip">{$Think.lang.CHINA_CUCC}</option>
+                        <option value="smgp">{$Think.lang.CHINA_CTC}</option>
+                    </select>
+            </td>
+        </tr>
+         <tr style="display:none;" class="trweb">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.SOAP_VERSION}</td>
+            <td class="tdlabel_left">
+                <select id='soap_ver'>
+                        <option value="soap1.1" selected>soap1.1</option>
+                        <option value="soap1.2">soap1.2</option>
+                    </select>
+            </td>
+        </tr>
+        <tr style="display:none;" class="trweb">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.CODING_TYPE}</td>
+            <td class="tdlabel_left">
+                <select id='webcharset'>
+                    <option value="utf-8" selected>utf-8</option>
+                    <option value="gbk">gbk</option>
+                </select>
+            </td>
+        </tr>
+        <tr style="display:none;" class="trweb">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.URL_ADRESS}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="url" class="easyui-textbox input_length" style="width:180px;"  data-options="required:true,validType:'strLengthNum[127]'">
+            </td>
+        </tr>
+         <tr style="display:none;" class="trweb">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.SOAP_CONFIG}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="soapaction" class="easyui-textbox input_length" style="width:180px;"  data-options="validType:'strLengthNum[127]'">
+                <span>【使用SOAP1.1时可以配置此选项】</span>
+            </td>
+        </tr>
+<!--         <tr style="display:none;" class="trweb">
+            <td  style="width:110px;">{$Think.lang.CONFIG_REQUEST_VIEW}</td>
+            <td class="tdlabel_left">
+                <input type="radio" name="CL4Type" id="Cl4addr_host" onClick="changeDestinationType(1)" value="0" checked/>
+                <label for="addr_host">{$Think.lang.AUTO_CREATE}</label>&nbsp;
+                <input type="radio" name="CL4Type" id="Cl4addr_network" onClick="changeDestinationType(2)" value="1"/>
+                <label for="addr_network">{$Think.lang.HAND_INPUT}</label>
+            </td>
+        </tr>-->
+         <tr style="display:none;" class="trweb">
+            <td  style="width:110px;" class='tdlabel_net'>
+                {$Think.lang.INTERFACE_NAME}
+                <input type="text" id="interface_name" class="easyui-textbox" style="width:100px;"  data-options=""></br></br>
+                {$Think.lang.FLIE_URl}
+                <input type="text" id="flie_name" class="easyui-textbox" style="width:100px;"  data-options=""></br>
+                <span>【请上传wsdl、xml、xsd文件】</span></br>
+                <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.BROWSER}" onclick="flie()"  style="height:22px;">&nbsp;&nbsp;&nbsp;
+                <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CREATE_VIEW}" onclick="showView()"  style="height:22px;">
+            </td>
+            <td class="tdlabel_left">
+                <input type="text" id='moduleViews' class="easyui-textbox" style="width:300px;" data-options="multiline:true,height:100">
+            </td>
+        </tr>
+        <tr style="display:none;" class="trweb">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.SREV_View}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="recv_attr_val" class="easyui-textbox input_length" style="width:220px;"  data-options="validType:'strLengthNum[127]'">
+            </td>
+        </tr>
+        <tr style="display:none;" class="trhttp">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.SEND_MEDTHOD}</td>
+            <td class="tdlabel_left">
+                <select id='http_method'>
+                        <option value="get" selected>get</option>
+                        <option value="post">post</option>
+                    </select>
+            </td>
+        </tr>
+        <tr style="display:none;" class="trhttp">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.CODING_TYPE}</td>
+            <td class="tdlabel_left">
+                <select id='httpcharset'>
+                    <option value="utf-8" selected>utf-8</option>
+                    <option value="gbk">gbk</option>
+                </select>
+            </td>
+        </tr>
+        <tr style="display:none;" class="trhttp">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.URL_ADRESS}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="httpurl" class="easyui-textbox input_length" style="width:180px;"  data-options="required:true,validType:'strLengthNum[127]'">
+            </td>
+        </tr>
+         <tr style="display:none;" class="trhttp">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.SEND_View}</td>
+            <td class="tdlabel_left">
+                <input type="text" id='httpmoduleViews' class="easyui-textbox" style="width:300px;" data-options="multiline:true,height:100">
+            </td>
+        </tr>
+        <tr style="display:none;" class="trhttp">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.SREV_View}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="httprecv_attr_val" class="easyui-textbox input_length" style="width:220px;"  data-options="validType:'strLengthNum[127]'">
+            </td>
+        </tr>
+         <tr style="display:none;" class="tr1">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.SERVER_ADDR_OBJ}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="ip" class="easyui-textbox input_length" style="width:180px;"  data-options="required:true,validType:'ipFour'">
+            </td>
+        </tr>
+        <tr style="display:none;" class="tr1">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.DIAGNOSE_PORT}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="port" class="easyui-textbox input_length" style="width:180px;"  data-options="required:true,validType:'range[1,65535]'">
+                <span>[1-65535]<span>
+            </td>
+        </tr>
+        <tr style="display:none;" class="trdb">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.DB_NAME}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="db_name" class="easyui-textbox input_length" style="width:180px;"  data-options="required:true,validType:'strLengthNum[63]'">
+            </td>
+        </tr>
+        <tr style="display:none;" class="tr1">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.ACCOUNT_NAME}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="username" class="easyui-textbox input_length" style="width:180px;"  data-options="required:true,validType:'strLengthNum[63]'">
+            </td>
+        </tr>
+        <tr style="display:none;" class="tr1">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.ACCOUNT_PWD}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="password" class="easyui-textbox input_length" style="width:180px;"  data-options="required:true,validType:'strLengthNum[63]'">
+            </td>
+        </tr>
+        <tr style="display:none;" class="trdb">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.DB_CHARS_CODING}</td>
+            <td class="tdlabel_left">
+                <select id='charset'>
+                    <option value="utf-8" selected>utf-8</option>
+                    <option value="gbk">gbk</option>
+                </select>
+            </td>
+        </tr>
+        <tr style="display:none;" class="trdb">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.SQL_INSERT_VIEW}</td>
+            <td class="tdlabel_left">
+                <input type="text" id='dbmoduleViews' class="easyui-textbox" style="width:300px;" data-options="multiline:true,height:60">
+            </td>
+        </tr>
+        <tr style="display:none;" class="trismg">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.SP_PUTID}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="sp_id" class="easyui-textbox input_length" style="width:180px;"  data-options="validType:'strLengthNum[63]'">
+            </td>
+        </tr>
+        <tr style="display:none;" class="trismg">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.PROFESS_CODE}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="service_id" class="easyui-textbox input_length" style="width:180px;"  data-options="validType:'strLengthNum[63]'">
+            </td>
+        </tr>
+        <tr style="display:none;" class="trismg">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.BUSINSESS_CODE}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="enterprise_id" class="easyui-textbox input_length" style="width:180px;"  data-options="validType:'strLengthNum[63]'">
+            </td>
+        </tr>
+        <tr style="display:none;" class="trtime">
+            <td  style="width:110px;" class='tdlabel_net'>{$Think.lang.TIMEOUT}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="timeout" class="easyui-textbox input_length" style="width:180px;"  data-options="required:true,value:5,validType:'range[5,30]'">
+                <span>[5-30]</span>
+            </td>
+        </tr>
+        <tr style="display:none;" class="trbutton">
+            <td colspan="2" style="text-align:center;">
+                <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.APPLY}" onclick="addNote()" style="height:22px;">
+                <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CLEAR_CONFIG}" onclick="clearNote()" style="height:22px;">
+            </td>
+        </tr>
+        <tr>
+            <th colspan="2">{$Think.lang.NOTE_SEND_CESHI}</th>
+        </tr>
+        <tr>
+            <td style="width:110px;" class='tdlabel_net'>{$Think.lang.SWND_NEWS_IPHONE}</td>
+            <td class="tdlabel_left">
+                <input type="text" id="phone" class="easyui-textbox input_length"  data-options="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.TEST}" onclick="sendIphone()" style="height:22px;">
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(function() {
+        $.ajax({
+            url: "?c=Policy/Alarm&a=shownode",
+            dataType:'json',
+            success: function(data) {
+                $('#type').combobox('setValue',data.rows[0].type);
+                if(data.rows[0].type=="ismg"){
+                    $('#ismg_type').combobox('setValue',data.rows[0].ismg_type);
+                    $('#ip').textbox('setValue',data.rows[0].ip);
+                    $('#port').textbox('setValue',data.rows[0].port);
+                    $('#username').textbox('setValue',data.rows[0].username);
+                    $('#password').textbox('setValue',data.rows[0].userpasswd);
+                    $('#sp_id').textbox('setValue',data.rows[0].sp_id);
+                    $('#service_id').textbox('setValue',data.rows[0].service_id);
+                    $('#enterprise_id').textbox('setValue',data.rows[0].enterprise_id);
+                    $('#timeout').textbox('setValue',data.rows[0].timeout);
+                }else if(data.rows[0].type=="db"){
+                    $.ajax({
+                        url: "?c=Policy/Alarm&a=showModule",
+                        type: 'POST',
+                        datatype: 'text',
+                        success: function(data) {
+                            $("#dbmoduleViews").textbox('setValue',data);
+                        }
+                    });
+                    $('#db_type').combobox('setValue',data.rows[0].db_type);
+                    $('#db_name').textbox('setValue',data.rows[0].db_name);
+                    $('#ip').textbox('setValue',data.rows[0].ip);
+                    $('#port').textbox('setValue',data.rows[0].port);
+                    $('#username').textbox('setValue',data.rows[0].username);
+                    $('#password').textbox('setValue',data.rows[0].userpasswd);
+                    $('#timeout').textbox('setValue',data.rows[0].timeout);
+                    $('#charset').textbox('setValue',data.rows[0].charset);
+                    $('#timeout').textbox('setValue',data.rows[0].timeout);
+                }else if(data.rows[0].type=="webservice"){
+                    $.ajax({
+                        url: "?c=Policy/Alarm&a=showModule",
+                        type: 'POST',
+                        datatype: 'text',
+                        success: function(data) {
+                            $("#moduleViews").textbox('setValue',data);
+                        }
+                    });
+                    $("#soap_ver").combobox('setValue',data.rows[0].soap_ver);
+                    $("#webcharset").textbox('setValue',data.rows[0].charset);
+                    $("#url").textbox('setValue',data.rows[0].url);
+                    $("#recv_attr_val").textbox('setValue',data.rows[0].recv_attr_val);
+                    $('#timeout').textbox('setValue',data.rows[0].timeout);
+                    $("#soapaction").textbox('setValue',data.rows[0].soapaction);
+                }else if(data.rows[0].type=="http"){
+                    $.ajax({
+                        url: "?c=Policy/Alarm&a=showModule",
+                        type: 'POST',
+                        datatype: 'text',
+                        success: function(data) {
+                            $("#httpmoduleViews").textbox('setValue',data);
+                        }
+                    });
+                    $("#http_method").combobox('setValue',data.rows[0].http_method);
+                    $("#httpcharset").textbox('setValue',data.rows[0].charset);
+                    $("#httpurl").textbox('setValue',data.rows[0].url);
+                    $("#httprecv_attr_val").textbox('setValue',data.rows[0].recv_attr_val);
+                }
+            }
+        });
+        //发送短信方式
+        $('#type').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 180,
+            onChange: NoteType,
+            multiple: false,
+            editable: false
+        });
+        //协议方式
+        $('#ismg_type').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 180,
+            multiple: false,
+            editable: false
+        });
+        //数据库类型
+        $('#db_type').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 180,
+            multiple: false,
+            editable: false
+        });
+        //数据库字符编码
+        $('#charset').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 180,
+            multiple: false,
+            editable: false
+        });
+        //WebServer字符编码
+        $('#webcharset').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 180,
+            multiple: false,
+            editable: false
+        });
+        //http字符编码
+        $('#httpcharset').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 180,
+            multiple: false,
+            editable: false
+        });
+         //SOAP版本
+        $('#soap_ver').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 180,
+            onChange: webType,
+            multiple: false,
+            editable: false
+        });
+        //请求方法
+        $('#http_method').combobox({
+            panelHeight: 'auto',
+            panelMaxHeight: 198,
+            width: 180,
+            multiple: false,
+            editable: false
+        });
+    });
+</script>

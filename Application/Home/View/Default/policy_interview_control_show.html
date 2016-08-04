@@ -1,0 +1,330 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/policy/policy_interview.css"  
+      type="text/css"/>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/footer.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/policy/policy.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/policy/interview.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/address.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/region.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/service.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/resource/schedule.js" type="text/javascript"></script>
+<script src="{$Think.config.NG_PATH}Public/modules/auth/authentication.js" type="text/javascript"></script>
+<style>
+    table td{word-break: break-all}
+</style>
+<table id="tt"></table>
+<!-- 新版： -->
+<div id="tb" class="table-wrap">
+    <div class="datagrid-toolbar" style="border:none;">  
+        <div class="tools-lft">
+            <div class="btn-anchor dropdown">
+                <a href="###" class="easyui-menubutton" menu="#mm1" id='icon_add' iconCls="icon-add"
+                   plain="true" id='wwww'>
+                    <span class="btn-left">
+                        <span class="btn-left-text">{$Think.lang.ADD} </span>
+                    </span>
+                </a>
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="###" class="easyui-linkbutton" iconCls="icon-edit" id='icon_edit' plain="true"      onClick="editInterview('{$Think.lang.EDIT}');">
+                    <span class="btn-left">
+                        <span class="btn-left-text">{$Think.lang.EDIT}</span>
+                    </span>
+                </a>   
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="###" class="easyui-linkbutton" iconCls="icon-delete" id='icon_delete' plain="true"   onClick="delInterview();">
+                    <span class="btn-left">
+                        <span class="btn-left-text">{$Think.lang.DELETE}</span>
+                    </span>
+                </a>
+            </div>
+            <div class="btn-anchor dropdown">
+                <a href="###" class="easyui-menubutton" menu="#mm2" id='icon_clear' iconCls="icon-clear" plain="true">
+                    <span class="btn-left">
+                        <span class="btn-left-text">{$Think.lang.CLEAR} 
+                        </span>
+                    </span>
+                 </a>   
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="###" class="easyui-linkbutton" iconCls="icon-insert" id='icon_insert' plain="true"   onClick="insertGroupRow('{$Think.lang.INSERT}');">
+                    <span class="btn-left">
+                        <span class="btn-left-text">{$Think.lang.INSERT}</span>
+                    </span>
+                </a>
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="###" class="easyui-linkbutton" iconCls="icon-move" id='icon_move' plain="true"      onClick="moveInterview();">
+                <span class="btn-left">
+                    <span class="btn-left-text">{$Think.lang.MOVE}</span>
+                </span>
+                </a>
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="###" class="easyui-linkbutton" iconCls="icon-enable" id='icon_enable' plain="true" onClick="enableSelectRow('yes');">
+                <span class="btn-left">
+                    <span class="btn-left-text">{$Think.lang.ENABLE}</span>
+                </span>
+                </a>
+            </div>
+            <div class="btn-anchor disabled">
+                <a href="###" class="easyui-linkbutton" iconCls="icon-disable" id='icon_disable' plain="true" onClick="enableSelectRow('no');">
+                <span class="btn-left">
+                    <span class="btn-left-text">{$Think.lang.DISABLE}</span>
+                </span>
+                </a>
+            </div>
+            <div class="btn-anchor disabled" style="border-right:none;float:right;">
+                <a href="#;" class="btn-counter">
+                    <span class="icon-wrap">
+                        <input id='show_hits' type="checkbox" style="margin-left:10px;" 
+                               onClick="showInterviewHits();">
+                    </span>
+                    <span class="text-wrap">
+                        <label for="show_hits">{$Think.lang.SHOW_HITS}</label>
+                    </span>
+                </a>
+
+                <a href="###" id='super_query' class="btn-enquiry" iconCls="icon-search" 
+                   plain="true" style="margin-left:10px;" onClick="interviewSuperQuery();">
+                        <img src="{$Think.config.NG_PATH}Public/images/images/inquiry-icon.png"/>
+                    </span>
+                    <span class="text-wrap">{$Think.lang.QUERY}</span>
+                </a>
+            </div>
+            <div id="mm1" style="width:120px;">
+                <div onClick="addrow('{$Think.lang.ADD}');">{$Think.lang.POLICY}</div>
+                <div onClick="addPolicyGroup('{$Think.lang.ADD_POLICY_GROUP}');">
+                    {$Think.lang.POLICY_GROUP}
+                </div>
+            </div>
+            <div id="mm2" style="width:120px;">
+                <div onClick="clearInterview();">{$Think.lang.POLICY}</div>
+                <div onClick="clearInterviewGroup();">{$Think.lang.POLICY_GROUP}</div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<!-- .................. -->
+<div id='policy_search' style="width: 400px; display: none"></div>
+<!--添加访问控制-->
+<div id='admin1' style="width:560px; display:none"></div>
+<div id='add_user_window' style="width: 600px; display: none"></div>
+<div id='admin_policy_group' style="width:400px; display:none"></div>
+<div id='interview_move' style="width:500px; display:none"> </div>
+
+<div id='ai_group_window' style="width:500px; display:none"></div>
+<div id='time_window' style="width:550px"></div>
+<div id='add_login_addr' style="width:550px; display:none;"></div>
+
+<!--20140827-->
+<div id='area_div' style="width:500px; display:none;"></div>
+<div id='addr_div' style="width:550px; display:none;"></div>
+<div id='addrGroup_div' style="width:500px; display:none;"></div>
+<div id='service_div' style="width:500px; display:none;"></div>
+<div id='service_group_div' style="width:500px; display:none;"></div>
+<div id='time_group_div' style="width:550px; display:none;"></div>
+<div id='sig_cir_div' style="width:550px; display:none;"></div>
+<div id='object_public' style="width:550px; display:none;"></div>
+<script>
+    var auth_tag = 1;
+    var ip_num = 0;
+    var ip_init_num = 0;
+    var mac_num = 0;
+    var input_id;
+    var input_type;
+    var user_conf = "{$user_conf}";
+    var allnode = "";
+    var group_node = "/";
+    $(function() {
+        $('#tt').treegrid({
+            fit: true,
+            fitColumns: true,
+            striped: true,
+            nowrap: false,
+            border: false,
+            rownumbers: false,
+            remoteSort: true,
+            collapsible: true,
+            idField: 'id',
+            treeField: 'id',
+            animate: false,
+            url: '?c=Policy/Interview&a=interviewJsondata',
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]],
+            columns: [[
+                    {field: 'id', title: $LANG.POLICY_ID, width: 150, resizable: true, rowspan: 2,
+                        formatter: function(value) {
+                            if (!value)
+                                return;
+                            if (value == 'none')
+                                return $LANG.DEFAULT_GROUP;
+                            else {
+                                if (value.length > 10)
+                                    return "<a href='###' title=" + value + ">" + value.substr(0, 9) + "…</a>";
+                                else
+                                    return value;
+                            }
+
+                        }
+                    },
+                    {field: 'allhits', title: $LANG.STATISTIC, width: 120, resizable: true, hidden: true, rowspan: 2,
+                        formatter: function(value, row) {
+                            var allhits = '';
+                            var current = row.current_active_session > 0 ? row.current_active_session : 0;
+                            var permit = row.permit_session_num > 0 ? row.permit_session_num : 0;
+                            var deny = row.deny_session_num > 0 ? row.deny_session_num : 0;
+                            var hits = row.hits > 0 ? row.hits : 0;
+                            if (row.current_active_session)
+                                allhits += $LANG.CURRENT_CONNECT + '：' + current + '<br/>';
+                            if (row.permit_session_num)
+                                allhits += $LANG.ACCEPT_CONNECT + '：' + permit + '<br/>';
+                            if (row.deny_session_num)
+                                allhits += $LANG.DENY_CONNECT + '：' + deny + '<br/>';
+                            if (row.hits)
+                                allhits += $LANG.STATISTIC + '：' + hits + '<br/>';
+                            return allhits;
+                        }
+                    },
+                    {field: 'action', title: $LANG.ACTION, width: 40, resizable: true, rowspan: 2,
+                        formatter: function(value, row) {
+                            if (typeof (row._parentId) != 'undefined') {
+                                if (value == 'accept')
+                                    return '<img src="'+NG_PATH+'Public/images/icon/icon_on.png" title="' + $LANG.ACCEPT + '" onclick="changeAction(' + row.id + ',0,this)"/>';
+                                else
+                                    return '<img src="'+NG_PATH+'Public/images/icon/icon_shut.png" title="' + $LANG.DENY + '" onclick="changeAction(' + row.id + ',1,this)"/>';
+                            }
+                        }
+                    },
+                    {field: 'comment', title: $LANG.DESCRIPTION, width: 80, resizable: true, rowspan: 2},
+                    {title: $LANG.SRC, colspan: 3, width: 240, resizable: true},
+                    {title: $LANG.DST, width: 160, resizable: true, colspan: 2},
+                    {field: 'service', title: $LANG.SERVICE, width: 100, resizable: true, rowspan: 2,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ',', 'service');
+                        }},
+                    {field: 'schedule', title: $LANG.TIME, width: 100, resizable: true, rowspan: 2,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ',', 'schedule');
+                        }},
+                    {field: 'options', title: $LANG.OPTION, width: 40, resizable: true, rowspan: 2,
+                        formatter: function(value, row) {
+                            if (row._parentId) {
+                                var options = '';
+                                if (row.orig_dst)
+                                    options += $LANG.ORIG_DST + '：' + row.orig_dst + '&#10;<br>';
+                                if (row.max_active_session)
+                                    options += $LANG.MAX_ACTIVE_SESSION + '：' + row.max_active_session + '&#10;<br>';
+                                options += $LANG.LONG_CONNECT + '：' + (row.permanent == 'yes' ? $LANG.ON : $LANG.OFF) + '&#10;<br>';
+                                options += $LANG.DATA_HITS + '：' + (row.switch_statistic == 'on' ? $LANG.ON : $LANG.OFF) + '&#10;<br>';
+                                options += $LANG.ACCESS_LOG + '：' + (row.log == 'on' ? $LANG.RECORD : $LANG.UNRECORD) + '&#10;<br>';
+                                options += $LANG.CONN + '：' + (row.slog == 'on' ? $LANG.RECORD : $LANG.UNRECORD) + '&#10;<br>';
+                                if (row.hopopts != '' || row.dstopts != '' || row.routing != '' || row.fragment != '' || row.ah != '' || row.esp != '') {
+                                    options += $LANG.IPV6_OPTION + '：' + $LANG.ON;
+                                    if (row.hopopts == 'setup')
+                                        options += $LANG.HOP + '、';
+                                    if (row.dstopts == 'setup')
+                                        options += $LANG.DST + '、';
+                                    if (row.routing == 'setup')
+                                        options += $LANG.ROUTE + '、';
+                                    if (row.fragment == 'srtup')
+                                        options += $LANG.FRAGMENT + '、';
+                                    if (row.ah == 'setup')
+                                        options += $LANG.AUTH + '、';
+                                    if (row.esp == 'setup')
+                                        options += 'ESP、';
+                                    options = options.substr(0, options.length - 1);
+                                    options += $LANG.EXPAND_HEAD;
+                                }
+                                return "<a class='tip' title='" + options + "'>" + $LANG.SHOW + "</a>"
+                            }
+
+                        }
+                    }
+                ], [
+                    {field: 'src', title: $LANG.ADDRESS, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ',', 'address');
+                        }
+                    },
+                    {field: 'srcarea', title: $LANG.REGION, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ',', 'area');
+                        }},
+                    {field: 'userid', title: $LANG.USER, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ',', 'user');
+                        }},
+                    {field: 'dst', title: $LANG.ADDRESS, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ',', 'address');
+                        }},
+                    {field: 'dstarea', title: $LANG.REGION, width: 80, resizable: true,
+                        formatter: function(value, row) {
+                            return valueRowLineTooltip(value, ',', 'area');
+                        }}
+                ]],
+            singleSelect: false,
+            checkOnSelect: true,
+            selectOnCheck: true,
+            pagination: true,
+            pageSize: 10,
+            pageList: [10, 20, 50],
+            loadMsg: "{$Think.lang.WAITING}",
+            toolbar: '#tb',
+            onCheck: setInterviewToolBar,
+            onUncheck: setInterviewToolBar,
+            onClickRow: setInterviewToolBar,
+            onCheckAll: setInterviewToolBar,
+            onUncheckAll: setInterviewToolBar,
+            onSelect: setInterviewToolBar,
+            onUnselect: setInterviewToolBar,
+            rowStyler: function(row) {
+                if (typeof (row._parentId) != 'undefined' && row._parentId.length > 0) {
+                    if (row.enable == 'no')
+                        return 'background-color:#d5d5d5;';
+                }
+            },
+            onDblClickRow: function(row) {
+                if (typeof (row._parentId) != 'undefined') {
+                    editInterviewRow(row.id, row.srcarea, row.src, row.dstarea, row.dst, row.service, row.schedule, row.action, row.enable,
+                            row.log, row.comment, row.userid, row.group_name, row.orig_dst, row.max_active_session,
+                            row.permanent, row.switch_statistic, row.app, row.srcvlan, row.dstvlan,
+                            row.hopopts, row.dstopts, row.routing, row.fragment, row.ah, row.esp, row.profile, row.slog, row.profile, $LANG.EDIT);
+                } else if (row.id != 'none') {
+                    editGroupWindow(row.id, $LANG.EDIT);
+                }
+            },
+            onLoadSuccess: function(row) {
+                if ($.cookie('hits') && $.cookie('hits') == 1) {
+                    $('#show_hits')[0].checked = true;
+                    $('#tt').treegrid('showColumn', 'allhits');
+                } else
+                    $('#tt').treegrid('hideColumn', 'allhits');
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_delete').linkbutton('disable');
+                $('#icon_insert').linkbutton('disable');
+                $('#icon_move').linkbutton('disable');
+                $('#icon_enable').linkbutton('disable');
+                $('#icon_disable').linkbutton('disable');
+                $('.tip').tooltip({
+//                    deltaX:-10
+                    position: 'left'
+                });
+                $('.tip').mouseover(function() {
+                    $(this).tooltip('show');
+                });
+            }
+        });
+        if (getPrivilege("firewall") == false) {
+            $('#icon_add').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+        }
+    });
+</script>
+
+</body>
+</html>

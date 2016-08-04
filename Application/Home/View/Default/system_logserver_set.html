@@ -1,0 +1,197 @@
+<include file='Index:main'/>
+<script src="{$Think.config.NG_PATH}Public/modules/system/log.js" type="text/javascript"></script>
+<script>
+    var ip_num = 0;
+    var ip_init_num = 0;
+    var ipaddr = "{$outcome['ipaddr']}";
+    var port = "{$outcome['port']}";
+    var trans = "{$outcome['trans']}";
+	var trans_gather = "{$outcome['trans_gather']}";
+    var crypt = "{$outcome['crypt']}";
+    var key = "{$outcome['key']}";
+ //   var to_console = "{$outcome['to_console']}";
+    var protocol = "{$outcome['protocol']}";
+    var logtype = "{$outcome['logtype']}";
+	var console = "{$outcome['console']}";
+	var local_database = "{$outcome['local-database']}";
+	//var log_language = "{$outcome['log-language']}";
+ //   var to_mysql = "{$outcome['to_mysql']}";
+ //   var to_show = "{$outcome['showlog_from']}";
+    var vsys_id = "{$vsys_id}";
+    $(document).ready(function() {
+        if(vsys_id==1){
+            $("#add_ipaddr").attr("disabled","disabled");
+            $("#add_port").textbox('disable',true);
+            $("#tran_tcp").attr("disabled","disabled");
+            $("#tran_udp").attr("disabled","disabled");
+            $("#tran_syslog").attr("disabled","disabled");
+            $("#tran_welf").attr("disabled","disabled");
+            $("#trans").attr("disabled","disabled");
+            $("#tran_crypt").attr("disabled","disabled");
+            $("#add_key").attr("disabled","disabled");
+            $("#trans_gather").attr("disabled","disabled");
+            $("#toconsole").attr("disabled","disabled");
+            $("#todatabase").attr("disabled","disabled");
+        }
+        if (ipaddr) {
+            var ipaddr_arr = ipaddr.split(',');
+            ip_init_num = ipaddr_arr.length;
+            for (var i = 0; i < ipaddr_arr.length; i++) {
+                if (i == 0) {
+                    $('#add_ipaddr').val(ipaddr_arr[0]);
+                } else {
+                    addServer();
+                    $('#add_ipaddr' + i).val(ipaddr_arr[i]);
+                }
+            }
+            ip_num = ipaddr_arr.length - 1;
+        }
+        if (port)
+            $('#add_port').textbox('setValue',port);
+        if (protocol == "TCP")
+            $('#tran_tcp')[0].checked = true;
+        else if (protocol == "UDP")
+            $('#tran_udp')[0].checked = true;
+        if (logtype == "syslog")
+            $('#tran_syslog')[0].checked = true;
+        else if (logtype == "welf")
+            $('#tran_welf')[0].checked = true;
+        if (trans == "enable") {
+            $("#trans").attr("checked", true);
+        } else if (trans == "disable") {
+            $("#trans").attr("checked", false);
+
+        }
+		if(trans_gather=="yes")
+			$("#trans_gather").attr("checked", true);
+		else
+			$("#trans_gather").attr("checked", false);
+
+        if (crypt == "enable") {
+            $('#add_key').textbox({
+                disabled:false
+            });
+            $("#tran_crypt").attr("checked", true);
+            if (key){
+                $('#add_key').textbox('setValue',key);
+            }
+        } else if (crypt == "disable") {
+            $("#tran_crypt").attr("checked", false);
+//            $('#add_key')[0].disabled = true;
+             $('#add_key').textbox({
+                disabled:true
+            });
+        }
+		
+        if (console == "on") {
+            $('#toconsole')[0].checked = true;
+        }
+		
+        if (local_database == "on") {
+            $('#todatabase')[0].checked = true;
+        }
+		
+//		if(log_language=="english")
+//			$("#log_en").attr("checked", true);
+//		else 
+//			$("#log_cn").attr("checked", true);
+    });
+</script>
+<style>
+    .noborder{
+        border:0;        
+    }
+    .noborder td{
+        border:0;        
+    }
+</style>
+<div class="ngtos_form">
+    <form id="logSet">
+    <table class="ngtos_form_table">
+        <tr>
+            <td style = 'text-align:right;height:10px;padding-top:10px;'>{$Think.lang.SERVER_ADDR}</td>
+            <td>
+                <table id="server_addr" class="noborder">
+                    <tr>
+                        <td>
+                            <img src='{$Think.config.NG_PATH}Public/images/icon/mini_clear.gif' width='10' height='10' style='' id="img" />
+                            <input type="text" id="add_ipaddr"  size="30" value="" onKeyUp="value = value.replace(/[^\d\.]/g, '')" style="position:relative;left:-15px;padding:0 2px 0 2px; height:22px; line-height:18px;width:129px;">
+                            <if condition="!$vsys_id">
+                                <img src="{$Think.config.NG_PATH}Public/images/icon/mini_add.gif" width="10" height="10" style="cursor:pointer;margin-left:-15px;margin-top:5px" name="add_type1" onClick="addServer()"/>
+                            </if>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.SERVER_PORT}</td>
+            <td>
+                <input type="text" class="easyui-textbox" id='add_port'  name='port' data-options="validType:'range[1,65535]',required:true" >
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.TRANSPORT_PROTOCOL}</td>
+            <td>
+                <input type="radio" name="tran_deal" id="tran_tcp" style="margin-left:0px"><label for="tran_tcp"> TCP</label>
+                <input type="radio" name="tran_deal" id="tran_udp" style="margin-left:25px"><label for="tran_udp"> UDP</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.TRANSPORT_TYPE}</td>
+            <td>
+                <input type="radio" name="tran_type" id="tran_syslog" style="margin-left:0px"><label for="tran_syslog"> syslog</label>
+                <input type="radio" name="tran_type" id="tran_welf" style="margin-left:10px"><label for="tran_welf"> welf</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.TRANSPORT_LOG}</td>
+            <td>
+                <input type="checkbox" id='trans' name='trans' style="margin-left:0px">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.MERGE_CONVE_OPTION}</td>
+            <td>
+                <input type="checkbox" id='trans_gather' style="margin-left:0px">
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.TRANSPORT_PWD}</td>
+            <td>
+                <input type="checkbox" id='tran_crypt' name='tran_crypt' onClick="changllogServerSwitch(this);" style="margin-left:0px">
+            </td>
+        </tr>
+        <tr id='key_set'>
+            <td class="tdlabel_net">{$Think.lang.ENCRYPT_PWD}</td>
+            <td>
+                <input type="password" class="easyui-textbox" id='add_key' name='add_key' data-options="disabled:true,validType:['unnormals','Length']"><span class="form_comment">[{$Think.lang.PWD_LENGTH_8}]</span>
+            </td>
+        </tr>
+<!--	<tr>
+            <td class="tdlabel_net">{$Think.lang.LOG_LANGUAGE}</td>
+            <td>
+                <input type="radio" id='log_cn' name="log-language" style="margin-left:0px"><label for="log_cn">{$Think.lang.CN}</label>
+                <input type="radio" id='log_en' name="log-language" style="margin-left:26px"><label for="log_en">{$Think.lang.EN}</label>
+            </td>
+        </tr>-->
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.TRANSPORT_TO}</td>
+            <td>
+                <input type="checkbox" id='toconsole' name='to_console' value='on'><label for="toconsole"> {$Think.lang.CONSOLE}</label>
+                <input type="checkbox" id='todatabase' name='to_database' value="on" style="margin-left:24px"><label for="todatabase"> {$Think.lang.LOCAL_TABLE}</label>
+            </td>
+        </tr>
+    </table>
+        </form>
+    <div  style=" margin-top:20px">
+        <input name="add_new" type="button" title="" value="{$Think.lang.APPLY}" class="ngtos_button_large confirmenable" onClick="addLogServer();" style=" margin-left:113px" />
+    </div>
+</div>
+</div>	
+</div>
+</body>
+</html>
+<script>
+    $("#img").hide();
+    </script>

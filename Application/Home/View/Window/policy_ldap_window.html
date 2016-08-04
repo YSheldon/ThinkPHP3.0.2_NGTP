@@ -1,0 +1,42 @@
+<div>
+    <form id="ldapForm">
+        <table class="ngtos_form_table">
+            <tr id="ldapId">
+                <td class="tdlabel">id</td>
+                <td>
+                    <input type="text" id="id" name="id" class="easyui-textbox input_length">
+                </td>
+            </tr>
+            <tr>
+                <td class="tdlabel">LDAP{$Think.lang.PROXY_PROFILE_NAME}</td>
+                <td>
+                    <input type="text" id="proxy_name" name="proxy_name" class="easyui-textbox input_length" data-options="required:true">
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='confirm_button'>
+        <input type="button" class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('ldap_window_div')">
+    </div>
+</div>
+<script>
+    $(function() {
+        if(tagldap == 1) {
+            $("#ldapId").hide();
+        } else if(tagldap == 2 ) {
+            $('#id').val(param[0]);
+            $('#proxy_name').val(param[1]);
+            $("#ldapId").show();
+            $("#id").attr('disabled','true');
+            $("#proxy_name").attr('disabled','true');
+        }
+
+        $('#confirm_button').click(function() {
+            var isValid = $('#ldapForm').form('validate');
+            if(isValid) {
+                addLdapProfile(tagldap);
+            }
+        });
+    })
+</script>

@@ -1,0 +1,150 @@
+<div>
+    <form id="addr_group_form">
+        <table class="ngtos_form_table">
+            <tr>
+                <td width="150px" class="tdlabel_net">{$Think.lang.NAME}</td>
+                <td width="400px">
+                    <input type="text" name="addr_name" id="addr_name" class="easyui-textbox input_length" data-options="required:true,validType:['maxLength[30]','nospace','addrName']">
+                    <span class="form_comment">{$Think.lang.MAX_CHAR30}</span>
+                </td>
+            </tr>
+            <tr>
+                <td width="150px" class="tdlabel_net">{$Think.lang.TYPE}</td>
+                <td width="400px">
+                    <input type="radio" id="addr_type1" checked="checked" name="addType" value="1" onClick="changeAddrType(1);">
+                    <label for="addr_type1">{$Think.lang.ADDRESS}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="addr_type2" name="addType" value="2" onClick="changeAddrType(2);">
+                    <label for="addr_type2">{$Think.lang.ADDR_GROUP}</label>
+                </td>
+            </tr>
+            <tr id="vshare" style="display:none">
+                <td width="150px" class="tdlabel_net">{$Think.lang.SHARE}</td>
+                <td width="400px">
+                    <input type="radio" name="addr_sha" id="addr_share1" value="1">
+                    <label for="addr_share1">{$Think.lang.ACCEPT}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="addr_sha" id="addr_share2" value="0" checked >
+                    <label for="addr_share2">{$Think.lang.DENY}</label>
+                </td>
+            </tr>
+            <tr id='addrTr'>
+                <td align="center" colspan="2"><br/>
+                    <div id="host_div" style="overflow:auto;float: left;width:490px;">
+                        <fieldset style="border:1px solid #e5e5e5;"><legend>&nbsp;&nbsp;{$Think.lang.TYPE}&nbsp;&nbsp;</legend>
+                            <table width="100%" cellpadding="5" cellspacing="5" class="ngtos_border0_table">
+                                <tr>
+                                    <td width="300px" align="center">
+                                        <input type="radio" name="add_type" id="type_1" onClick="change_type(1)" value="1" checked>
+                                        <label for="type_1">{$Think.lang.HOST}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="add_type" id="type_2"  onClick="change_type(2)" value="2">
+                                        <label for="type_2">{$Think.lang.RANGE}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="add_type" id="type_3"  onClick="change_type(3)" value="3">
+                                        <label for="type_3">{$Think.lang.SUBNET}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="add_type" id="type_4"  onClick="change_type(4)" value="4">
+                                        <label for="type_4">{$Think.lang.MAC_ADDR}</label>
+                                    </td>
+                                </tr>
+                                <tr id="addr1">
+                                    <td align="center">
+                                        <table id="host_addr" class="ngtos_border0_table">
+                                            <tr>
+                                                <td align=center>
+                                                    <img src='{$Think.config.NG_PATH}Public/images/icon/mini_clear.gif' width='10' height='10' style='visibility:hidden' />
+                                                    <input type="text" name="ipaddr_host" id="ipaddr_host" class="easyui-textbox input_length" data-options="required:true,validType:'ipFourOripSix'">
+                                                    <img src="{$Think.config.NG_PATH}Public/images/icon/mini_add.gif" width="10" height="10" style="cursor:pointer;" name="add_type1" onClick="add_host()"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="addr2" style="display:none">
+                                    <td align=center>
+                                        <input type="text" name="ipaddr_st" id="ipaddr_st" class="easyui-textbox input_width150" data-options="required:true,validType:'ipFourOripSix',novalidate:true">
+                                        &nbsp;—&nbsp;
+                                        <input type="text" name="ipaddr_end" id="ipaddr_end" class="easyui-textbox input_width150" data-options="required:true,validType:'ipFourOripSix',novalidate:true">
+                                    </td>
+                                </tr>
+                                <tr id="addr3" style="display:none">
+                                    <td align=center>
+
+                                        <input type="text" name="ipaddr_sub" id="ipaddr_sub" class="easyui-textbox input_width150" data-options="required:true,validType:'ipSixPre',novalidate:true">
+                                        &nbsp;/&nbsp;
+                                        <input type="text" name="ipaddr_mask" id="ipaddr_mask" class="easyui-textbox input_width150" data-options="required:true,validType:'maskOrPrefix',novalidate:true">
+
+                                        <input type="text" name="resub" id="resub" style="display:none">
+                                    </td>
+                                </tr>
+                                <tr id="addr4" style="display:none">
+                                    <td align=center>
+                                        <input type="text" name="ipaddr_mac" id="ipaddr_mac" class="easyui-textbox input_length" data-options="required:true,validType:'mac',novalidate:true">
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </fieldset>
+                    </div>
+                    <div style="float: right;padding-top:5px;">
+                        <img src="{$Think.config.NG_PATH}Public/images/icon/icon_warm.png" class="easyui-tooltip" data-options="position:'top'" title='{$Think.lang.SUPPORT_IPV6}xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx' style="cursor: pointer">
+                    </div>
+                </td>
+            </tr>
+            <tr id='addrGroupTr' style="display:none">
+                <td colspan="2">
+                    <div class="select_div left70">
+                        <div class="select_ldiv">
+                            <div class="select_ldiv_bottom border_bottom0">
+                                <span class="lineHeight26">{$Think.lang.MEMBER}</span>
+                                <span class="searchbox width100">
+                                    <input class="searchbox-text width70" type="text" onkeyup="doSearch($(this).val(), event, 'addrgroup_item_cid', 0)">
+                                    <span class="searchbox-button"></span>
+                                </span>
+                            </div>
+                            <select class="select middle2 " id="addrgroup_item_cid" multiple ondblclick="move_options('addrgroup_item_cid', 'd_addrgroup_item_cid', '1', 'sel_addr_num');" style="height:216.5px;">
+                            </select>
+                        </div>
+                        <div class="select_cdiv">
+                            <input type="button" class="width40" onClick="move_options('addrgroup_item_cid', 'd_addrgroup_item_cid', '1', 'sel_addr_num');" value=" > ">
+                            <br/><br/>
+                            <input type="button" class="width40" onClick="move_options('d_addrgroup_item_cid', 'addrgroup_item_cid', '0', 'sel_addr_num');" value=" < ">
+                        </div>
+                        <div class="select_rdiv">
+                            <div id="sel_addr_num" class="select_ldiv_bottom border_bottom0 lineHeight26">
+
+                            </div>
+                            <select class="select middle2" id="d_addrgroup_item_cid" name="service_item[]" multiple ondblclick="move_options('d_addrgroup_item_cid', 'addrgroup_item_cid', '0', 'sel_addr_num');" style="height:190px;">
+                            </select>
+                            <div class="select_ldiv_bottom border_top0">
+                                <a class="lineHeight26 cursorPoint" onclick="clear_all_sels('d_addrgroup_item_cid', 'addrgroup_item_cid', '0', 'sel_addr_num');">{$Think.lang.CLEAR_ALL}</a>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="window_foot_btn">
+            <input type="button" class="ngtos_button_middle confirmenable" value="{$Think.lang.CONFIRM}" id='addAddr'>
+            <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('add_login_addr')">
+        </div>
+    </form>
+</div>
+<script>
+    $(function() {
+        var src_from = $("#d_addrgroup_item_cid").get(0);
+        parent.moveSelNum = src_from.options.length;
+        $('#sel_addr_num').html($LANG.SELECTED + parent.moveSelNum + $LANG.SEVERAL);
+        if (!isShared())
+            $('#vshare').css("display", "");
+        else
+            $('#vshare').css("display", "none");
+
+        refresh_addr();
+
+        $('#addAddr').click(function() {
+            var atype = $('input[name="addType"]:checked').val();
+            if (atype == 1)
+                add_host_address('addr_group_form', addr_tag, grtag);
+            else
+                add_login_addr_group('addr_group_form', addr_tag, grtag);
+        });
+    });
+
+</script>

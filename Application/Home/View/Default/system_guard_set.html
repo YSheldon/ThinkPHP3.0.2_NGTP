@@ -1,0 +1,380 @@
+<include file='Index:main'/>
+<style>
+    .tdlabe2_net {
+        text-align: right;
+        width:160px;
+    }
+    .server_button {
+        font-size: 12px;
+        border: 0;
+        font-size: 9pt;
+        background: url(/Public/images/image/button_middle1.gif) no-repeat;
+        margin: 2px 0;
+        height: 28px;
+        width: 90px;
+        font-style: normal;
+        cursor:pointer;
+    }
+    .server_button:hover {
+        background: url(/Public/images/image/button_middle2.gif) no-repeat;
+    }
+</style>
+<div class="ngtos_form">
+    <form id="serverConfSubmit">
+    <table class="ngtos_form_table">
+        <tr>
+            <th colspan="2">{$Think.lang.CLOUD_DETECTION_CONF}</th>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.USER_UNITS}</td>
+            <td class="ngtos_width_85pc">
+                <input type="text" name="username" id="username" class="easyui-textbox" data-options="width:220,validType:['maxLength[32]','nospace','eSymbols']" />
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ADMIN_PHONE}</td>
+            <td>
+                <input type="text" name="mobile" id="mobile" class="easyui-textbox" data-options="width:220,validType:'mobile'"  />
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">{$Think.lang.ADMIN_EMAIL_ADDR}</td>
+            <td>
+                <input type="test" name="email" id="email" class="easyui-textbox" data-options="width:220,validType:'email'" />
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">&nbsp;</td>
+            <td>
+                <input type="checkbox" id="senior" name="senior" onclick="seniorConf(this);" />
+                <label for="senior">{$Think.lang.SENIOR_CONFIG}</label>
+            </td>
+        </tr>
+        <tr class="seniorConfig" style="display: none;">
+            <th colspan="2">{$Think.lang.CONF_PARAM}</th>
+        </tr>
+        <tr class="seniorConfig" style="display: none;">
+            <td colspan="2" style="padding: 0px;">
+                <table class="ngtos_form_table" style="margin:0px;width:750px;">
+                    <tr>
+                        <td class="tdlabe2_net">{$Think.lang.REPORTING_OPT}</td>
+                        <td colspan="4">
+                            <input type="checkbox" id="selectall" name="selectall" onclick="selectAll(this);" />
+                            <label for="selectall">{$Think.lang.SELECT_ALL}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdlabe2_net">&nbsp;</td>
+                        <td>
+                            <input type="checkbox" class="defaultchecked" name="" />
+                            {$Think.lang.DEVICE_VERSION}
+                        </td>
+                        <td>
+                            <input type="checkbox" class="defaultchecked" name="" />
+                            {$Think.lang.DEVICE_SERIAL_NUMBER}
+                        </td>
+                        <td>
+                            <input type="checkbox" class="defaultchecked" name="" />
+                            {$Think.lang.DEVICE_MODEL}
+                        </td>
+                        <td>
+                            <input type="checkbox" class="defaultchecked" name="" />
+                            {$Think.lang.DEVICE_ETH0_MAC_ADDR}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdlabe2_net">&nbsp;</td>
+                        <td>
+                            <input type="checkbox" class="defaultchecked" name="" />
+                            {$Think.lang.DEVICE_RUN_TIME}
+                        </td>
+                        <td>
+                            <input type="checkbox" id="cpuload" class="selectable" name="cpuload" onclick="isCheckAll()" />
+                            <label for="cpuload">{$Think.lang.CPU_OCCPUANCY_RATE}</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="memload" class="selectable" name="memload" onclick="isCheckAll()" />
+                            <label for="memload">{$Think.lang.MEMORY_OCCPUANCY_RATE}</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="curconn" class="selectable" name="curconn" onclick="isCheckAll()" />
+                            <label for="curconn">{$Think.lang.CONCURRENT_CONNECTIONS}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdlabe2_net">&nbsp;</td>
+                        <td>
+                            <input type="checkbox" id="cps" class="selectable" name="cps" onclick="isCheckAll()" />
+                            <label for="cps">{$Think.lang.NEW_CONNECTIONS}</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="flow" class="selectable" name="flow" onclick="isCheckAll()" />
+                            <label for="flow">{$Think.lang.DEVICE_TOTAL_FLOW}</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="hamode" class="selectable" name="hamode" onclick="isCheckAll()" />
+                            <label for="hamode">{$Think.lang.HA_MODE}</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="hastat" class="selectable" name="hastat" onclick="isCheckAll()" />
+                            <label for="hastat">{$Think.lang.HA_STATUS}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdlabe2_net">{$Think.lang.INTRANET_SERVER_ADDR}</td>
+                        <td colspan="4">
+                            <input type="text" id="server" name="server" class="easyui-textbox" data-options="width:380,validType:'url',prompt:'默认服务器'"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdlabe2_net">&nbsp;</td>
+                        <td colspan="4">
+                            <input type="button" value="{$Think.lang.CONN_SERVER_AT_ONCE}" class="server_button" style="margin-top:10px" onClick="return nowConnServer();"/>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="tdlabel_net">&nbsp;</td>
+            <td>
+                <input type="button" value="{$Think.lang.LAUNCH}" id="funcenable" class="ngtos_button_large confirmenable" style="margin-top:10px" onClick="return startOrstop('enable');"/>
+                <input type="button" value="{$Think.lang.STOP}" id="funcdisable" class="ngtos_button_large confirmenable" style="margin-left:30px" onClick="return startOrstop('disable');"/>
+                <input type="button" value="{$Think.lang.APPLY}" class="ngtos_button_large confirmenable" style="margin-left:30px" onClick="return applyConf();"/>
+            </td>
+        </tr>
+    </table>
+    </form>
+</div>
+<script type="text/javascript">
+
+    $(function(){
+        var attrVal = '{$attrVal}';
+        attrVal = eval('(' + attrVal + ')');
+        if(attrVal.username.length) {
+            $('#username').textbox('setValue',attrVal.username);
+        }
+        if(attrVal.mobile.length) {
+            $('#mobile').textbox('setValue',attrVal.mobile);
+        }
+        if(attrVal.email.length) {
+            $('#email').textbox('setValue',attrVal.email);
+        }
+        if(attrVal.server.length) {
+            $('#server').textbox('setValue',attrVal.server);
+        }
+
+        var allChecked = 0;
+        if(attrVal.cpuload == 'enable') {
+            $('#cpuload')[0].checked = true;
+            allChecked++;
+        }
+        if(attrVal.memload == 'enable') {
+            $('#memload')[0].checked = true;
+            allChecked++;
+        }
+        if(attrVal.curconn == 'enable') {
+            $('#curconn')[0].checked = true;
+            allChecked++;
+        }
+        if(attrVal.cps == 'enable') {
+            $('#cps')[0].checked = true;
+            allChecked++;
+        }
+        if(attrVal.flow == 'enable') {
+            $('#flow')[0].checked = true;
+            allChecked++;
+        }
+        if(attrVal.hamode == 'enable') {
+            $('#hamode')[0].checked = true;
+            allChecked++;
+        }
+        if(attrVal.hastat == 'enable') {
+            $('#hastat')[0].checked = true;
+            allChecked++;
+        }
+        //判断是否全选
+        if(allChecked == 7) {
+            $('#selectall')[0].checked = true;
+        }
+
+        if(attrVal.func == 'enable') {
+            $('#funcenable')[0].disabled = true;
+            $('#funcenable').removeClass('confirmenable');
+        } else {
+            $('#funcdisable')[0].disabled = true;
+            $('#funcdisable').removeClass('confirmenable');
+        }
+
+        $('.defaultchecked').each(function(){
+            this.checked = true;
+            this.disabled = true;
+        });
+    });
+
+    function seniorConf(obj) {
+        if(obj.checked) {
+            $('.seniorConfig').show();
+        } else {
+            $('.seniorConfig').hide();
+        }
+    }
+
+    function selectAll(object) {
+        if(object.checked) {
+            $('.selectable').each(function(){
+                this.checked = true;
+            });
+        } else {
+            $('.selectable').each(function(){
+                this.checked = false;
+            });
+        }
+    }
+
+    function isCheckAll() {
+        var checkAll = true;
+        $('.selectable').each(function(){
+            if(this.checked == false) {
+                checkAll = false;
+                return false;
+            }
+        });
+        if(checkAll) {
+            $('#selectall')[0].checked = true;
+        } else {
+            $('#selectall')[0].checked = false;
+        }
+    }
+
+    //立刻链接服务器
+    function nowConnServer() {
+        $.ajax({
+            url: '?c=System/Guard&a=nowConnServer',
+            type: 'get',
+            dataType: 'text',
+            success: function(data) {
+                if (data == '0') {
+                    /*ngtosPopMessager("success", $LANG.CHANGE_PASSWORD_SUCCESS, function() {
+                        window.location.reload();
+                    });*/
+                    ngtosPopMessager("success", $LANG.OPERATION_SUCCESS);
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+
+    //启用或停用
+    function startOrstop(par) {
+        $.ajax({
+            url: '?c=System/Guard&a=startOrstop&par=' + par,
+            type: 'get',
+            dataType: 'text',
+            success: function(data) {
+                if (data == '0') {
+                    if(par == 'enable') {
+                        var msg = $LANG.ENABLE_SUCCESS;
+                        $('#funcenable')[0].disabled = true;
+                        $('#funcenable').removeClass('confirmenable');
+                        $('#funcdisable')[0].disabled = false;
+                        $('#funcdisable').addClass('confirmenable');
+                    } else {
+                        var msg = $LANG.DISABLE_SUCCESS;
+                        $('#funcenable')[0].disabled = false;
+                        $('#funcenable').addClass('confirmenable');
+                        $('#funcdisable')[0].disabled = true;
+                        $('#funcdisable').removeClass('confirmenable');
+                    }
+                    ngtosPopMessager("success", msg);
+                } else {
+                    ngtosPopMessager("error", data);
+                }
+            }
+        });
+    }
+
+    //应用
+    function applyConf() {
+        var isValid = $('#serverConfSubmit').form('validate');
+        if(!isValid) {
+            return false;
+        }
+
+        var username = $('#username').val();
+        var mobile = $('#mobile').val();
+        var email = $('#email').val();
+        var server = $('#server').val();
+
+        if($('#cpuload')[0].checked)
+            var cpuload = 1;
+        else
+            var cpuload = "";
+
+        if($('#memload')[0].checked)
+            var memload = 1;
+        else
+            var memload = "";
+
+        if($('#curconn')[0].checked)
+            var curconn = 1;
+        else
+            var curconn = "";
+        
+        if($('#cps')[0].checked)
+            var cps = 1;
+        else
+            var cps = "";
+
+        if($('#flow')[0].checked)
+            var flow = 1;
+        else
+            var flow = "";
+
+        if($('#hamode')[0].checked)
+            var hamode = 1;
+        else
+            var hamode = "";
+
+        if($('#hastat')[0].checked)
+            var hastat = 1;
+        else
+            var hastat = "";
+
+        $.ajax({
+            url: "?c=System/Guard&a=applyConf",
+            type: 'post',
+            dataType: 'text',
+            data: {
+                username: username,
+                mobile: mobile,
+                email: email,
+                server: server,
+                confitems:JSON.stringify({
+                    cpuload: cpuload,
+                    memload: memload,
+                    curconn: curconn,
+                    cps: cps,
+                    flow: flow,
+                    hamode: hamode,
+                    hastat: hastat
+                })
+            },
+            success: function(data) {
+                if (data == '0') {
+                    ngtosPopMessager("success", $LANG.OPERATION_SUCCESS);
+                    //window.location.reload();
+                } else {
+                    ngtosPopMessager("error", data);
+                    window.location.reload();
+                }
+            }
+        });
+    }
+
+</script>
+</div>
+</div>
+</body>
+</html>

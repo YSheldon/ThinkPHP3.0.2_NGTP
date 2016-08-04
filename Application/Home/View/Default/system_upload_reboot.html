@@ -1,0 +1,143 @@
+<include file='Index:main'/>
+<div class="ngtos_form">
+    <div class="ngtos_form_table">
+        <div style="position:absolute;top:20px;margin-left:10px">
+            <img src="{$Think.config.NG_PATH}Public/images/image/qidong.jpg" width="60px" height="60px">
+        </div>
+        <div style="position:absolute;top:40px;margin-left:100px">
+            {$Think.lang.REBOOT_CONFIG_LOST}<br><br><br>
+            <input type="button" class="ngtos_button_large confirmenable" value="{$Think.lang.RESTART_SYSTEM}" onClick="reboot_dev();">&nbsp;&nbsp;
+        </div>
+    </div>	
+</div>
+<div id="window_cover" class="easyui-window" style="width:200px;height:100px;z-index:10000;" 
+     data-options="collapsible: false, minimizable: false, maximizable: false, noheader: true,border:false, shadow:false, closed:true">
+    <div id="sub_cover"></div>
+    <div class="waitMsgDiv" style="margin:40px 0 0 40px;position: absolute;z-index: 111;">
+        <img src="{$Think.config.NG_PATH}Public/images/image/loading.gif" style="margin-left: 10px">&nbsp;&nbsp;{$Think.lang.CONFIG_ING}
+    </div>
+</div>
+
+<!--进度条        -->
+<div class="pro-bar-container color-pomegranate" id="pro-bar-container">
+    <div class="pro-bar color-alizarin" data-pro-bar-percent="100" data-pro-bar-delay="0">
+        <div class="pro-bar-candy candy-ltr"></div>
+    </div>
+</div>
+
+
+
+<!--<div id="reboot_wait" class="easyui-window" style="width:420px;height:120px"-->
+     <!--data-options="modal:true,collapsible: false, minimizable: false, maximizable: false, noheader: true,border:false, shadow:false, closed:true">-->
+    <!--<div style="margin:10px 30px;">{$Think.lang.SYS_REBOOT_WAITING}</div>-->
+    <!--<div id="p" class="easyui-progressbar" style="width:400px;margin:0 auto"></div>-->
+<!--</div>-->
+<script>
+    function display_waiting() {
+        //显示进度条和遮罩层
+        $('#pro-bar-container').show();
+        $("body").append("<div class='window-mask'></div>");
+        animateProgressBar();
+
+//        var value = $('#p').progressbar('getValue');
+//        if (value < 100) {
+//            value += Math.floor(Math.random() * 10);
+//            $('#p').progressbar('setValue', value);
+//            setTimeout(arguments.callee, 5000);
+//        } else {
+//            top.location.href = $.cookie("urlorg");
+//        }
+    }
+//进度条
+    function animateProgressBar() {
+        $('.pro-bar').each(function(i, elem) {
+            var	elem = $(this),
+                    percent = elem.attr('data-pro-bar-percent'),
+                    delay = elem.attr('data-pro-bar-delay');
+            if (!elem.hasClass('animated')){
+                elem.css({ 'width' : '0%' });
+            }
+            if (elem.visible(true)) {
+                setTimeout(function() {
+                    elem.animate({ 'width' : percent + '%' }, 50000).addClass('animated');
+                });
+                setTimeout(function(){
+                    //animateHide()
+                    //elem.css("width","0%");
+					top.location.href = $.cookie("urlorg");
+                },50100)
+            }
+
+        });
+    }
+    //进度条完成后  进度条消失
+/*
+    function animateHide(){
+        $('#pro-bar-container').hide();
+        $(".window-mask").remove();
+    }
+*/
+    function dev_reboot() {
+        ngtosPopMessager("confirm", $LANG.ARE_YOU_SYW, function(tag2) {
+            if (tag2) {
+                $.ajax({
+                    url: "?c=System/Upload&a=callFun",
+                    type: 'POST',
+                    datatype: 'text',
+                    data: {
+                        fun:'simpleHandle',
+                        mod:'system reboot'
+                    },
+                    success: function(data, textStatus) {
+                        if (data == '0') {
+//                            openPopWindow('reboot_wait');
+//                            $('#reboot_wait').window('open');
+                            display_waiting();
+                        } else {
+                            ngtosPopMessager("error", data);
+                        }
+                    }
+                });
+            }
+        })
+    }
+
+    function reboot_dev() {
+        ngtosPopMessager("confirm", $LANG.SAVE_CURRENT_CONFIGURATION, function(tag1) {
+            // openPopWindow('loding');window_cover
+            $('#window_cover').window('open');
+            if (tag1) {
+                $.ajax({
+                    url: "?c=System/Upload&a=callFun",
+                    data:{
+                        fun:'simpleHandle',
+                        mod:'save'
+                    },
+                    type: 'POST',
+                    datatype: 'text',
+                    success: function(data) {
+                        //closePopWindow('loding');
+                        $('#window_cover').window('close');
+                        if (data == '0') {
+                            dev_reboot();
+                        } else {
+                            ngtosPopMessager("error", data);
+                        }
+                    }
+                });
+            } else {
+                //closePopWindow('loding');
+                $('#window_cover').window('close');
+                dev_reboot();
+            }
+        })
+//        ngtosPopMessager("confirm", "确定要重启吗?",function(tag){
+//            if(tag)
+//                document.forms[0].submit();
+//        });
+    }
+</script>
+</div>
+</div>
+</body>
+</html>

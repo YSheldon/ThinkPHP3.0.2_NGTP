@@ -1,0 +1,568 @@
+<div class="popdown" style="overflow: hidden;background: #F2F2F2;">
+<form id="whole_attr_form">
+    <div style="margin:0px;width:100px;text-align:center;float:left">
+        <div class="selectStyle" id="wholeStyle"><a href="javascript:void(0)" onClick="whole_conf();change_style1()"><b>{$Think.lang.GLOBAL_BASIC_SET}</b></a></div>
+        <div class="unselectStyle" id="localStyle"><a href="javascript:void(0)" onClick="local_conf();change_style2()"><b>{$Think.lang.LOCAL_SERVER_SET}</b></a></div>
+        <div class="unselectStyle" id="eamilStyle"><a href="javascript:void(0)" onClick="email_conf();change_style4()"><b>{$Think.lang.MAIL_SERVER_SET}</b></a></div>
+        <div class="unselectStyle" id="smsStyle"><a href="javascript:void(0)" onClick="sms_conf();change_style3();sms_set_info()"><b>{$Think.lang.SMS_SET}</b></a></div>
+    </div>
+    <div style="margin:0;margin-left:100px;width:520px;height:500px;background-color:#fff">
+        <div id="whole-div" style="margin-left:10px;display:none;">
+            <table class="ngtos_form_table" onselectstart="return false;" style="-moz-user-select:none;">
+                <tr>
+                    <td colspan="3" class="window_subtitle"><b>{$Think.lang.AUTH_ITEM}</b></td>
+                </tr>
+                <tr><td colspan="3"  style="padding-left:20px">
+                    <input type="checkbox" name="cert_auth" id="cert_auth">
+                    <label for="cert_auth">{$Think.lang.CA}</label>
+                    <span class="form_comment">
+                        <input type="checkbox" name="pass_auth" id="pass_auth">
+                        <label for="pass_auth">{$Think.lang.PASS_AUTH}</label>
+                    </span>
+                    <span class="form_comment">
+                        <input type="checkbox" name="msg_auth" id="msg_auth">
+                        <label for="msg_auth">{$Think.lang.SMS_AUTH}</label>
+                    </span>
+                </td>
+                </tr>
+                <tr><td colspan="3" class="window_subtitle"><b>{$Think.lang.ACCESS_POLICY}</b></td></tr>
+                <tr><td colspan="3" style="padding-left:20px">
+                    <input type="checkbox" name="more_login_whole" id="more_login_whole" onclick="multi_disabled1()"><label for="more_login_whole">{$Think.lang.MAX_LOGIN_ADDR}</label>
+                    <input type="text" name="login_num_whole" id="login_num_whole" class="easyui-textbox" data-options="width:60,value:'1',validType:'range[1,1024]'">
+                    <span class="form_comment">[1-1024]</span>
+                </td>
+                </tr>
+                <tr>
+                    <td style="padding-left:20px;width:110px">{$Think.lang.ALLOW_LOGIN_ADDR}</td>
+                    <td colspan="2" width="190px">
+                        <select id="more_login_addr" name="state"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left:20px;width:110px">{$Think.lang.ALLOW_ONLINE_TIME}</td>
+                    <td colspan="2" width="190px">
+                        <select id="more_login_time" name="state"></select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="local-div" style="margin-left:10px;display:none">
+            <table class="ngtos_form_pop" onselectstart="return false;" style="-moz-user-select:none;">
+                <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.PREVENT_BRUTE_FORCE}</b></td></tr>
+                <tr><td colspan="2" style="padding-left:20px">
+                    <input type="checkbox" name="fail_login_limit" id="fail_login_limit" onclick="login_limit_disabled1()"><label for="fail_login_limit">{$Think.lang.LOCAL_PWD_AUTH_FAIL}</label>
+                    <input type="text" name="max_auth_fail" id="max_auth_fail" class="easyui-textbox" data-options="width:60,value:'4',validType:'range[4,16]'"> {$Think.lang.SECOND_LOCK}
+                    <input type="text" name="accout_lock_time" id="accout_lock_time" class="easyui-textbox" data-options="width:60,value:'300',validType:'range[300,1800]'"> {$Think.lang.SECOND}
+                </td>
+                </tr>
+                <tr><td colspan="2" style="padding-left:20px">
+                    <input type="checkbox" name="pass_reset_limit" id="pass_reset_limit" onclick="reset_limit_disabled1()"><label for="pass_reset_limit">{$Think.lang.MAX_RESET_IN24}</label>
+                    <input type="text" name="pass_reset_max" id="pass_reset_max" class="easyui-textbox" data-options="width:60,value:'1',validType:'range[1,32]'"> {$Think.lang.SECOND_PWD_RETRIEVE_INTERVAL}
+                    <input type="text" name="pass_reset_interval" id="pass_reset_interval" class="easyui-textbox" data-options="width:60,value:'3',validType:'range[3,180]'"> {$Think.lang.MINUTES}
+                </td>
+                </tr>
+                <tr><td style="padding-left:20px" width="130px">{$Think.lang.RESET_PWD_WAY}</td>
+                    <td><input type="radio" name="pass_reset_type" id="pass_reset_type1" value="no" onClick="resetPwdType(this)"><label for="pass_reset_type1">{$Think.lang.DENY}</label> &nbsp;&nbsp;
+                        <input type="radio" name="pass_reset_type" id="pass_reset_type2" value="mail" checked onClick="resetPwdType(this)"><label for="pass_reset_type2">{$Think.lang.MAIL}</label> &nbsp;&nbsp;
+                        <input type="radio" name="pass_reset_type" id="pass_reset_type3" value="sms" onClick="resetPwdType(this)"><label for="pass_reset_type3">{$Think.lang.SMS}</label>
+                    </td>
+                </tr>
+                <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.PWD_COMPLEX}</b></td></tr>
+                <tr>
+                    <td style="padding-left:20px">
+                        <input type="checkbox" name="pass_diff" id="pass_diff">
+                        <label for="pass_diff">{$Think.lang.NEW_OLD_DIFF}</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="pass_account" id="pass_account">
+                        <label for="pass_account">{$Think.lang.NOT_CONTAIN_USER_INFO}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left:20px">
+                        <input type="checkbox" name="char_lower" id="char_lower">
+                        <label for="char_lower">{$Think.lang.PWD_CONTAIN_LOWER_LETTER}</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="char_upper" id="char_upper">
+                        <label for="char_upper">{$Think.lang.PWD_CONTAIN_UPPER_LETTER}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-left:20px">
+                        <input type="checkbox" name="char_digit" id="char_digit">
+                        <label for="char_digit">{$Think.lang.PWD_CONTAIN_NUM}</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="char_punct" id="char_punct">
+                        <label for="char_punct">{$Think.lang.PWD_CONTAIN_SPECIAL_CHAR}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="checkbox" name="pass_limit" id="pass_limit" onclick="pass_limit_disabled1()">
+                        <label for="pass_limit">{$Think.lang.MIN_PWD_LENGTH}</label>
+                        <input type="text" name="pass_min" id="pass_min" class="easyui-textbox" data-options="width:60,value:'6',validType:'range[6,255]'"> {$Think.lang.CHARACTER}，{$Think.lang.MAX_PWD_LENGTH}
+                        <input type="text" name="pass_max" id="pass_max" class="easyui-textbox" data-options="width:60,value:'32',validType:'range[6,255]'"> {$Think.lang.CHARACTER}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="checkbox" name="change_pass" id="change_pass">
+                        <label for="change_pass">{$Think.lang.FORCE_MODIFY_PWD}</label>
+                    </td>
+                </tr>
+                <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.PWD_EFFECT}</b></td></tr>
+                <tr>
+                    <td style="padding-left:20px">
+                        <input type="checkbox" name="deny_change" id="deny_change" onclick="change_disabled1()">
+                        <label for="deny_change">{$Think.lang.FORBID_MODIFY_PWD}</label>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="first_login" id="first_login">
+                        <span id="pass_change1">
+                            <label for="first_login">{$Think.lang.FIRST_MODIFY_PWD}</label>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="checkbox" name="termly_change" id="termly_change" onclick="termly_disabled1()">
+                        <label for="termly_change">{$Think.lang.MODIFY_PWD_INTERVAL}</label>
+                        <input type="text" name="pass_interval" id="pass_interval" class="easyui-textbox" data-options="width:60,value:'30',validType:'range[1,120]'"> {$Think.lang.DAY_1_120}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="checkbox" name="pass_invalid" id="pass_invalid" onclick="invalid_disabled1()">
+                        <label for="pass_invalid">{$Think.lang.PWD_EFFECT_TIME}</label>
+                        <input type="text" name="invalid_period" id="invalid_period" class="easyui-textbox" data-options="width:60,value:'120',validType:'range[120,360]'"> {$Think.lang.DAY_120_360}
+                    </td>
+                </tr>
+                <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.USER_INFO}</b></td></tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="checkbox" name="change_mail" id="change_mail">
+                        <label for="change_mail">{$Think.lang.FORBID_MODIFY_MAIL}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px;">
+                        <input type="checkbox" name="change_phone" id="change_phone">
+                        <label for="change_phone">{$Think.lang.FORBID_MODIFY_PHONE}</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="email-div" style="margin-left:10px;display:none;">
+            <table class="ngtos_form_table">
+                <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.MAIL_SERVER_SET}</b></td></tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        <input type="radio" name="mail_server_type" id="mail_server_type1" value="smtp" checked onclick="mailSet(this)">
+                        <label for="mail_server_type1">SMTP</label> &nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="mail_server_type" id="mail_server_type2" value="esmtp" onclick="mailSet(this)">
+                        <label for="mail_server_type2">ESMTP</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td  colspan="2" style="padding-left:20px">
+                        {$Think.lang.MAIL_TIMEOUT} <input type="text" name="mail_time_out" id="mail_time_out"  class="easyui-textbox" data-options="width:60,required:true,validType:'range[10,300]'"> {$Think.lang.SECOND}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-left:20px">
+                        {$Think.lang.MAIL_SERVER_ADDRESS} <input type="text" name="mail_server_host" id="mail_host" class="easyui-textbox" data-options="width:150,validType:'ipFour'">
+                        {$Think.lang.MAIL_SERVER_PORT} <input type="text" name="mail_server_port" id="mail_port" class="easyui-textbox" data-options="width:60,required:true,validType:'range[0,65535]'">
+                    </td>
+                </tr>
+                <tr>
+                    <td  colspan="2" style="padding-left:20px">
+                        {$Think.lang.ESMTP_MAIL_SERVER_USER} <input type="text" name="mail_server_auth_user" id="mail_server_auth_user" class="easyui-textbox" data-options="width:150,required:true,validType:'email'">
+                    </td>
+                </tr>
+                <tr>
+                    <td  colspan="2" style="padding-left:20px">
+                        {$Think.lang.ESMTP_MAIL_SERVER_PWD} <input type="text" name="mail_server_auth_passwd" id="mail_server_auth_passwd"  class="easyui-textbox" data-options="width:150,required:true,validType:'nospace '">
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+
+        <div id="sms-div" style="margin-left:10px;display:none;">
+            <table class="ngtos_form_table">
+                <tr><td colspan="2" class="window_subtitle"><b>{$Think.lang.SMS_SET}</b></td></tr>
+                <tr>
+                    <td class="tdlabel_net" style="width:130px;">{$Think.lang.SMS_TYPE}</td>
+                    <td>
+                        <select id="sms_type">
+                            <option value="none">none</option>
+                            <option value="local">local</option>
+                            <option value="topsec">topsec</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.SMS_MODE}</td>
+                    <td>
+                        <select id="sms_mode">
+                            <option value="gsm">GSM</option>
+                            <option value="cdma">CDMA</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.SERVER_ADDR}</td>
+                    <td>
+                        <input type="text" id="sms_addr">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.SERVER_PORT}</td>
+                    <td>
+                        <input type="text" id="sms_port"><span class="form_comment">[0-65535]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.GATEWAY_ID}</td>
+                    <td>
+                        <input type="text" id="sms_id">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.SHARE_KEY}</td>
+                    <td>
+                        <input type="text" id="sms_sha">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.PWD_LENGTH}</td>
+                    <td>
+                        <input type="text" id="sms_len"><span class="form_comment">[1-8]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.PWD_EXPIRE}</td>
+                    <td>
+                        <input type="text" id="sms_invalid"><span class="form_comment">{$Think.lang.SECOND_60_86400}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.PWD_ERR_TIME}</td>
+                    <td>
+                        <input type="text" id="sms_err"><span class="form_comment">{$Think.lang.TIME_1_10}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.TIMEOUT}</td>
+                    <td>
+                        <input type="text" id="sms_timeout"><span class="form_comment">[1-180]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.SMS_CONTENT_FORMAT}</td>
+                    <td>
+                        <select id="sms_content_req">
+                            <option value="num">num</option>
+                            <option value="character">character</option>
+                            <option value="both">both</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdlabel_net">{$Think.lang.SMS_ALERT}</td>
+                    <td>
+                        <input type="text" id="sms_info">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="window_foot_btn">
+        <input type="button" class="ngtos_button_middle confirmenable"value="{$Think.lang.CONFIRM}"  id="addWholeConf">
+        <input type="button"  class="ngtos_button_middle" value="{$Think.lang.CANCEL}" onClick="closeWindow('server_whole_conf_div')">
+    </div>
+</form>
+</div>
+<script>
+    $(function() {
+        $("td").css('height',16);
+        $("input[type='checkbox']").css('margin-top',0);
+        $("input[type='checkbox']").css('margin-bottom',0);
+
+        $("#addWholeConf").click(function() {
+            if(sms_tag == 0)
+                add_whole_conf();
+            else
+                add_sms_conf();
+        })
+
+        whole_conf();
+        change_style1();
+
+        $('#more_login_addr').combotree({
+            url: '?c=Auth/Server&a=callFun',
+            parent_checked:false,
+            width:150,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            required:false,
+            multiple:false,
+            queryParams:{
+                fun: 'comboTree',
+                parentNode: 'Address,AddressGroup',
+                Address: 'define host,define range,define subnet',
+                AddressGroup: 'define group_address'
+            }
+        });
+        if ($("toolbar3").size() == 0)
+                $("#more_login_addr").combotree('panel').after(comboBut("add_loginAddr('"+$LANG.ADD+"','more_login_addr')","toolbar3"));
+        $('#more_login_time').combotree({
+            url: '?c=Auth/Server&a=callFun',
+            parent_checked:false,
+            width:150,
+            panelHeight:'auto',
+            panelMaxHeight:198,
+            required:false,
+            multiple:false,
+            editable:true,
+            queryParams:{
+                fun:'comboTree',
+                parentNode: 'Time,TimeGroup',
+                Time: 'define schedule',
+                TimeGroup: 'define group_schedule'
+            }
+        });
+         if ($("toolbar2").size() == 0)
+                $("#more_login_time").combotree('panel').after(comboBut("add_loginTime('"+$LANG.ADD+"','more_login_time')","toolbar2"));
+
+        $("#sms_addr").textbox({
+            width:150,
+            required:true,
+            validType:'ipFourOripSix'
+        });
+        $("#sms_port").textbox({
+            width:150,
+            required:true,
+            validType:'range[0,65535]'
+        });
+        $("#sms_id").textbox({
+            width:150,
+            required:true
+        });
+        $("#sms_sha").textbox({
+            width:150,
+            required:true
+        });
+        $("#sms_len").textbox({
+            width:150,
+            validType:'range[1,8]'
+        });
+        $("#sms_invalid").textbox({
+            width:150,
+            validType:'range[60,86400]'
+        });
+        $("#sms_err").textbox({
+            width:150,
+            validType:'range[1,10]'
+        });
+        $("#sms_timeout").textbox({
+            width:150,
+            value:'5',
+            validType:'range[1,180]'
+        });
+        $("#sms_info").textbox({width:150});
+
+        $("#sms_type").combobox({
+            width:150,
+            panelHeight:'auto',
+            onChange:sms_set_info,
+            editable:false
+        });
+        $("#sms_mode").combobox({width:150,panelHeight:'auto',editable:false});
+        $("#sms_content_req").combobox({width:150,panelHeight:'auto',editable:false});
+
+        $.ajax({
+            url: "?c=Auth/Server&a=datagridShow&mod="+encodeURI('user auth global-config'),
+            type: 'GET',
+            success: function(data) {
+                var obj = jQuery.parseJSON(data);
+                if (obj.total > 0) {
+                    //全局基本设置
+                    if (obj["rows"][0]["cert_auth"] == "yes")
+                        $("#cert_auth").prop("checked", true);
+                    else
+                        $("#cert_auth").prop("checked", false)
+                    if (obj["rows"][0]["passwd_auth"] == "yes")
+                        $("#pass_auth").prop("checked", true);
+                    else
+                        $("#pass_auth").prop("checked", false)
+                    if (obj["rows"][0]["sms_auth"] == "yes")
+                        $("#msg_auth").prop("checked", true);
+                    else
+                        $("#msg_auth").prop("checked", false)
+                    if (obj["rows"][0]["multi_login"] == "yes")
+                        $("#more_login_whole").prop("checked", true);
+                    else
+                        $("#more_login_whole").prop("checked", false)
+                    $("#login_num_whole").textbox('setValue',obj["rows"][0]["maxnum_login_addr"]);
+                    var ipRange = obj["rows"][0]["access_ip_range"];
+                    if (ipRange != 'null')
+                        $('#more_login_addr').combotree('setValue',ipRange);
+                    else
+                        $('#more_login_addr').combotree('setValue','');
+                    var timeRange = obj["rows"][0]["limit_time_range"];
+                    if (timeRange != 'null')
+                        $('#more_login_time').combotree('setValue',timeRange);
+                    else
+                        $('#more_login_time').combotree('setValue','');
+
+//本地服务器设置
+//防爆力破解
+                    if (obj["rows"][0]["fail_login_limit"] == "yes")
+                        $("#fail_login_limit").prop("checked", true);
+                    else
+                        $("#fail_login_limit").prop("checked", false)
+
+                    if (obj["rows"][0]["reset_pass_limit"] == "yes")
+                        $("#pass_reset_limit").prop("checked", true);
+                    else
+                        $("#pass_reset_limit").prop("checked", false)
+                    $("#max_auth_fail").textbox('setValue',obj["rows"][0]["maxnum_auth_limit"]);
+                    $("#accout_lock_time").textbox('setValue',obj["rows"][0]["account_locaked_time"]);
+                    $("#pass_reset_max").textbox('setValue',obj["rows"][0]["maxnum_reset"]);
+                    $("#pass_reset_interval").textbox('setValue',obj["rows"][0]["reset_pass_interval"]);
+                    //邮件服务器
+                    $("#mail_host").textbox('setValue',obj["rows"][0]["mail_server_host"]!='null'?obj["rows"][0]["mail_server_host"]:'');
+                    $("#mail_port").textbox('setValue',obj["rows"][0]["mail_server_port"]!='null'?obj["rows"][0]["mail_server_port"]:25);
+                    $("#mail_time_out").textbox('setValue',obj["rows"][0]["mail_time_out"]!='null'?obj["rows"][0]["mail_time_out"]:60);
+                    $("#mail_server_auth_user").textbox('setValue',obj["rows"][0]["mail_server_auth_user"]!='null'?obj["rows"][0]["mail_server_auth_user"]:'');
+                    $("#mail_server_auth_passwd").textbox('setValue',obj["rows"][0]["mail_server_auth_passwd"]!='null'?obj["rows"][0]["mail_server_auth_passwd"]:'');
+
+                    if(obj["rows"][0]["mail_server_type"] == 'esmtp') {
+                        $('input[name="mail_server_type"]').get(1).checked = true;
+                        $("#mail_server_auth_user").textbox('enable');
+                        $("#mail_server_auth_passwd").textbox('enable');
+                    } else {
+                        $('input[name="mail_server_type"]').get(0).checked = true;
+                        $("#mail_server_auth_user").textbox('disableValidation');
+                        $("#mail_server_auth_passwd").textbox('disableValidation');
+                        $("#mail_server_auth_user").textbox('disable');
+                        $("#mail_server_auth_passwd").textbox('disable');
+                    }
+
+                    if (obj["rows"][0]['accepet_reset_type'] == "sms"){
+                        $('input[name="pass_reset_type"]').get(2).checked = true;
+                        $("#pass_reset_limit").removeAttr("disabled");
+                    } else if (obj["rows"][0]['accepet_reset_type'] == "mail"){
+                        $('input[name="pass_reset_type"]').get(1).checked = true;
+                        $("#pass_reset_limit").removeAttr("disabled");
+                    } else {
+                        $('input[name="pass_reset_type"]').get(0).checked = true;
+                        $("#pass_reset_limit").attr("checked", false);
+                        $("#pass_reset_limit").attr("disabled", "disabled");
+                        $("#pass_reset_max").textbox("disable");
+                        $("#pass_reset_interval").textbox("disable");
+                    }
+                    //密码复杂度
+                    if (obj["rows"][0]["diff_from_old_pass"] == "yes")
+                        $("#pass_diff").prop("checked", true);
+                    else
+                        $("#pass_diff").prop("checked", false)
+                    if (obj["rows"][0]["exclude_account_info"] == "yes")
+                        $("#pass_account").prop("checked", true);
+                    else
+                        $("#pass_account").prop("checked", false)
+                    if (obj["rows"][0]["include_char_lower"] == "yes")
+                        $("#char_lower").prop("checked", true);
+                    else
+                        $("#char_lower").prop("checked", false)
+                    if (obj["rows"][0]["include_char_upper"] == "yes")
+                        $("#char_upper").prop("checked", true);
+                    else
+                        $("#char_upper").prop("checked", false)
+                    if (obj["rows"][0]["include_char_digit"] == "yes")
+                        $("#char_digit").prop("checked", true);
+                    else
+                        $("#char_digit").prop("checked", false)
+                    if (obj["rows"][0]["include_char_punct"] == "yes")
+                        $("#char_punct").prop("checked", true);
+                    else
+                        $("#char_punct").prop("checked", false)
+                    if (obj["rows"][0]["limit_pass_len"] == "yes")
+                        $("#pass_limit").prop("checked", true);
+                    else
+                        $("#pass_limit").prop("checked", false)
+                    $("#pass_min").textbox('setValue',obj["rows"][0]["min_pass_len"]);
+                    $("#pass_max").textbox('setValue',obj["rows"][0]["max_pass_len"]);
+                    if (obj["rows"][0]["force_change_pass"] == "yes")
+                        $("#change_pass").prop("checked", true);
+                    else
+                        $("#change_pass").prop("checked", false)
+//密码有效性
+                    if (obj["rows"][0]["deny_change_pass"] == "yes")
+                        $("#deny_change").prop("checked", true);
+                    else
+                        $("#deny_change").prop("checked", false)
+                    if (obj["rows"][0]["first_login"] == "yes")
+                        $("#first_login").prop("checked", true);
+                    else
+                        $("#first_login").prop("checked", false)
+                    if (obj["rows"][0]["termly_change_pass"] == "yes")
+                        $("#termly_change").prop("checked", true);
+                    else
+                        $("#termly_change").prop("checked", false)
+                    $("#pass_interval").textbox('setValue',obj["rows"][0]["change_pass_interval"]);
+                    if (obj["rows"][0]["invalid_password"] == "yes")
+                        $("#pass_invalid").prop("checked", true);
+                    else
+                        $("#pass_invalid").prop("checked", false)
+                    $("#invalid_period").textbox('setValue',obj["rows"][0]["pass_valid_period"]);
+                    //用户信息
+                    if (obj["rows"][0]["deny_change_mail"] == "yes")
+                        $("#change_mail").prop("checked", true);
+                    else
+                        $("#change_mail").prop("checked", false)
+                    if (obj["rows"][0]["deny_change_phone"] == "yes")
+                        $("#change_phone").prop("checked", true);
+                    else
+                        $("#change_phone").prop("checked", false)
+                    disabled_text1();
+                }
+            }
+        });
+        //sms conf
+        $.ajax({
+            url: "?c=Auth/Server&a=datagridShow&mod="+encodeURI('user auth sms'),
+            type: 'GET',
+            success: function(data) {
+                var obj = jQuery.parseJSON(data);
+                if (obj.total > 0){
+                    var sAddr = (obj["rows"][0]["host"] != 'null') ? obj["rows"][0]["host"] : '';
+                    var shaSecret=(obj["rows"][0]["share_secret"] != 'null')?obj["rows"][0]["share_secret"]:'';
+                    var smsInfo=(obj["rows"][0]["sms_info"] != 'null')?obj["rows"][0]["sms_info"]:'';
+                    var passLen = (obj["rows"][0]["password_len"] != 0) ? obj["rows"][0]["password_len"] : '';
+                    var vaildTime = (obj["rows"][0]["vaild_time"] != 0) ? obj["rows"][0]["vaild_time"] : '';
+                    var errCount = (obj["rows"][0]["err_count"] != 0) ? obj["rows"][0]["err_count"] : '';
+                    var timeOut = (obj["rows"][0]["time_out"] != 0) ? obj["rows"][0]["time_out"] : '';
+                    $("#sms_type").combobox('setValue',obj["rows"][0]["type"]);
+                    $("#sms_mode").combobox('setValue',obj["rows"][0]["support_mode"]);
+                    $("#sms_addr").textbox('setValue',sAddr);
+                    $("#sms_port").textbox('setValue',obj["rows"][0]["port"]);
+                    $("#sms_id").textbox('setValue',obj["rows"][0]["gateway_id"]);
+                    $("#sms_sha").textbox('setValue',shaSecret);
+                    $("#sms_len").textbox('setValue',passLen);
+                    $("#sms_invalid").textbox('setValue',vaildTime);
+                    $("#sms_err").textbox('setValue',errCount);
+                    $("#sms_timeout").textbox('setValue',timeOut);
+                    $("#sms_content_req").combobox('setValue',obj["rows"][0]["sms_type"]);
+                    $("#sms_info").textbox('setValue',smsInfo);
+                }
+            }
+        });
+        sms_set_info();
+    })
+</script>

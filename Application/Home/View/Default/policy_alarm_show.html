@@ -1,0 +1,206 @@
+<include file='Index:main'/>
+<link rel="stylesheet" href="{$Think.config.NG_PATH}Public/css/yngtos/resource/resource_region.css" 
+      type="text/css"/>
+<script type="text/javascript" src="{$Think.config.NG_PATH}Public/modules/policy/alarm.js" ></script>
+<table id="tt"></table>
+<div id="dlg-toolbar" style="padding:2px 0">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="padding-left:2px">
+                <a href="#" class="easyui-linkbutton" id="icon_add" data-options="iconCls:'icon-add',plain:true" onClick="add_alarm('{$Think.lang.ADD}')">{$Think.lang.ADD}</a>
+                <a href="#" class="easyui-linkbutton" id='icon_edit' iconCls="icon-edit" plain="true" onClick="edit_alarm('', '', '', '{$Think.lang.EDIT}');">{$Think.lang.EDIT}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_del" data-options="iconCls:'icon-delete',plain:true" onClick="delAlarm()">{$Think.lang.DELETE}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_clear" data-options="iconCls:'icon-clear',plain:true" onClick="clearItem()">{$Think.lang.CLEAR}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_import" data-options="iconCls:'icon-import',plain:true" onClick="test_alarm()">{$Think.lang.ALARM_TEST}</a>
+                <a href="#" class="easyui-linkbutton" id="icon_export" data-options="iconCls:'icon-export',plain:true" onClick="note_alarm()">{$Think.lang.NOTE_ALARM}</a>
+            </td>
+            <td style="text-align:right;padding-right:2px;display:none">
+                <input id="ss" class="easyui-searchbox">
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    var alarm_tag;
+    var param = [];
+    $(function() {
+        $("#tt").datagrid({
+            fitColumns: true,
+            nowrap: true,
+            striped: true,						//当数据表格初始化时以哪一列来排序。
+            sortOrder: 'asc', //定义排序顺序，可以是'asc'或者'desc'（正序或者倒序）。
+            url: '?c=Policy/Alarm&a=alarmJsondata',
+            fit: true,
+            border: false,
+            remoteSort: false, //定义是否通过远程服务器对数据排序。
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true}
+                ]],
+            columns: [[
+                    {field: 'noticename', title: $LANG.NAME, width: 100, sortable: true},
+                    {field: 'type', title: $LANG.CLASSIFICATION, width: 100},
+                    {field: 'detail', title: $LANG.CONTENT_INFORMATION, width: 200,
+                        formatter: function(value, rowData) {
+                            if (rowData != "" && rowData != null) {
+                                var str = rowData.detail;
+                                if (str != "" && str != null) {
+                                    str = str.replace("srvaddr", $LANG.SERVER+":").replace("srvport", $LANG.DIAGNOSE_PORT+": ").replace("subject", $LANG.SUBJECT+": ").replace("mailaddr", $LANG.MAIL+": ").replace("auth", $LANG.AUTH+": ").replace("username", $LANG.USERNAME+": ");
+                                    str = str.replace("freq", $LANG.FREQUENCY+": ").replace("length", $LANG.LENGTH+": ").replace("reps", $LANG.REPEAT+": ").replace("delay", $LANG.DELAY+": ").replace("hostname", $LANG.HOSTNAME+": ").replace("ipaddr", $LANG.ADDRESS+": ");
+                                    str = str.replace('telephone:',$LANG.RECE_NUM+':');
+                                    var s = "<div style='white-space:normal'>" + str + "</div>";
+                                    return s;
+                                }
+                            }
+                        }
+
+                    },
+                    {field: 'manage', title: $LANG.ADMINISTRATION, width: 20,
+                        formatter: function(value, rowData) {
+
+                            var event = rowData.evt_type;
+                            if (event == undefined) {
+                                event = "";
+                            }
+
+                            if (event.indexOf("manage") >= 0) {
+
+                                var s = '<div class="alarm_center"><input type="checkbox" id="manage' + rowData.noticeid + '" checked="checked" onclick=mangeWay('+rowData.noticeid+',id)></div>';
+                            } else {
+
+                                var s = '<div class="alarm_center"><input type="checkbox" id="manage' + rowData.noticeid + '" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            }
+                            return s;
+                        }
+                    },
+                    {field: 'system', title: $LANG.SYSTEM_SYSTEM, width: 20,
+                        formatter: function(value, rowData) {
+                            var event = rowData.evt_type;
+                            if (event == undefined)
+                                event = "";
+                            if (event.indexOf("system") >= 0)
+                                var s = '<div class="alarm_center"><input type="checkbox" id="system' + rowData.noticeid + '" checked="checked" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            else
+                                var s = '<div class="alarm_center"><input type="checkbox" id="system' + rowData.noticeid + '" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            return s;
+                        }
+                    },
+                    {field: 'safe', title: $LANG.SAFETY, width: 20,
+                        formatter: function(value, rowData) {
+                            var event = rowData.evt_type;
+                            if (event == undefined)
+                                event = "";
+                            if (event.indexOf("security") >= 0)
+                                var s = '<div class="alarm_center"><input type="checkbox" id="security' + rowData.noticeid + '" checked="checked" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            else
+                                var s = '<div class="alarm_center"><input type="checkbox" id="security' + rowData.noticeid + '" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            return s;
+                        }
+                    },
+                    {field: 'method', title: $LANG.POLICY, width: 20,
+                        formatter: function(value, rowData, rowIndex) {
+                            var event = rowData.evt_type;
+                            if (event == undefined)
+                                event = "";
+                            if (event.indexOf("policy") >= 0)
+                                var s = '<div class="alarm_center"><input type="checkbox" id="policy' + rowData.noticeid + '" checked="checked" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            else
+                                var s = '<div class="alarm_center"><input type="checkbox" id="policy' + rowData.noticeid + '" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            return s;
+                        }
+                    },
+                    {field: 'call', title: $LANG.COMMUNICATION, width: 20,
+                        formatter: function(value, rowData, rowIndex) {
+                            var event = rowData.evt_type;
+                            if (event == undefined)
+                                event = "";
+                            if (event.indexOf("communication") >= 0)
+                                var s = '<div class="alarm_center"><input type="checkbox" id="call' + rowData.noticeid + '" checked="checked" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            else
+                                var s = '<div class="alarm_center"><input type="checkbox" id="call' + rowData.noticeid + '" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            return s;
+                        }
+                    },
+                    {field: 'device', title: $LANG.HARDWARE, width: 20,
+                        formatter: function(value, rowData, rowIndex) {
+                            var event = rowData.evt_type;
+                            if (event == undefined)
+                                event = "";
+                            if (event.indexOf("hardware") >= 0)
+                                var s = '<div class="alarm_center"><input type="checkbox" id="hardware' + rowData.noticeid + '" checked="checked" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            else
+                                var s = '<div class="alarm_center"><input type="checkbox" id="hardware' + rowData.noticeid + '" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            return s;
+                        }
+                    },
+                    {field: 'error', title: $LANG.FAULT_TOLERANT, width: 20,
+                        formatter: function(value, rowData, rowIndex) {
+                            var event = rowData.evt_type;
+                            if (event == undefined)
+                                event = "";
+                            if (event.indexOf("recover") >= 0)
+                                var s = '<div class="alarm_center"><input type="checkbox" id="recover' + rowData.noticeid + '" checked="checked" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            else
+                                var s = '<div class="alarm_center"><input type="checkbox"  id="recover' + rowData.noticeid + '" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            return s;
+                        }
+                    },
+                    {field: 'test', title: $LANG.TEST, width: 20,
+                        formatter: function(value, rowData, rowIndex) {
+                            var event = rowData.evt_type;
+                            if (event == undefined)
+                                event = "";
+                            if (event.indexOf("noticetest") >= 0)
+                                var s = '<div class="alarm_center"><input type="checkbox" id="test' + rowData.noticeid + '" checked="checked" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            else
+                                var s = '<div class="alarm_center"><input type="checkbox" id="test' + rowData.noticeid + '" onclick="mangeWay(' + rowData.noticeid + ',id)"></div>';
+                            return s;
+                        }
+                    }
+                ]],
+            onDblClickRow: function(rowindex, rowData) {
+                var str = rowData.detail;
+                str = str.replace(/\'/g, "‘");
+                if (rowData.type != "console" && rowData.type != "snmp")
+                    edit_alarm(rowData.noticename, rowData.type, str, $LANG.EDIT);
+
+            },
+            pagination: false, //设置true将在数据表格底部显示分页工具栏。
+            pageSize: 20, //当设置分页属性时，初始化每页记录数。
+            pageList: [20, 50, 100], //当设置分页属性时，初始化每页记录数列表。
+            rownumbers: true, //设置为true将显示行数。
+            loadMsg: $LANG.WAITING, //当从远程站点载入数据时，显示的一条快捷信息。
+            toolbar: "#dlg-toolbar",
+//        onBeforeLoad:ngtosCheckTimeOut("$retArray['type']","$retArray['info']"),
+            checkOnSelect: true, //如果为true，该复选框被选中/取消选中，当用户点击某一行上。	
+            //如果为false，该复选框仅检查/取消选中，当用户点击完全的复选框。
+//		onHeaderContextMenu:createGridHeaderContextMenu,   //显示隐藏列
+            onLoadSuccess: function(data) {
+                $('#icon_edit').linkbutton('disable');
+                $('#icon_del').linkbutton('disable');
+            },
+            onCheck:setAlarmToolBar,
+            onUncheck:setAlarmToolBar,
+            onClickRow: setAlarmToolBar,
+            onCheckAll: setAlarmToolBar,
+            onUncheckAll: setAlarmToolBar,
+            onSelect: setAlarmToolBar,
+            onUnselect: setAlarmToolBar,
+            onLoadError: function(data) {
+                alert('error' + data['responseText']);
+            }
+        });
+         if (getPrivilege("alarm") == false) {
+             
+            $('#icon_add').linkbutton('disable');
+            $('#icon_del').linkbutton('disable');
+            $('#icon_edit').linkbutton('disable');
+            $('#icon_clear').linkbutton('disable');
+            $('#icon_import').linkbutton('disable');
+            
+         }
+    });
+</script>
+</div>
+</div>
+</body>
+</html>
